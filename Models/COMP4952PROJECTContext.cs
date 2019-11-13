@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace COMP4952.Models
 {
@@ -20,6 +21,7 @@ namespace COMP4952.Models
         public virtual DbSet<RegularAvailabilities> RegularAvailabilities { get; set; }
         public virtual DbSet<Staff> Staff { get; set; }
         public virtual DbSet<Title> Title { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

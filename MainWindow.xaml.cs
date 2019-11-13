@@ -23,6 +23,8 @@ namespace COMP4952
         public MainWindow()
         {
             InitializeComponent();
+            StaffScreen staffScreen = new StaffScreen();
+            staffScreen.Show();
         }
     }
 }

@@ -5,8 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:COMP4952"
         mc:Ignorable="d"
-        Title="StaffScreen" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="StaffScreen" Height="546" Width="877">
+
+    <DataGrid Name="gridEmployees" AutoGenerateColumns="False">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>
+            <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"/>
+            <DataGridTextColumn Header="Title" Binding="{Binding Title}"/>
+            <DataGridTextColumn Header="Rate" Binding="{Binding Rate}"/>
+            <DataGridTextColumn Header="Phone" Binding="{Binding Phone}"/>
+        </DataGrid.Columns>
+      
+    </DataGrid>
+
+
 </Window>

@@ -7,15 +7,15 @@
         mc:Ignorable="d"
         Title="StaffScreen" Height="546" Width="877">
 
-    <DataGrid Name="gridEmployees" AutoGenerateColumns="False">
+    <DataGrid Name="gridEmployees" ItemsSource="{Binding}" AutoGenerateColumns="False" Height="172" Margin="0,0,439,0" VerticalAlignment="Top" SelectionUnit="FullRow" SelectionChanged="gridEmployees_SelectionChanged">
         <DataGrid.Columns>
             <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>
             <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"/>
-            <DataGridTextColumn Header="Title" Binding="{Binding Title}"/>
+            <DataGridTextColumn Header="Title" Binding="{Binding Title.Title1}"/>
             <DataGridTextColumn Header="Rate" Binding="{Binding Rate}"/>
             <DataGridTextColumn Header="Phone" Binding="{Binding Phone}"/>
         </DataGrid.Columns>
-      
+
     </DataGrid>
 
 

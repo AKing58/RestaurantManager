@@ -21,5 +21,9 @@ namespace COMP4952.Models
         public virtual Title Title { get; set; }
         public virtual ICollection<CurrentSchedule> CurrentSchedule { get; set; }
         public virtual ICollection<RegularAvailabilities> RegularAvailabilities { get; set; }
+
     }
+
+
+
 }

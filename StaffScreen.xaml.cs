@@ -2,16 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MoreLinq;
+using Microsoft.EntityFrameworkCore;
+using System.Collections;
 
 namespace COMP4952
 {
@@ -22,26 +17,71 @@ namespace COMP4952
     {
 
         private Models.COMP4952PROJECTContext db;
+        public Staff SelectedStaff { get; set; }
+        public HashSet<Staff> employeeData = new HashSet<Staff>();
 
 
         public StaffScreen()
         {
             
-            db = new Models.COMP4952PROJECTContext();
+            db = new Models.COMP4952PROJECTContext(); //initialize the DB context
             InitializeComponent();
 
-            DataTable employeeData = createDataTable();
-            gridEmployees.ItemsSource = employeeData.DefaultView;
+            //configure the data table
+            employeeData = createDataTable(); //get the staff data to display on the grid.
+            gridEmployees.DataContext = employeeData;
+            gridEmployees.IsReadOnly = true; //prevent editing of the grid
+            gridEmployees.SelectionMode = DataGridSelectionMode.Single;                
+                            
+        }
+
+        /// <summary>
+        /// Creates a datatable of Staff data, including titles. 
+        /// </summary>
+        /// <returns>Staff data as a dataTable</returns>
+        private HashSet<Staff> createDataTable()
+        {
+            DataTable thisData = new DataTable("Staff");
+            HashSet<Staff> allStaff = db.Staff.Include(s=>s.Title).ToHashSet();
+            System.Diagnostics.Debug.WriteLine("found " + allStaff.Count + " staff members");
+
+            foreach(Staff member in allStaff)
+            {
+                System.Diagnostics.Debug.WriteLine("Staff:" + member.Title.Title1);
+            }
+
+            return allStaff ;
+        }
+
+
+        /// <summary>
+        /// Called when a row is selected.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void gridEmployees_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            Staff thisStaff = gridEmployees.SelectedItem as Staff;
+            if(thisStaff != null)
+            {
+                writeDebug("This staff:" + thisStaff.LastName);
+            }
+            else
+            {
+                writeDebug("It's null");
+            }
+            
+
 
         }
 
-        private DataTable createDataTable()
+
+
+
+        private void writeDebug(string message)
         {
-            DataTable thisData = new DataTable("Staff");
-            HashSet<Staff> allStaff = db.Staff.ToHashSet();
-            System.Diagnostics.Debug.WriteLine("found " + allStaff.Count + " staff members");
-            thisData = allStaff.ToDataTable();
-            return thisData;
+            System.Diagnostics.Debug.WriteLine(message);
         }
 
     }

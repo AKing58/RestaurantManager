@@ -84,5 +84,16 @@ namespace COMP4952
             System.Diagnostics.Debug.WriteLine(message);
         }
 
+        /// <summary>
+        /// The user clicks the "add employee" button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddEmployeeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var newEmployeePopup = new NewEmployeePopup();
+            newEmployeePopup.Show();
+
+        }
     }
 }

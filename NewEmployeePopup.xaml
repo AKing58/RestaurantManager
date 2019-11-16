@@ -1,0 +1,46 @@
+﻿<Window x:Class="COMP4952.NewEmployeePopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:COMP4952"
+        mc:Ignorable="d"
+        Title="NewEmployeePopup" Height="300" Width="400">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100*" />
+            <ColumnDefinition Width="300*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Column ="0" Grid.Row="0" Content="First Name" Margin="10,0,10,0" VerticalAlignment="Center" Height="26"/>
+        <TextBox Grid.Column ="1" Grid.Row="0" x:Name="firstNameBox" Margin="10,0,10,0" VerticalAlignment="Center" Height="18"/>
+
+        <Label Grid.Column="0" Grid.Row ="1" Content="Last Name" Margin="10,0,10,0" VerticalAlignment="Center" Height="26"/>
+        <TextBox Grid.Column ="1" Grid.Row="1" x:Name="lastNameBox" Margin="10,0,10,0" VerticalAlignment="Center" Height="18"/>
+
+        <Label Grid.Column="0" Grid.Row ="2" Content="Phone #" Margin="10,0,10,0" VerticalAlignment="Center" Height="26"/>
+        <TextBox Grid.Column ="1" Grid.Row="2" x:Name="phoneBox" Margin="10,0,10,0" VerticalAlignment="Center" Height="18"/>
+
+        <Label Grid.Column="0" Grid.Row ="3" Content="Title" Margin="10,0,10,0" VerticalAlignment="Center" Height="26"/>
+        <ComboBox  Grid.Column="1" Grid.Row="3" Margin="10,0,10,0" VerticalAlignment="Center">
+            <ComboBoxItem Content="ComboBoxItem"/>
+        </ComboBox>
+
+        <Label Grid.Column="0" Grid.Row ="4" Content="Rate" Margin="10,0,10,0" VerticalAlignment="Center" Height="26"/>
+        <TextBox Grid.Column ="1" Grid.Row="4" x:Name="rateField" Margin="10,0,10,0" VerticalAlignment="Center" Height="18"/>
+
+        <Button Name="CancelButton" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" Width="118" Click="CancelButton_Click">Cancel</Button>
+        <Button Name="SaveButton" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Right" Width="118" Click="SaveButton_Click">Save</Button>
+
+
+
+    </Grid>
+</Window>

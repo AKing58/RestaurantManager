@@ -5,18 +5,42 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:COMP4952"
         mc:Ignorable="d"
-        Title="StaffScreen" Height="546" Width="877">
+        Title="StaffScreen" Height="768" Width="1024    ">
 
-    <DataGrid Name="gridEmployees" ItemsSource="{Binding}" AutoGenerateColumns="False" Height="172" Margin="0,0,439,0" VerticalAlignment="Top" SelectionUnit="FullRow" SelectionChanged="gridEmployees_SelectionChanged">
-        <DataGrid.Columns>
-            <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>
-            <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"/>
-            <DataGridTextColumn Header="Title" Binding="{Binding Title.Title1}"/>
-            <DataGridTextColumn Header="Rate" Binding="{Binding Rate}"/>
-            <DataGridTextColumn Header="Phone" Binding="{Binding Phone}"/>
-        </DataGrid.Columns>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Button Name="AddEmployeeBtn"  Content="Add Employee" Height="25" Width="100" Margin="0,0,583,476" Click="AddEmployeeBtn_Click" ></Button>
+        <DataGrid Grid.Column="0" CanUserAddRows="True" Name="gridEmployees" ItemsSource="{Binding}" AutoGenerateColumns="False" Height="172" SelectionUnit="FullRow" SelectionChanged="gridEmployees_SelectionChanged" Grid.ColumnSpan="2" Margin="0,25,341,304">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>
+                <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title.Title1}"/>
+                <DataGridTextColumn Header="Rate" Binding="{Binding Rate}"/>
+                <DataGridTextColumn Header="Phone" Binding="{Binding Phone}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        
 
-    </DataGrid>
+
+        <Label Content="Name Label" Grid.Column="1" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.529,-1.067" Width="139"/>
+        <Label Content="Date Label" Grid.Column="1" HorizontalAlignment="Center" Margin="0,56,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.529,-1.067" Width="139"/>
+        <DataGrid Grid.Column="1" Name="DaysAvailability" ItemsSource="{Binding}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Availability" Binding="{Binding Availability}"/>
+                <DataGridTextColumn Header="Scheduled" Binding="{Binding Scheduled}"/>
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+
+    </Grid>
 
 
 </Window>

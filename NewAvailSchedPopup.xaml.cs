@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using COMP4952.Models;
+using System.Diagnostics;
 
 namespace COMP4952
 {
@@ -22,7 +23,7 @@ namespace COMP4952
         private COMP4952PROJECTContext db;
         public Staff thisStaff;
         public HashSet<currentAvailItem> listOfCurrentAvails = new HashSet<currentAvailItem>();
-        private CurrentSchedule newScheduleItem = new CurrentSchedule(); //the new schedule to save
+        private CurrentSchedule newScheduleItem; //the new schedule to save
         private CurrentAvailabilities newAvailability = new CurrentAvailabilities(); //the new availability to save, if a new one is being made. 
         private CurrentAvailabilities existingAvailability = new CurrentAvailabilities(); //the existing availability, if one is chosen. 
         bool usingExistingAvailability = true;
@@ -40,7 +41,6 @@ namespace COMP4952
             {
                 thisAvailability = availability;
                 displayString = thisAvailability.BlockStartTime.ToString() + " - " + thisAvailability.BlockEndTime.ToString();
-                displayString = "Time!";
             }
         }
 
@@ -71,7 +71,7 @@ namespace COMP4952
             thisStaff = chosenStaff;
             
             //prepare the new availability item, in case the user chooses to make a new one
-            newAvailability.Staff = thisStaff;
+            newAvailability.StaffId = thisStaff.Id;
             newAvailability.Date = thisDate;
 
 
@@ -86,16 +86,6 @@ namespace COMP4952
 
         }
 
-        /// <summary>
-        /// Returns midnight on the given day. 
-        /// </summary>
-        /// <param name="thisDate"></param>
-        /// <returns></returns>
-        private DateTime convertDateToMidnight(DateTime thisDate)
-        {
-            DateTime thisMidnight = new DateTime(thisDate.Year, thisDate.Month, thisDate.Day, 0, 0, 0);
-            return thisMidnight;
-        }
 
 
         /// <summary>
@@ -161,15 +151,43 @@ namespace COMP4952
         {
             if (usingExistingAvailability)
             {
-                db.CurrentSchedule.Add(newScheduleItem);
+                if(newScheduleItem != null)
+                {
+                    Debug.WriteLine("using existing availability: " + newScheduleItem.AvailabilityId);
+                    db.CurrentSchedule.Add(newScheduleItem);
+                }
+                else
+                {
+                    //chose an existing availability, but didn't make a schedule.
+                    Debug.WriteLine("Didn't set a schedule.");
+                    this.Close();
+                }
+               
             }
             else
             {
+                //save the new availability first
                 db.CurrentAvailabilities.Add(newAvailability);
-                db.CurrentSchedule.Add(newScheduleItem);
+                Debug.WriteLine("Made a new availability: " + newAvailability.BlockStartTime.ToString() + " - " + newAvailability.BlockEndTime.ToString());
+                db.SaveChanges(); //save the new availability so we can get it's ID.
+
+                //check if we are saving a new schedule too. 
+                if (newScheduleItem != null)
+                {
+
+                    newScheduleItem.AvailabilityId = newAvailability.Id;
+                    db.CurrentSchedule.Add(newScheduleItem);
+                    Debug.WriteLine("Made a new Schedule: " + newScheduleItem.BlockStartTime.ToString() + " - " + newScheduleItem.BlockEndTime.ToString());
+                }
+                
             }
 
             db.SaveChanges();
+
+            Debug.WriteLine("Saved new availability/schedule.");
+            
+
+            this.Close();
 
 
         }
@@ -186,7 +204,12 @@ namespace COMP4952
 
             currentAvailItem thisExistingAvailability = (currentAvailItem)ExitingAvailsCB.SelectedItem;
             existingAvailability = thisExistingAvailability.thisAvailability;
-            newScheduleItem.Availability = existingAvailability;
+
+            if(newScheduleItem != null)
+            {
+                newScheduleItem.AvailabilityId = existingAvailability.Id;
+            }
+            
         }
 
 
@@ -198,9 +221,14 @@ namespace COMP4952
         private void NewAvailSTCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             usingExistingAvailability = false;
-            DateTime chosenBlock = (DateTime)NewAvailSTCB.SelectedItem;
-            newAvailability.BlockStartTime = chosenBlock.TimeOfDay;
-            newScheduleItem.Availability = newAvailability;
+            displayTimeItem chosenDisplayTimeItem = (displayTimeItem)NewAvailSTCB.SelectedItem;
+            newAvailability.BlockStartTime = chosenDisplayTimeItem.thisDateTime.TimeOfDay;
+            
+            if(newScheduleItem != null)
+            {
+                newScheduleItem.AvailabilityId = newAvailability.Id;
+            }
+           
         }
 
         /// <summary>
@@ -211,9 +239,14 @@ namespace COMP4952
         private void NewAvailETCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             usingExistingAvailability = false;
-            DateTime chosenBlock = (DateTime)NewAvailETCB.SelectedItem;
-            newAvailability.BlockEndTime = chosenBlock.TimeOfDay;
-            newScheduleItem.Availability = newAvailability;
+            displayTimeItem chosenDisplayTimeItem = (displayTimeItem)NewAvailETCB.SelectedItem;
+            newAvailability.BlockEndTime = chosenDisplayTimeItem.thisDateTime.TimeOfDay;
+            
+            if(newScheduleItem != null)
+            {
+                newScheduleItem.AvailabilityId = newAvailability.Id;
+            }
+            
         }
 
 
@@ -224,8 +257,15 @@ namespace COMP4952
         /// <param name="e"></param>
         private void NewSchedSTCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            DateTime chosenBlock = (DateTime)NewSchedSTCB.SelectedItem;
-            newScheduleItem.BlockStartTime = chosenBlock.TimeOfDay;
+            displayTimeItem chosenDisplayTimeItem = (displayTimeItem)NewSchedSTCB.SelectedItem;
+            
+            //if a new schedule item doesn't exist, make it.
+            if (newScheduleItem == null)
+            {
+                newScheduleItem = new CurrentSchedule();
+            }
+
+            newScheduleItem.BlockStartTime = chosenDisplayTimeItem.thisDateTime.TimeOfDay;
         }
 
         /// <summary>
@@ -235,8 +275,17 @@ namespace COMP4952
         /// <param name="e"></param>
         private void NewSchedETCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            DateTime chosenBlock = (DateTime)NewSchedETCB.SelectedItem;
-            newScheduleItem.BlockEndTime = chosenBlock.TimeOfDay;
+            displayTimeItem chosenDisplayTimeItem = (displayTimeItem)NewSchedETCB.SelectedItem;
+
+            //if a new schedule item doesn't exist, make it. 
+            if (newScheduleItem == null)
+            {
+                newScheduleItem = new CurrentSchedule();
+            }
+            newScheduleItem.BlockEndTime = chosenDisplayTimeItem.thisDateTime.TimeOfDay;
         }
     }
+
+    
+
 }

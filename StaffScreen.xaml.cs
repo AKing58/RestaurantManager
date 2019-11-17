@@ -98,6 +98,7 @@ namespace COMP4952
             {
                 writeDebug("Chosen staff:" + thisStaff.LastName);
                 SelectedStaff = thisStaff;
+                selectedNameLabel.Content = SelectedStaff.FirstName + " " + SelectedStaff.LastName;
                 AddAvailSchedBtn.IsEnabled = true;
             }
             else

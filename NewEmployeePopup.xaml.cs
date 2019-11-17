@@ -68,15 +68,19 @@ namespace COMP4952
             thisStaff.FirstName = firstNameBox.Text;
             thisStaff.LastName = lastNameBox.Text;
             thisStaff.Phone = phoneBox.Text;
-            //thisStaff.Title
+            thisStaff.Title = titleChoicesCB.SelectedItem as Title;
             thisStaff.Rate = decimal.Parse(rateField.Text);
 
-
-
+            db.Staff.Add(thisStaff);
+            db.SaveChanges();
+            this.Close();
         }
 
 
-
+        /// <summary>
+        /// Writes to debug console
+        /// </summary>
+        /// <param name="message"></param>
         private void writeDebug(string message)
         {
             System.Diagnostics.Debug.WriteLine(message);

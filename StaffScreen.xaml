@@ -13,11 +13,20 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="323*"/>
+            <RowDefinition Height="409*"/>
         </Grid.RowDefinitions>
-        <Button Name="AddEmployeeBtn"  Content="Add Employee" Height="25" Width="100" Margin="0,0,583,476" Click="AddEmployeeBtn_Click" ></Button>
-        <DataGrid Grid.Column="0" CanUserAddRows="True" Name="gridEmployees" ItemsSource="{Binding}" AutoGenerateColumns="False" Height="172" SelectionUnit="FullRow" SelectionChanged="gridEmployees_SelectionChanged" Grid.ColumnSpan="2" Margin="0,25,341,304">
+
+        <DockPanel Grid.ColumnSpan="2" LastChildFill="False" Height="20" VerticalAlignment="Center">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Staff">
+                    <MenuItem Header="_New Employee" Click="AddEmployeeBtn_Click"/>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+
+        <DataGrid Grid.Column="0" Grid.Row="1" CanUserAddRows="True" Name="gridEmployees" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionUnit="FullRow" SelectionChanged="gridEmployees_SelectionChanged" Grid.ColumnSpan="2" Margin="0,0,341,0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>
                 <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"/>
@@ -26,18 +35,32 @@
                 <DataGridTextColumn Header="Phone" Binding="{Binding Phone}"/>
             </DataGrid.Columns>
         </DataGrid>
-        
 
 
-        <Label Content="Name Label" Grid.Column="1" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.529,-1.067" Width="139"/>
-        <Label Content="Date Label" Grid.Column="1" HorizontalAlignment="Center" Margin="0,56,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.529,-1.067" Width="139"/>
-        <DataGrid Grid.Column="1" Name="DaysAvailability" ItemsSource="{Binding}" AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Availability" Binding="{Binding Availability}"/>
-                <DataGridTextColumn Header="Scheduled" Binding="{Binding Scheduled}"/>
-            </DataGrid.Columns>
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical">
+            <Label Name="selectedNameLabel"  Content="Name Label" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" Width="139"/>
 
-        </DataGrid>
+            <DatePicker Name="datePickerObj" IsTodayHighlighted="True" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" Width="200" />
+            <Button Name="AddAvailSchedBtn" Width="170" Click="AddBtn_Click">Add Availability or Schedule</Button>
+
+            <DataGrid x:Name="DaysAvailabilityGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" RenderTransformOrigin="0,0" Height="152">
+                <DataGrid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform AngleX="1.537"/>
+                        <RotateTransform/>
+                        <TranslateTransform X="0.348"/>
+                    </TransformGroup>
+                </DataGrid.RenderTransform>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Availability" Binding="{Binding availabilityString}" Width="1*"/>
+                    <DataGridTextColumn Header="Scheduled" Binding="{Binding scheduleString}" Width="1*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+
+
 
 
     </Grid>

@@ -20,7 +20,7 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <DatePicker Name="ChosenDateDP"  Grid.Column="1" Grid.ColumnSpan="2"  VerticalAlignment="Center" Margin="0,0,0,0"/>
+        <DatePicker Name="ChosenDateDP"  Grid.Column="1" Grid.ColumnSpan="2"  SelectedDateChanged="ChosenDateDP_dateChanged" VerticalAlignment="Center" Margin="0,0,0,0"/>
         <Label Grid.Column="0" Grid.Row="1"  HorizontalAlignment="Center" VerticalAlignment="Center">Existing Availability</Label>
         <ComboBox Name="ExitingAvailsCB" Grid.Column="1" Grid.Row="1"  Grid.ColumnSpan="2"  VerticalAlignment="Center" Margin="0,0,0,0" SelectionChanged="ExitingAvailsCB_SelectionChanged">
             <ComboBox.ItemTemplate>

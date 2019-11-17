@@ -65,15 +65,26 @@ namespace COMP4952
             InitializeComponent();
             db = new Models.COMP4952PROJECTContext();
 
-            //set the date picker. 
-            ChosenDateDP.SelectedDate = thisDate;
-            ChosenDateDP.DisplayDate = thisDate;
             thisStaff = chosenStaff;
             
             //prepare the new availability item, in case the user chooses to make a new one
             newAvailability.StaffId = thisStaff.Id;
-            newAvailability.Date = thisDate;
 
+
+            //set the date picker, setting the date picker will also load the availabilties. 
+            ChosenDateDP.SelectedDate = thisDate;
+            ChosenDateDP.DisplayDate = thisDate;
+
+        }
+
+
+        /// <summary>
+        /// Loads data for the related date, called when the date on the datepicker is changed.
+        /// </summary>
+        /// <param name="thisDate"></param>
+        private void loadForDate(DateTime thisDate)
+        {
+            newAvailability.Date = thisDate;
 
             HashSet<displayTimeItem> Times = createTimes(thisDate);
             NewAvailETCB.ItemsSource = Times;
@@ -83,7 +94,6 @@ namespace COMP4952
 
             listOfCurrentAvails = getCurrentAvails(thisDate);
             ExitingAvailsCB.ItemsSource = listOfCurrentAvails;
-
         }
 
 
@@ -126,22 +136,45 @@ namespace COMP4952
         {
             HashSet<currentAvailItem> theseAvails = new HashSet<currentAvailItem>();
 
-            HashSet<CurrentAvailabilities> currentAvailabilities = db.CurrentAvailabilities
-                                                                        .Where(CA => CA.Date == thisDate)
+            try
+            {
+               
+                HashSet<CurrentAvailabilities> currentAvailabilities = db.CurrentAvailabilities
                                                                         .Where(CA => CA.StaffId == thisStaff.Id)
+                                                                        .Where(CA => CA.Date == thisDate.Date)
                                                                         .ToHashSet();
 
-            foreach(CurrentAvailabilities thisAvailability in currentAvailabilities)
-            {
-                currentAvailItem thisAvailItem = new currentAvailItem(thisAvailability);
 
-                theseAvails.Add(thisAvailItem);
+
+                foreach (CurrentAvailabilities thisAvailability in currentAvailabilities)
+                {
+                    currentAvailItem thisAvailItem = new currentAvailItem(thisAvailability);
+
+                    theseAvails.Add(thisAvailItem);
+                }
+
             }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error getting current availabilities: " + e);
+            }
+            
 
             return theseAvails;
         }
 
-        
+
+        /// <summary>
+        /// The user chose a different date, reload data. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChosenDateDP_dateChanged(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Changed date to: " + ChosenDateDP.SelectedDate.ToString());
+            loadForDate((DateTime)ChosenDateDP.SelectedDate);
+        }
+
         /// <summary>
         /// Saves the new schedule, if using an existing availability, or creates the new availability and saves the new schedule. 
         /// </summary>
@@ -284,6 +317,57 @@ namespace COMP4952
             }
             newScheduleItem.BlockEndTime = chosenDisplayTimeItem.thisDateTime.TimeOfDay;
         }
+
+
+        /// <summary>
+        /// Checks if a given availability falls within an existing availability on the same day. 
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        private bool validUniqueAvailability(CurrentAvailabilities thisAvailability)
+        {
+           
+            //check for avaialbilities for this staff member that encompass the given availability
+            HashSet<CurrentAvailabilities> existingAvailabilities = db.CurrentAvailabilities
+                                                            .Where(CA=>CA.StaffId == thisAvailability.StaffId)
+                                                            .Where(CA => CA.BlockStartTime <= thisAvailability.BlockStartTime)
+                                                            .Where(CA => CA.BlockEndTime >= thisAvailability.BlockEndTime)
+                                                            .ToHashSet();
+
+            if(existingAvailabilities.Count > 0)
+            {
+                return false; //the availability is NOT unique. 
+            }
+            else
+            {
+                return true; //the availability is unique.
+            }
+        }
+
+        /// <summary>
+        /// Ensure the schedule falls within it's availabilities time block
+        /// </summary>
+        /// <param name="currentSchedule"></param>
+        /// <returns></returns>
+        private bool validSchedule(CurrentSchedule currentSchedule)
+        {
+
+            if(currentSchedule.BlockStartTime >= currentSchedule.Availability.BlockStartTime && currentSchedule.BlockEndTime <= currentSchedule.Availability.BlockEndTime)
+            {
+                return true; //the schedule DOES fall within it's availability
+            }
+            else
+            {
+                return false; //the schedule does NOT fall within it's availability. 
+            }
+
+
+
+        }
+
+
+
     }
 
     

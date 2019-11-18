@@ -143,7 +143,7 @@ namespace COMP4952
                
                 HashSet<CurrentAvailabilities> currentAvailabilities = db.CurrentAvailabilities
                                                                         .Where(CA => CA.StaffId == thisStaff.Id)
-                                                                        .Where(CA => CA.BlockStartTime == thisDate.Date)
+                                                                        .Where(CA => CA.BlockStartTime.Date == thisDate.Date)
                                                                         .ToHashSet();
 
 
@@ -437,6 +437,7 @@ namespace COMP4952
                 if (newScheduleItem != null)
                 {
                     Debug.WriteLine("using existing availability: " + newScheduleItem.AvailabilityId);
+                    newScheduleItem.AvailabilityId = existingAvailability.Id;
                     db.CurrentSchedule.Add(newScheduleItem);
                 }
                 else

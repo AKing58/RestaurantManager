@@ -43,15 +43,7 @@
             <DatePicker Name="datePickerObj" IsTodayHighlighted="True" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" Width="200" />
             <Button Name="AddAvailSchedBtn" Width="170" Click="AddBtn_Click">Add Availability or Schedule</Button>
 
-            <DataGrid x:Name="DaysAvailabilityGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" RenderTransformOrigin="0,0" Height="152">
-                <DataGrid.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform AngleX="1.537"/>
-                        <RotateTransform/>
-                        <TranslateTransform X="0.348"/>
-                    </TransformGroup>
-                </DataGrid.RenderTransform>
+            <DataGrid x:Name="DaysAvailabilityGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" RenderTransformOrigin="0.508,0.56" Height="152">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Availability" Binding="{Binding availabilityString}" Width="1*"/>
                     <DataGridTextColumn Header="Scheduled" Binding="{Binding scheduleString}" Width="1*"/>

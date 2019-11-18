@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace COMP4952
 {
@@ -20,7 +21,7 @@ namespace COMP4952
         private Models.COMP4952PROJECTContext db;
         public Staff SelectedStaff { get; set; } //the selected staff member
         public HashSet<Staff> employeeData = new HashSet<Staff>(); //holds all the staff members
-        public HashSet<ScheduleItem> selectedEmployeesScheduleItem = new HashSet<ScheduleItem>(); //holds the selected staff members schedule and availabilities
+        public ObservableCollection<ScheduleItem> selectedEmployeesScheduleItem = new ObservableCollection<ScheduleItem>(); //holds the selected staff members schedule and availabilities
 
         /// <summary>
         /// Holds data for a row in the availability & scheduled tables
@@ -30,8 +31,8 @@ namespace COMP4952
             //availability
             public DateTime availableStartTime, availableEndTime; //the available block start and end times
             public DateTime scheduleStartTime, scheduleEndtime; //the scheduled start and end times for the available block.
-            public String availabilityString; //the display string for the available block
-            public string scheduleString; //the display string for the scheduled block
+            public string availabilityString { get; set; } //the display string for the available block
+            public string scheduleString { get; set; } //the display string for the scheduled block
 
 
             public ScheduleItem(DateTime ast, DateTime aet, DateTime sst, DateTime set)
@@ -41,8 +42,8 @@ namespace COMP4952
                 scheduleStartTime = sst;
                 scheduleEndtime = set;
 
-                availabilityString = availableStartTime.ToString() + " - " + availableEndTime.ToString();
-                scheduleString = scheduleStartTime.ToString() + " - " + scheduleEndtime.ToString();
+                availabilityString = availableStartTime.ToShortTimeString() + " - " + availableEndTime.ToShortTimeString();
+                scheduleString = scheduleStartTime.ToShortTimeString() + " - " + scheduleEndtime.ToShortTimeString();
 
 
             }
@@ -58,12 +59,16 @@ namespace COMP4952
             AddAvailSchedBtn.IsEnabled = false;
             datePickerObj.SelectedDate = DateTime.Now;
             datePickerObj.DisplayDate = DateTime.Now;
+            
             //configure the data table
             employeeData = getStaffData(); //get the staff data to display on the grid.
-            gridEmployees.DataContext = employeeData;
+            gridEmployees.ItemsSource = employeeData;
             gridEmployees.IsReadOnly = true; //prevent editing of the grid
-            gridEmployees.SelectionMode = DataGridSelectionMode.Single;                
-                            
+            gridEmployees.SelectionMode = DataGridSelectionMode.Single;
+
+            DaysAvailabilityGrid.ItemsSource = selectedEmployeesScheduleItem;
+
+
         }
 
         /// <summary>
@@ -99,6 +104,7 @@ namespace COMP4952
                 writeDebug("Chosen staff:" + thisStaff.LastName);
                 SelectedStaff = thisStaff;
                 selectedNameLabel.Content = SelectedStaff.FirstName + " " + SelectedStaff.LastName;
+                loadSelectedStaffsAvailabilityAndScheduleForDate(SelectedStaff, (DateTime)datePickerObj.SelectedDate);
                 AddAvailSchedBtn.IsEnabled = true;
             }
             else
@@ -119,11 +125,12 @@ namespace COMP4952
         /// <param name="thisDate">The date to view</param>
         private void loadSelectedStaffsAvailabilityAndScheduleForDate(Staff thisStaff, DateTime thisDate)
         {
-            
+            selectedEmployeesScheduleItem.Clear(); //erase it.
+
             //get the employees availability for the given date.
             HashSet<CurrentAvailabilities> thisDaysAvailabilties = db.CurrentAvailabilities
                                                 .Where(ra => ra.StaffId == thisStaff.Id)
-                                                .Where(ra => ra.BlockStartTime == thisDate.Date)
+                                                .Where(ra => ra.BlockStartTime.Date == thisDate.Date)
                                                 .Include(ra => ra.CurrentSchedule)
                                                 .ToHashSet();
 
@@ -152,9 +159,9 @@ namespace COMP4952
                 }   
             }
 
+            //bind the list to the datagrid
+            DaysAvailabilityGrid.Items.Refresh();
 
-            //bind the list ot the datagrid
-            DaysAvailabilityGrid.DataContext = selectedEmployeesScheduleItem;
 
         }
 

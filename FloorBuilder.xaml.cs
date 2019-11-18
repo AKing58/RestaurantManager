@@ -87,7 +87,7 @@ namespace COMP4952
 
         private void Table_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            startLoc = Mouse.GetPosition(Canvas_FB);
+            startLoc = new Point(0,0);
             Image newImg = DuplicateImage(((Image)sender));
             img = newImg;
         }

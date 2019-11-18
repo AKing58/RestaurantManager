@@ -54,8 +54,8 @@
         <DataGrid Name="fiveMinScheduleGrid" Grid.Column="0" Grid.ColumnSpan="2" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{Binding}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Today" Binding="{Binding day0}"/>
-                <DataGridTextColumn Header="Today" Binding="{Binding day1}"/>
-                <DataGridTextColumn Header="Tomorrow" Binding="{Binding day2}"/>
+                <DataGridTextColumn Header="Tomorrow" Binding="{Binding day1}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day2}"/>
                 <DataGridTextColumn Header="Next Day" Binding="{Binding day3}"/>
                 <DataGridTextColumn Header="Next Day" Binding="{Binding day4}"/>
                 <DataGridTextColumn Header="Next Day" Binding="{Binding day5}"/>

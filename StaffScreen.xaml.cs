@@ -205,7 +205,7 @@ namespace COMP4952
         /// <param name="thisRange">the date range to view</param>
         private void loadSelectedEmployeesSchedule(Staff thisStaff, CalendarDateRange thisRange)
         {
-
+            fiveMinuteRows.Clear();
             HashSet<CurrentAvailabilities> theseAvailabilities = db.CurrentAvailabilities
                                                                         .Where(CA => CA.BlockStartTime.Date >= thisRange.Start.Date)
                                                                         .Where(CA => CA.BlockStartTime.Date <= thisRange.End.Date)
@@ -226,17 +226,24 @@ namespace COMP4952
             {
                 DateTime startDay = new DateTime(thisRange.Start.Year, thisRange.Start.Month, thisRange.Start.Day, fiveMinBlock / 60, fiveMinBlock % 60, 0);
                 DateTime endDay = new DateTime(thisRange.End.Year, thisRange.End.Month, thisRange.End.Day, fiveMinBlock / 60, fiveMinBlock % 60, 0);
+                
                 int dayCounter = 0;
+                
                 for (DateTime dateTime = startDay; dateTime <= endDay; dateTime = dateTime.Add(oneDay))
                 {
-                    Debug.WriteLine("This time: " + dateTime.ToString());
+                    //Debug.WriteLine("This time: " + dateTime.ToString());
+                    
                     bool withinSchedule = false;
+
                     foreach(CurrentSchedule thisScheduleDate in thisSchedule)
                     {
                         CalendarDateRange thisBlock = new CalendarDateRange(thisScheduleDate.BlockStartTime, thisScheduleDate.BlockEndTime);
+                        
                         if(withinDateRange(dateTime, thisBlock))
                         {
+                            //Debug.WriteLine("Within Shcedule");
                             withinSchedule = true;
+                           
                         }
                     }
 
@@ -251,6 +258,7 @@ namespace COMP4952
                             CalendarDateRange thisBlock = new CalendarDateRange(thisAvailability.BlockStartTime, thisAvailability.BlockEndTime);
                             if (withinDateRange(dateTime, thisBlock))
                             {
+                                //Debug.WriteLine("Within AVailability");
                                 withinAvailability = true;
                             }
                         }
@@ -265,6 +273,11 @@ namespace COMP4952
 
                     }
 
+
+                    if (display == "Available")
+                    {
+                        Debug.WriteLine("Display: " + display);
+                    }
 
                     switch (dayCounter)
                     {
@@ -313,11 +326,14 @@ namespace COMP4952
                         default:
                             break;
                     }
+                    dayCounter = dayCounter + 1;
 
                 }
 
-                fiveMinuteRows.Add(theseFiveMinutes);
+                
 
+                fiveMinuteRows.Add(theseFiveMinutes);
+                
 
             }
 
@@ -333,6 +349,8 @@ namespace COMP4952
         /// <param name="thisRange"></param>
         /// <returns></returns>
         private bool withinDateRange(DateTime thisDate, CalendarDateRange thisRange) {
+
+            //Debug.WriteLine("Checking " + thisDate.ToString() + " between " + thisRange.Start.ToString() + " and " + thisRange.End.ToString());
 
             return (thisRange.Start <= thisDate && thisDate <= thisRange.End);
 

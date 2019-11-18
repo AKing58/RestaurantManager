@@ -9,6 +9,14 @@
       Title="Home">
 
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
+            <MenuItem Header="Menu" Height="25">
+                <MenuItem Header="Go To Floor Builder" Click="GoToFloorBuilder_Click"/>
+            </MenuItem>
+        </Menu>
     </Grid>
 </Page>

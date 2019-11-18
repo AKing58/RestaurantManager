@@ -40,6 +40,17 @@ namespace COMP4952
                 DisplayTable(t);
             }
         }
+        private int GetTypeIdFromName(string input)
+        {
+            if (input.Contains("Round"))
+                return 1;
+            else if (input.Contains("Square"))
+                return 2;
+            else if (input.Contains("Rectangle"))
+                return 3;
+
+            return 1;
+        }
 
         private void DisplayTable(TableInfo t)
         {
@@ -62,6 +73,9 @@ namespace COMP4952
             }
             newImg.Width = 100;
             newImg.Height = 100;
+            FurnitureType ft = db.FurnitureType.Single(u => u.Id == tableId);
+            newImg.Name = "Placed" + ft.Type + GetTypeIdFromName(ft.Type);
+            newImg.MouseDown += Table_MouseDown;
             Canvas_FB.Children.Add(newImg);
             Canvas.SetLeft(newImg, t.Xloc);
             Canvas.SetTop(newImg, t.Yloc);
@@ -87,9 +101,21 @@ namespace COMP4952
 
         private void Table_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            startLoc = new Point(0,0);
-            Image newImg = DuplicateImage(((Image)sender));
-            img = newImg;
+            Image curImg = (Image)sender;
+            startLoc = new Point(0, 0);
+            if (curImg.Name.Contains("Placed"))
+            {
+                Console.WriteLine(e.GetPosition(Canvas_FB));
+                //startLoc = e.GetPosition(Canvas_FB);
+                img = (Image)sender;
+            }
+            else
+            {
+                
+                Image newImg = DuplicateImage(((Image)sender));
+                img = newImg;
+            }
+                
         }
 
         private Image DuplicateImage(Image inImage)
@@ -99,6 +125,7 @@ namespace COMP4952
             newImg.Name = inImage.Name;
             newImg.Width = 100;
             newImg.Height = 100;
+            newImg.MouseDown += Table_MouseDown;
             Canvas_FB.Children.Add(newImg);
             Canvas.SetLeft(newImg, 0);
             Canvas.SetTop(newImg, 0);
@@ -107,19 +134,29 @@ namespace COMP4952
 
         private void Page_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            AddToDb(img);
-            Console.WriteLine("Release");
-            img = null;
+            if(img != null)
+            {
+                AddToDb(img);
+                img = null;
+            }
+            
         }
 
         private void AddToDb(Image input)
         {
+            /*
+            if (!input.Name.Contains("Placed"))
+            {
+                input.Name = "Placed" + input.Name;
+            }
+            */
             TableInfo ti = new TableInfo();
             int sourceId = (int)Char.GetNumericValue(input.Name.ToCharArray()[input.Name.Length-1]);
             ti.TypeId = sourceId;
             ti.Xloc = (int)Canvas.GetLeft(input);
             ti.Yloc = (int)Canvas.GetTop(input);
             db.TableInfo.Add(ti);
+            
         }
 
         private void DeleteLayout()

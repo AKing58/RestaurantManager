@@ -11,6 +11,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using System.Linq;
+using COMP4952.Models;
+using System.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace COMP4952
 {
     /// <summary>
@@ -21,6 +26,12 @@ namespace COMP4952
         public Home()
         {
             InitializeComponent();
+        }
+
+        private void GoToFloorBuilder_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService ns = NavigationService.GetNavigationService(this);
+            ns.Navigate(new Uri("FloorBuilder.xaml", UriKind.Relative));
         }
     }
 }

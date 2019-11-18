@@ -26,6 +26,7 @@
             </Menu>
         </DockPanel>
 
+      
         <DataGrid Grid.Column="0" Grid.Row="1" CanUserAddRows="True" Name="gridEmployees" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionUnit="FullRow" SelectionChanged="gridEmployees_SelectionChanged" Grid.ColumnSpan="2" Margin="0,0,341,0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>
@@ -51,7 +52,30 @@
             </DataGrid>
         </StackPanel>
 
+       
+
+
         <DataGrid Name="fiveMinScheduleGrid" Grid.Column="0" Grid.ColumnSpan="2" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{Binding}">
+
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                       Path=Content.Text}" Value="Available">
+                            <Setter Property="Background" Value="Yellow"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                       Path=Content.Text}" Value="Scheduled">
+                            <Setter Property="Background" Value="Green"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                       Path=Content.Text}" Value="-">
+                            <Setter Property="Background" Value="Red"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Today" Binding="{Binding day0}"/>
                 <DataGridTextColumn Header="Tomorrow" Binding="{Binding day1}"/>

@@ -9,6 +9,8 @@ using System.Collections;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Windows.Media;
+using System.Windows.Data;
 
 namespace COMP4952
 {
@@ -222,12 +224,14 @@ namespace COMP4952
             TimeSpan oneDay = new TimeSpan(24, 0, 0);
             WeeklyFiveMinutes theseFiveMinutes = new WeeklyFiveMinutes();
 
-            for(int fiveMinBlock = 0; fiveMinBlock < 24*60; fiveMinBlock += 5)
+            int rowCounter = 0;
+            for (int fiveMinBlock = 0; fiveMinBlock < 24*60; fiveMinBlock += 5)
             {
                 DateTime startDay = new DateTime(thisRange.Start.Year, thisRange.Start.Month, thisRange.Start.Day, fiveMinBlock / 60, fiveMinBlock % 60, 0);
                 DateTime endDay = new DateTime(thisRange.End.Year, thisRange.End.Month, thisRange.End.Day, fiveMinBlock / 60, fiveMinBlock % 60, 0);
                 
                 int dayCounter = 0;
+               
                 
                 for (DateTime dateTime = startDay; dateTime <= endDay; dateTime = dateTime.Add(oneDay))
                 {
@@ -266,7 +270,8 @@ namespace COMP4952
                         if (withinAvailability)
                         {
                             display = "Available";
-                        }else
+                        }
+                        else
                         {
                             display = "-";
                         }
@@ -333,13 +338,17 @@ namespace COMP4952
                 
 
                 fiveMinuteRows.Add(theseFiveMinutes);
-                
+                rowCounter = rowCounter + 1;
 
             }
 
             fiveMinScheduleGrid.Items.Refresh();
+           
+            
 
         }
+
+
 
 
         /// <summary>

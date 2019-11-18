@@ -37,7 +37,7 @@
         </DataGrid>
 
 
-        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical">
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Right" Width="341">
             <Label Name="selectedNameLabel"  Content="Name Label" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" Width="139"/>
 
             <DatePicker Name="datePickerObj" IsTodayHighlighted="True" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" Width="200" />
@@ -51,7 +51,24 @@
             </DataGrid>
         </StackPanel>
 
-
+        <DataGrid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" ItemsSource="{Binding}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Sunday1}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Monday1}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Tuesday1}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Wednesday1}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Thursday1}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Friday1}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Saturday1}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Sunday2}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Monday2}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Tuesday2}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Wednesday2}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Thursday2}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Friday2}"/>
+                <DataGridTextColumn Header="{Binding thingy.thisDate}" Binding="{Binding Saturday2}"/>
+            </DataGrid.Columns>
+        </DataGrid>
 
 
 

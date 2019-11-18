@@ -22,6 +22,7 @@ namespace COMP4952
         public Staff SelectedStaff { get; set; } //the selected staff member
         public HashSet<Staff> employeeData = new HashSet<Staff>(); //holds all the staff members
         public ObservableCollection<ScheduleItem> selectedEmployeesScheduleItem = new ObservableCollection<ScheduleItem>(); //holds the selected staff members schedule and availabilities
+        public ObservableCollection<WeeklyFiveMinutes> complexScheduleRows = new ObservableCollection<WeeklyFiveMinutes>();
 
         /// <summary>
         /// Holds data for a row in the availability & scheduled tables
@@ -49,6 +50,26 @@ namespace COMP4952
             }
 
         }
+
+        public struct WeeklyFiveMinutes
+        {
+            String Sunday1 { get; set; }
+            String Monday1 { get; set; }
+            String Tuesday1 { get; set; }
+            String Wednesday1 { get; set; }
+            String Thursday1 { get; set; }
+            String Friday1 { get; set; }
+            String Saturday1 { get; set; }
+            String Sunday2 { get; set; }
+            String Monday2 { get; set; }
+            String Tuesday2 { get; set; }
+            String Wednesday2 { get; set; }
+            String Thursday2 { get; set; }
+            String Friday2 { get; set; }
+            String Saturday2 { get; set; }
+
+        }
+
 
 
         public StaffScreen()
@@ -174,6 +195,13 @@ namespace COMP4952
         /// <param name="thisRange">the date range to view</param>
         private void loadSelectedEmployeesSchedule(Staff thisStaff, CalendarDateRange thisRange)
         {
+
+            
+
+
+
+
+
 
         }
 

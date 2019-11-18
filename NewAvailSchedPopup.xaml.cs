@@ -84,7 +84,7 @@ namespace COMP4952
         /// <param name="thisDate"></param>
         private void loadForDate(DateTime thisDate)
         {
-            newAvailability.Date = thisDate;
+            newAvailability.BlockStartTime = thisDate;
 
             HashSet<displayTimeItem> Times = createTimes(thisDate);
             NewAvailETCB.ItemsSource = Times;
@@ -93,7 +93,7 @@ namespace COMP4952
             NewSchedETCB.ItemsSource = Times;
 
             listOfCurrentAvails = getCurrentAvails(thisDate);
-            ExitingAvailsCB.ItemsSource = listOfCurrentAvails;
+            ExistingAvailsCB.ItemsSource = listOfCurrentAvails;
         }
 
 
@@ -141,7 +141,7 @@ namespace COMP4952
                
                 HashSet<CurrentAvailabilities> currentAvailabilities = db.CurrentAvailabilities
                                                                         .Where(CA => CA.StaffId == thisStaff.Id)
-                                                                        .Where(CA => CA.Date == thisDate.Date)
+                                                                        .Where(CA => CA.BlockStartTime == thisDate.Date)
                                                                         .ToHashSet();
 
 
@@ -235,7 +235,7 @@ namespace COMP4952
         {
             usingExistingAvailability = true;
 
-            currentAvailItem thisExistingAvailability = (currentAvailItem)ExitingAvailsCB.SelectedItem;
+            currentAvailItem thisExistingAvailability = (currentAvailItem)ExistingAvailsCB.SelectedItem;
             existingAvailability = thisExistingAvailability.thisAvailability;
 
             if(newScheduleItem != null)
@@ -255,7 +255,7 @@ namespace COMP4952
         {
             usingExistingAvailability = false;
             displayTimeItem chosenDisplayTimeItem = (displayTimeItem)NewAvailSTCB.SelectedItem;
-            newAvailability.BlockStartTime = chosenDisplayTimeItem.thisDateTime.TimeOfDay;
+            newAvailability.BlockStartTime = chosenDisplayTimeItem.thisDateTime;
             
             if(newScheduleItem != null)
             {
@@ -273,7 +273,7 @@ namespace COMP4952
         {
             usingExistingAvailability = false;
             displayTimeItem chosenDisplayTimeItem = (displayTimeItem)NewAvailETCB.SelectedItem;
-            newAvailability.BlockEndTime = chosenDisplayTimeItem.thisDateTime.TimeOfDay;
+            newAvailability.BlockEndTime = chosenDisplayTimeItem.thisDateTime;
             
             if(newScheduleItem != null)
             {
@@ -298,7 +298,7 @@ namespace COMP4952
                 newScheduleItem = new CurrentSchedule();
             }
 
-            newScheduleItem.BlockStartTime = chosenDisplayTimeItem.thisDateTime.TimeOfDay;
+            newScheduleItem.BlockStartTime = chosenDisplayTimeItem.thisDateTime;
         }
 
         /// <summary>
@@ -315,7 +315,7 @@ namespace COMP4952
             {
                 newScheduleItem = new CurrentSchedule();
             }
-            newScheduleItem.BlockEndTime = chosenDisplayTimeItem.thisDateTime.TimeOfDay;
+            newScheduleItem.BlockEndTime = chosenDisplayTimeItem.thisDateTime;
         }
 
 

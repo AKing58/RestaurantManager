@@ -41,7 +41,9 @@ namespace COMP4952.Models
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Date).HasColumnType("date");
+                entity.Property(e => e.BlockEndTime).HasColumnType("datetime");
+
+                entity.Property(e => e.BlockStartTime).HasColumnType("datetime");
 
                 entity.Property(e => e.StaffId).HasColumnName("StaffID");
 
@@ -58,9 +60,9 @@ namespace COMP4952.Models
 
                 entity.Property(e => e.AvailabilityId).HasColumnName("AvailabilityID");
 
-                entity.Property(e => e.Date)
-                    .HasColumnName("DATE")
-                    .HasColumnType("date");
+                entity.Property(e => e.BlockEndTime).HasColumnType("datetime");
+
+                entity.Property(e => e.BlockStartTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Availability)
                     .WithMany(p => p.CurrentSchedule)

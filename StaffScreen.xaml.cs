@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace COMP4952
 {
@@ -22,7 +23,7 @@ namespace COMP4952
         public Staff SelectedStaff { get; set; } //the selected staff member
         public HashSet<Staff> employeeData = new HashSet<Staff>(); //holds all the staff members
         public ObservableCollection<ScheduleItem> selectedEmployeesScheduleItem = new ObservableCollection<ScheduleItem>(); //holds the selected staff members schedule and availabilities
-        public ObservableCollection<WeeklyFiveMinutes> complexScheduleRows = new ObservableCollection<WeeklyFiveMinutes>();
+        public ObservableCollection<WeeklyFiveMinutes> fiveMinuteRows = new ObservableCollection<WeeklyFiveMinutes>();
 
         /// <summary>
         /// Holds data for a row in the availability & scheduled tables
@@ -53,20 +54,20 @@ namespace COMP4952
 
         public struct WeeklyFiveMinutes
         {
-            String Sunday1 { get; set; }
-            String Monday1 { get; set; }
-            String Tuesday1 { get; set; }
-            String Wednesday1 { get; set; }
-            String Thursday1 { get; set; }
-            String Friday1 { get; set; }
-            String Saturday1 { get; set; }
-            String Sunday2 { get; set; }
-            String Monday2 { get; set; }
-            String Tuesday2 { get; set; }
-            String Wednesday2 { get; set; }
-            String Thursday2 { get; set; }
-            String Friday2 { get; set; }
-            String Saturday2 { get; set; }
+            public String day0 { get; set; }
+            public String day1 { get; set; }
+            public String day2 { get; set; }
+            public String day3 { get; set; }
+            public String day4 { get; set; }
+            public String day5 { get; set; }
+            public String day6 { get; set; }
+            public String day7 { get; set; }
+            public String day8 { get; set; }
+            public String day9 { get; set; }
+            public String day10 { get; set; }
+            public String day11 { get; set; }
+            public String day12 { get; set; }
+            public String day13 { get; set; }
 
         }
 
@@ -88,7 +89,7 @@ namespace COMP4952
             gridEmployees.SelectionMode = DataGridSelectionMode.Single;
 
             DaysAvailabilityGrid.ItemsSource = selectedEmployeesScheduleItem;
-
+            fiveMinScheduleGrid.ItemsSource = fiveMinuteRows;
 
         }
 
@@ -127,6 +128,15 @@ namespace COMP4952
                 selectedNameLabel.Content = SelectedStaff.FirstName + " " + SelectedStaff.LastName;
                 loadSelectedStaffsAvailabilityAndScheduleForDate(SelectedStaff, (DateTime)datePickerObj.SelectedDate);
                 AddAvailSchedBtn.IsEnabled = true;
+
+                DateTime today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+                TimeSpan twoWeeks = new TimeSpan(24 * 14, 0, 0);
+                DateTime twoWeeksFromToday = today.Add(twoWeeks);
+                CalendarDateRange thisRange = new CalendarDateRange(today, twoWeeksFromToday);
+                
+                
+                loadSelectedEmployeesSchedule(thisStaff, thisRange);
+
             }
             else
             {
@@ -196,14 +206,138 @@ namespace COMP4952
         private void loadSelectedEmployeesSchedule(Staff thisStaff, CalendarDateRange thisRange)
         {
 
-            
+            HashSet<CurrentAvailabilities> theseAvailabilities = db.CurrentAvailabilities
+                                                                        .Where(CA => CA.BlockStartTime.Date >= thisRange.Start.Date)
+                                                                        .Where(CA => CA.BlockStartTime.Date <= thisRange.End.Date)
+                                                                        .ToHashSet();
 
 
 
+            HashSet<CurrentSchedule> thisSchedule = db.CurrentSchedule
+                                                                    .Where(CS => CS.BlockStartTime.Date >= thisRange.Start.Date)
+                                                                    .Where(CS => CS.BlockEndTime.Date <= thisRange.End.Date)
+                                                                     .ToHashSet();
+            string display = "";
+
+            TimeSpan oneDay = new TimeSpan(24, 0, 0);
+            WeeklyFiveMinutes theseFiveMinutes = new WeeklyFiveMinutes();
+
+            for(int fiveMinBlock = 0; fiveMinBlock < 24*60; fiveMinBlock += 5)
+            {
+                DateTime startDay = new DateTime(thisRange.Start.Year, thisRange.Start.Month, thisRange.Start.Day, fiveMinBlock / 60, fiveMinBlock % 60, 0);
+                DateTime endDay = new DateTime(thisRange.End.Year, thisRange.End.Month, thisRange.End.Day, fiveMinBlock / 60, fiveMinBlock % 60, 0);
+                int dayCounter = 0;
+                for (DateTime dateTime = startDay; dateTime <= endDay; dateTime = dateTime.Add(oneDay))
+                {
+                    Debug.WriteLine("This time: " + dateTime.ToString());
+                    bool withinSchedule = false;
+                    foreach(CurrentSchedule thisScheduleDate in thisSchedule)
+                    {
+                        CalendarDateRange thisBlock = new CalendarDateRange(thisScheduleDate.BlockStartTime, thisScheduleDate.BlockEndTime);
+                        if(withinDateRange(dateTime, thisBlock))
+                        {
+                            withinSchedule = true;
+                        }
+                    }
+
+                    if (withinSchedule)
+                    {
+                        display = "Scheduled";
+                    } else
+                    {
+                        bool withinAvailability = false;
+                        foreach (CurrentAvailabilities thisAvailability in theseAvailabilities)
+                        {
+                            CalendarDateRange thisBlock = new CalendarDateRange(thisAvailability.BlockStartTime, thisAvailability.BlockEndTime);
+                            if (withinDateRange(dateTime, thisBlock))
+                            {
+                                withinAvailability = true;
+                            }
+                        }
+
+                        if (withinAvailability)
+                        {
+                            display = "Available";
+                        }else
+                        {
+                            display = "-";
+                        }
+
+                    }
 
 
+                    switch (dayCounter)
+                    {
+                        case 0:
+                            theseFiveMinutes.day0 = display;
+                            break;
+                        case 1:
+                            theseFiveMinutes.day1 = display;
+                            break;
+                        case 2:
+                            theseFiveMinutes.day2 = display;
+                            break;
+                        case 3:
+                            theseFiveMinutes.day3 = display;
+                            break;
+                        case 4:
+                            theseFiveMinutes.day4 = display;
+                            break;
+                        case 5:
+                            theseFiveMinutes.day5 = display;
+                            break;
+                        case 6:
+                            theseFiveMinutes.day6 = display;
+                            break;
+                        case 7:
+                            theseFiveMinutes.day7 = display;
+                            break;
+                        case 8:
+                            theseFiveMinutes.day8 = display;
+                            break;
+                        case 9:
+                            theseFiveMinutes.day9 = display;
+                            break;
+                        case 10:
+                            theseFiveMinutes.day10 = display;
+                            break;
+                        case 11:
+                            theseFiveMinutes.day11 = display;
+                            break;
+                        case 12:
+                            theseFiveMinutes.day12 = display;
+                            break;
+                        case 13:
+                            theseFiveMinutes.day13 = display;
+                            break;
+                        default:
+                            break;
+                    }
+
+                }
+
+                fiveMinuteRows.Add(theseFiveMinutes);
+
+
+            }
+
+            fiveMinScheduleGrid.Items.Refresh();
 
         }
+
+
+        /// <summary>
+        /// Returns true if the date is within the date range.
+        /// </summary>
+        /// <param name="thisDate"></param>
+        /// <param name="thisRange"></param>
+        /// <returns></returns>
+        private bool withinDateRange(DateTime thisDate, CalendarDateRange thisRange) {
+
+            return (thisRange.Start <= thisDate && thisDate <= thisRange.End);
+
+        }
+
 
 
         private void writeDebug(string message)

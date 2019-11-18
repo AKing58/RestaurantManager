@@ -22,11 +22,12 @@ namespace COMP4952
     {
         private COMP4952PROJECTContext db;
         public Staff thisStaff;
+        HashSet<displayTimeItem> Times = new HashSet<displayTimeItem>();
         public HashSet<currentAvailItem> listOfCurrentAvails = new HashSet<currentAvailItem>();
         private CurrentSchedule newScheduleItem; //the new schedule to save
         private CurrentAvailabilities newAvailability = new CurrentAvailabilities(); //the new availability to save, if a new one is being made. 
         private CurrentAvailabilities existingAvailability = new CurrentAvailabilities(); //the existing availability, if one is chosen. 
-        bool usingExistingAvailability = true;
+        bool usingExistingAvailability = false;
 
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace COMP4952
             
             //prepare the new availability item, in case the user chooses to make a new one
             newAvailability.StaffId = thisStaff.Id;
-
+            
 
             //set the date picker, setting the date picker will also load the availabilties. 
             ChosenDateDP.SelectedDate = thisDate;
@@ -85,8 +86,9 @@ namespace COMP4952
         private void loadForDate(DateTime thisDate)
         {
             newAvailability.BlockStartTime = thisDate;
+            newAvailability.BlockEndTime = new DateTime(thisDate.Year, thisDate.Month, thisDate.Day, 23, 59, 00); //set the default end time to 11:59PM
 
-            HashSet<displayTimeItem> Times = createTimes(thisDate);
+            Times = createTimes(thisDate);
             NewAvailETCB.ItemsSource = Times;
             NewAvailSTCB.ItemsSource = Times;
             NewSchedSTCB.ItemsSource = Times;
@@ -175,63 +177,16 @@ namespace COMP4952
             loadForDate((DateTime)ChosenDateDP.SelectedDate);
         }
 
-        /// <summary>
-        /// Saves the new schedule, if using an existing availability, or creates the new availability and saves the new schedule. 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SaveBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (usingExistingAvailability)
-            {
-                if(newScheduleItem != null)
-                {
-                    Debug.WriteLine("using existing availability: " + newScheduleItem.AvailabilityId);
-                    db.CurrentSchedule.Add(newScheduleItem);
-                }
-                else
-                {
-                    //chose an existing availability, but didn't make a schedule.
-                    Debug.WriteLine("Didn't set a schedule.");
-                    this.Close();
-                }
-               
-            }
-            else
-            {
-                //save the new availability first
-                db.CurrentAvailabilities.Add(newAvailability);
-                Debug.WriteLine("Made a new availability: " + newAvailability.BlockStartTime.ToString() + " - " + newAvailability.BlockEndTime.ToString());
-                db.SaveChanges(); //save the new availability so we can get it's ID.
-
-                //check if we are saving a new schedule too. 
-                if (newScheduleItem != null)
-                {
-
-                    newScheduleItem.AvailabilityId = newAvailability.Id;
-                    db.CurrentSchedule.Add(newScheduleItem);
-                    Debug.WriteLine("Made a new Schedule: " + newScheduleItem.BlockStartTime.ToString() + " - " + newScheduleItem.BlockEndTime.ToString());
-                }
-                
-            }
-
-            db.SaveChanges();
-
-            Debug.WriteLine("Saved new availability/schedule.");
-            
-
-            this.Close();
 
 
-        }
-
+        //MARK: SETTING AN EXISTING AVAILABILITY
 
         /// <summary>
         /// The user selectes an existing availability
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ExitingAvailsCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ExistingAvailsCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             usingExistingAvailability = true;
 
@@ -241,10 +196,18 @@ namespace COMP4952
             if(newScheduleItem != null)
             {
                 newScheduleItem.AvailabilityId = existingAvailability.Id;
+                newScheduleItem.BlockStartTime = existingAvailability.BlockStartTime;
+                newScheduleItem.BlockEndTime = existingAvailability.BlockEndTime;
             }
             
         }
 
+
+
+
+
+
+        //MARK: SETTING A NEW AVAILABILITY
 
         /// <summary>
         /// The user sets a new AVailability start time
@@ -255,12 +218,20 @@ namespace COMP4952
         {
             usingExistingAvailability = false;
             displayTimeItem chosenDisplayTimeItem = (displayTimeItem)NewAvailSTCB.SelectedItem;
-            newAvailability.BlockStartTime = chosenDisplayTimeItem.thisDateTime;
-            
-            if(newScheduleItem != null)
+            DateTime chosenTime = chosenDisplayTimeItem.thisDateTime;
+
+
+            //validate selection
+            if(chosenTime < newAvailability.BlockEndTime)
             {
-                newScheduleItem.AvailabilityId = newAvailability.Id;
+                newAvailability.BlockStartTime = chosenTime;
             }
+            else
+            {
+                NewAvailSTCB.SelectedIndex = 0;
+            }
+            
+
            
         }
 
@@ -273,13 +244,19 @@ namespace COMP4952
         {
             usingExistingAvailability = false;
             displayTimeItem chosenDisplayTimeItem = (displayTimeItem)NewAvailETCB.SelectedItem;
-            newAvailability.BlockEndTime = chosenDisplayTimeItem.thisDateTime;
-            
-            if(newScheduleItem != null)
+            DateTime chosenTime = chosenDisplayTimeItem.thisDateTime;
+
+
+            //validate selection
+            if (chosenTime > newAvailability.BlockStartTime)
             {
-                newScheduleItem.AvailabilityId = newAvailability.Id;
+                newAvailability.BlockEndTime = chosenTime;
             }
-            
+            else
+            {
+                NewAvailETCB.SelectedIndex = 0; //reset. 
+            }
+
         }
 
 
@@ -290,15 +267,57 @@ namespace COMP4952
         /// <param name="e"></param>
         private void NewSchedSTCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            displayTimeItem chosenDisplayTimeItem = (displayTimeItem)NewSchedSTCB.SelectedItem;
             
+            displayTimeItem chosenDisplayTimeItem = (displayTimeItem)NewSchedSTCB.SelectedItem;
+            DateTime chosenTime = chosenDisplayTimeItem.thisDateTime;
+            Debug.WriteLine("New start time chosen: " + chosenTime.ToShortTimeString());
+
             //if a new schedule item doesn't exist, make it.
             if (newScheduleItem == null)
             {
                 newScheduleItem = new CurrentSchedule();
+                newScheduleItem.BlockEndTime = new DateTime(newScheduleItem.BlockStartTime.Year, newScheduleItem.BlockStartTime.Month, newScheduleItem.BlockStartTime.Day, 23, 59, 0);
+            }
+            else
+            {
+                //make sure the schedule end time is after it's start time.
+                if (newScheduleItem.BlockEndTime <= newScheduleItem.BlockStartTime)
+                {
+                    newScheduleItem.BlockEndTime = new DateTime(newScheduleItem.BlockStartTime.Year, newScheduleItem.BlockStartTime.Month, newScheduleItem.BlockStartTime.Day, 23, 59, 0);
+                }
             }
 
-            newScheduleItem.BlockStartTime = chosenDisplayTimeItem.thisDateTime;
+            CurrentAvailabilities thisAvailability;
+
+
+
+            if (usingExistingAvailability)
+            {
+                thisAvailability = existingAvailability;
+            }
+            else
+            {
+                thisAvailability = newAvailability;
+            }
+
+
+            //the chosen start time must be after the availability start time, before the availability end time, and before the schedule end time. 
+            if (chosenTime >= thisAvailability.BlockStartTime && chosenTime < thisAvailability.BlockEndTime && chosenTime < newScheduleItem.BlockEndTime)
+            {
+                Debug.WriteLine("in bounds");
+                newScheduleItem.BlockStartTime = chosenTime;
+
+            } else
+            {
+               
+                Debug.WriteLine("out of bounds.");
+                NewSchedSTCB.SelectedIndex = 0;
+            }
+
+
+
+
+            
         }
 
         /// <summary>
@@ -309,14 +328,51 @@ namespace COMP4952
         private void NewSchedETCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             displayTimeItem chosenDisplayTimeItem = (displayTimeItem)NewSchedETCB.SelectedItem;
+            DateTime chosenTime = chosenDisplayTimeItem.thisDateTime;
 
-            //if a new schedule item doesn't exist, make it. 
+
+            //if a new schedule item doesn't exist, make it.
             if (newScheduleItem == null)
             {
                 newScheduleItem = new CurrentSchedule();
+                newScheduleItem.BlockEndTime = new DateTime(newScheduleItem.BlockStartTime.Year, newScheduleItem.BlockStartTime.Month, newScheduleItem.BlockStartTime.Day, 23, 59, 0);
+
+            }else
+            {
+                //make sure the schedule end time is after it's start time. 
+                if (newScheduleItem.BlockEndTime <= newScheduleItem.BlockStartTime)
+                {
+                    newScheduleItem.BlockEndTime = new DateTime(newScheduleItem.BlockStartTime.Year, newScheduleItem.BlockStartTime.Month, newScheduleItem.BlockStartTime.Day, 23, 59, 0);
+                }
             }
-            newScheduleItem.BlockEndTime = chosenDisplayTimeItem.thisDateTime;
+
+            CurrentAvailabilities thisAvailability;
+
+
+            if (usingExistingAvailability)
+            {
+                thisAvailability = existingAvailability;
+            }
+            else
+            {
+                thisAvailability = newAvailability;
+            }
+
+
+            //the chosen end time must be before the availability end time, after the schedule start time, after the availability start time, 
+            if (chosenTime <= thisAvailability.BlockEndTime && chosenTime > newScheduleItem.BlockStartTime && chosenTime > thisAvailability.BlockStartTime)
+            {
+                newScheduleItem.BlockEndTime = chosenTime;
+            }
+            else
+            {
+                NewSchedETCB.SelectedIndex = Times.Count-1;
+            }
         }
+
+
+
+
 
 
         /// <summary>
@@ -362,6 +418,59 @@ namespace COMP4952
                 return false; //the schedule does NOT fall within it's availability. 
             }
 
+
+
+        }
+
+
+
+
+        /// <summary>
+        /// Saves the new schedule, if using an existing availability, or creates the new availability and saves the new schedule. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (usingExistingAvailability)
+            {
+                if (newScheduleItem != null)
+                {
+                    Debug.WriteLine("using existing availability: " + newScheduleItem.AvailabilityId);
+                    db.CurrentSchedule.Add(newScheduleItem);
+                }
+                else
+                {
+                    //chose an existing availability, but didn't make a schedule.
+                    Debug.WriteLine("Didn't set a schedule.");
+                    this.Close();
+                }
+
+            }
+            else
+            {
+                //save the new availability first
+                db.CurrentAvailabilities.Add(newAvailability);
+                Debug.WriteLine("Made a new availability: " + newAvailability.BlockStartTime.ToString() + " - " + newAvailability.BlockEndTime.ToString());
+                db.SaveChanges(); //save the new availability so we can get it's ID.
+
+                //check if we are saving a new schedule too. 
+                if (newScheduleItem != null)
+                {
+
+                    newScheduleItem.AvailabilityId = newAvailability.Id;
+                    db.CurrentSchedule.Add(newScheduleItem);
+                    Debug.WriteLine("Made a new Schedule: " + newScheduleItem.BlockStartTime.ToString() + " - " + newScheduleItem.BlockEndTime.ToString());
+                }
+
+            }
+
+            db.SaveChanges();
+
+            Debug.WriteLine("Saved new availability/schedule.");
+
+
+            this.Close();
 
 
         }

@@ -22,7 +22,7 @@
         </Grid.RowDefinitions>
         <DatePicker Name="ChosenDateDP"  Grid.Column="1" Grid.ColumnSpan="2"  SelectedDateChanged="ChosenDateDP_dateChanged" VerticalAlignment="Center" Margin="0,0,0,0"/>
         <Label Grid.Column="0" Grid.Row="1"  HorizontalAlignment="Center" VerticalAlignment="Center">Existing Availability</Label>
-        <ComboBox Name="ExistingAvailsCB" Grid.Column="1" Grid.Row="1"  Grid.ColumnSpan="2"  VerticalAlignment="Center" Margin="0,0,0,0" SelectionChanged="ExitingAvailsCB_SelectionChanged">
+        <ComboBox Name="ExistingAvailsCB" Grid.Column="1" Grid.Row="1"  Grid.ColumnSpan="2"  VerticalAlignment="Center" Margin="0,0,0,0" SelectionChanged="ExistingAvailsCB_SelectionChanged">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -56,7 +56,8 @@
         </ComboBox>
 
         <Label Grid.Column="0" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center">New Schedule</Label>
-        <ComboBox Name="NewSchedSTCB" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4" SelectionChanged="NewSchedSTCB_SelectionChanged">
+
+        <ComboBox Name="NewSchedSTCB" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionChanged="NewSchedSTCB_SelectionChanged">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -65,6 +66,8 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
+
+
         <ComboBox Name="NewSchedETCB" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4" SelectionChanged="NewSchedETCB_SelectionChanged">
             <ComboBox.ItemTemplate>
                 <DataTemplate>

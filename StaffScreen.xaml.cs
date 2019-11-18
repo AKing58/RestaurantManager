@@ -28,13 +28,13 @@ namespace COMP4952
         public struct ScheduleItem
         {
             //availability
-            public TimeSpan availableStartTime, availableEndTime; //the available block start and end times
-            public TimeSpan scheduleStartTime, scheduleEndtime; //the scheduled start and end times for the available block.
+            public DateTime availableStartTime, availableEndTime; //the available block start and end times
+            public DateTime scheduleStartTime, scheduleEndtime; //the scheduled start and end times for the available block.
             public String availabilityString; //the display string for the available block
             public string scheduleString; //the display string for the scheduled block
 
 
-            public ScheduleItem(TimeSpan ast, TimeSpan aet, TimeSpan sst, TimeSpan set)
+            public ScheduleItem(DateTime ast, DateTime aet, DateTime sst, DateTime set)
             {
                 availableStartTime = ast;
                 availableEndTime = aet;
@@ -123,7 +123,7 @@ namespace COMP4952
             //get the employees availability for the given date.
             HashSet<CurrentAvailabilities> thisDaysAvailabilties = db.CurrentAvailabilities
                                                 .Where(ra => ra.StaffId == thisStaff.Id)
-                                                .Where(ra => ra.Date == thisDate.Date)
+                                                .Where(ra => ra.BlockStartTime == thisDate.Date)
                                                 .Include(ra => ra.CurrentSchedule)
                                                 .ToHashSet();
 
@@ -133,16 +133,16 @@ namespace COMP4952
            foreach(CurrentAvailabilities thisAvailability in thisDaysAvailabilties)
             {
                 //availability start and end times
-                TimeSpan ast = thisAvailability.BlockStartTime;
-                TimeSpan aet = thisAvailability.BlockEndTime;
+                DateTime ast = thisAvailability.BlockStartTime;
+                DateTime aet = thisAvailability.BlockEndTime;
 
                 //scheduled times for each availability
                 foreach(CurrentSchedule thisSchedule in thisAvailability.CurrentSchedule)
                 {
 
                     //scheduled start and end times
-                    TimeSpan sst = thisSchedule.BlockStartTime;
-                    TimeSpan set = thisSchedule.BlockEndTime;
+                    DateTime sst = thisSchedule.BlockStartTime;
+                    DateTime set = thisSchedule.BlockEndTime;
 
                     //create the schedule item
                     ScheduleItem thisItem = new ScheduleItem(ast, aet, sst, set);

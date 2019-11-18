@@ -41,7 +41,7 @@
         <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Right" Width="341">
             <Label Name="selectedNameLabel"  Content="Name Label" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" Width="139"/>
 
-            <DatePicker Name="datePickerObj" IsTodayHighlighted="True" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" Width="200" />
+            <DatePicker Name="datePickerObj" IsTodayHighlighted="True" Grid.Column="1" SelectedDateChanged="datePickerObj_DateChanged"  HorizontalAlignment="Center" Grid.Row="1" Width="200" />
             <Button Name="AddAvailSchedBtn" Width="170" Click="AddBtn_Click">Add Availability or Schedule</Button>
 
             <DataGrid x:Name="DaysAvailabilityGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" RenderTransformOrigin="0.508,0.56" Height="152">

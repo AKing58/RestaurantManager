@@ -34,20 +34,34 @@ namespace COMP4952
         {
             //availability
             public DateTime availableStartTime, availableEndTime; //the available block start and end times
-            public DateTime scheduleStartTime, scheduleEndtime; //the scheduled start and end times for the available block.
+            public DateTime scheduleStartTime, scheduleEndTime; //the scheduled start and end times for the available block.
             public string availabilityString { get; set; } //the display string for the available block
             public string scheduleString { get; set; } //the display string for the scheduled block
 
 
-            public ScheduleItem(DateTime ast, DateTime aet, DateTime sst, DateTime set)
+            public ScheduleItem(DateTime ast, DateTime aet, DateTime? sst, DateTime? set)
             {
                 availableStartTime = ast;
                 availableEndTime = aet;
-                scheduleStartTime = sst;
-                scheduleEndtime = set;
+
+                //if sst is null, set is null, and vice versa
+                
+                if(sst != null)
+                {
+                    scheduleStartTime = (DateTime)sst;
+                    scheduleEndTime = (DateTime)set;
+                    scheduleString = scheduleStartTime.ToShortTimeString() + " - " + scheduleEndTime.ToShortTimeString();
+                } else
+                {
+                    scheduleStartTime = new DateTime();
+                    scheduleEndTime = new DateTime();
+                    scheduleString = "";
+                }
+                
+                
 
                 availabilityString = availableStartTime.ToShortTimeString() + " - " + availableEndTime.ToShortTimeString();
-                scheduleString = scheduleStartTime.ToShortTimeString() + " - " + scheduleEndtime.ToShortTimeString();
+                
 
 
             }
@@ -92,8 +106,27 @@ namespace COMP4952
 
             DaysAvailabilityGrid.ItemsSource = selectedEmployeesScheduleItem;
             fiveMinScheduleGrid.ItemsSource = fiveMinuteRows;
+            fiveMinScheduleGrid.IsReadOnly = true;
+            fiveMinScheduleGrid.SelectionMode = DataGridSelectionMode.Single;
 
         }
+
+
+
+        /// <summary>
+        /// Called when the user selects a new date.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void datePickerObj_DateChanged(object sender, RoutedEventArgs e)
+        {
+            if(SelectedStaff != null)
+            {
+                loadSelectedStaffsAvailabilityAndScheduleForDate(SelectedStaff, (DateTime)datePickerObj.SelectedDate);
+            }
+            
+        }
+
 
         /// <summary>
         /// Creates a datatable of Staff data, including titles. 
@@ -176,20 +209,32 @@ namespace COMP4952
                 DateTime ast = thisAvailability.BlockStartTime;
                 DateTime aet = thisAvailability.BlockEndTime;
 
-                //scheduled times for each availability
-                foreach(CurrentSchedule thisSchedule in thisAvailability.CurrentSchedule)
+                ScheduleItem thisScheduleItem = new ScheduleItem(ast, aet, null, null);
+
+                if(thisAvailability.CurrentSchedule.Count == 0)
+                {
+                    //staff is not scheduled for this availability.
+                    selectedEmployeesScheduleItem.Add(thisScheduleItem);
+                }
+                else
                 {
 
-                    //scheduled start and end times
-                    DateTime sst = thisSchedule.BlockStartTime;
-                    DateTime set = thisSchedule.BlockEndTime;
+                    //scheduled times for each availability
+                    foreach (CurrentSchedule thisSchedule in thisAvailability.CurrentSchedule)
+                    {
 
-                    //create the schedule item
-                    ScheduleItem thisItem = new ScheduleItem(ast, aet, sst, set);
-                    
-                    //add it to the list of schedule items. 
-                    selectedEmployeesScheduleItem.Add(thisItem);
-                }   
+                        //scheduled start and end times
+                        DateTime sst = thisSchedule.BlockStartTime;
+                        DateTime set = thisSchedule.BlockEndTime;
+
+                        //create the schedule item
+                        thisScheduleItem = new ScheduleItem(ast, aet, sst, set);
+
+                        //add it to the list of schedule items. 
+                        selectedEmployeesScheduleItem.Add(thisScheduleItem);
+                    }
+                }
+
             }
 
             //bind the list to the datagrid
@@ -209,16 +254,24 @@ namespace COMP4952
         {
             fiveMinuteRows.Clear();
             HashSet<CurrentAvailabilities> theseAvailabilities = db.CurrentAvailabilities
+                                                                        .Where(CA => CA.StaffId == thisStaff.Id)
                                                                         .Where(CA => CA.BlockStartTime.Date >= thisRange.Start.Date)
                                                                         .Where(CA => CA.BlockStartTime.Date <= thisRange.End.Date)
+                                                                        .Include(CA => CA.CurrentSchedule)
                                                                         .ToHashSet();
 
 
 
-            HashSet<CurrentSchedule> thisSchedule = db.CurrentSchedule
-                                                                    .Where(CS => CS.BlockStartTime.Date >= thisRange.Start.Date)
-                                                                    .Where(CS => CS.BlockEndTime.Date <= thisRange.End.Date)
-                                                                     .ToHashSet();
+            HashSet<CurrentSchedule> thisSchedule = new HashSet<CurrentSchedule>();
+
+            //separate out the schedules from each availability. 
+            foreach(CurrentAvailabilities thisAVailability in theseAvailabilities)
+            {
+                thisSchedule.UnionWith(thisAVailability.CurrentSchedule.ToHashSet());
+            }
+
+
+
             string display = "";
 
             TimeSpan oneDay = new TimeSpan(24, 0, 0);
@@ -279,10 +332,7 @@ namespace COMP4952
                     }
 
 
-                    if (display == "Available")
-                    {
-                        Debug.WriteLine("Display: " + display);
-                    }
+                    
 
                     switch (dayCounter)
                     {
@@ -365,7 +415,7 @@ namespace COMP4952
 
         }
 
-
+        
 
         private void writeDebug(string message)
         {

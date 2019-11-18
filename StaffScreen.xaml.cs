@@ -111,7 +111,16 @@ namespace COMP4952
 
         }
 
+        public void refreshBtn_Click(object sender, RoutedEventArgs e)
+        {
+            employeeData = getStaffData();
 
+            if (SelectedStaff != null)
+            {
+                loadEmployeeData(SelectedStaff);
+            }
+
+        }
 
         /// <summary>
         /// Called when the user selects a new date.
@@ -158,19 +167,7 @@ namespace COMP4952
             Staff thisStaff = gridEmployees.SelectedItem as Staff;
             if(thisStaff != null)
             {
-                writeDebug("Chosen staff:" + thisStaff.LastName);
-                SelectedStaff = thisStaff;
-                selectedNameLabel.Content = SelectedStaff.FirstName + " " + SelectedStaff.LastName;
-                loadSelectedStaffsAvailabilityAndScheduleForDate(SelectedStaff, (DateTime)datePickerObj.SelectedDate);
-                AddAvailSchedBtn.IsEnabled = true;
-
-                DateTime today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-                TimeSpan twoWeeks = new TimeSpan(24 * 14, 0, 0);
-                DateTime twoWeeksFromToday = today.Add(twoWeeks);
-                CalendarDateRange thisRange = new CalendarDateRange(today, twoWeeksFromToday);
-                
-                
-                loadSelectedEmployeesSchedule(thisStaff, thisRange);
+                loadEmployeeData(thisStaff);
 
             }
             else
@@ -181,6 +178,23 @@ namespace COMP4952
             
 
 
+        }
+
+        private void loadEmployeeData(Staff thisStaff)
+        {
+            writeDebug("Chosen staff:" + thisStaff.LastName);
+            SelectedStaff = thisStaff;
+            selectedNameLabel.Content = SelectedStaff.FirstName + " " + SelectedStaff.LastName;
+            loadSelectedStaffsAvailabilityAndScheduleForDate(SelectedStaff, (DateTime)datePickerObj.SelectedDate);
+            AddAvailSchedBtn.IsEnabled = true;
+
+            DateTime today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            TimeSpan twoWeeks = new TimeSpan(24 * 14, 0, 0);
+            DateTime twoWeeksFromToday = today.Add(twoWeeks);
+            CalendarDateRange thisRange = new CalendarDateRange(today, twoWeeksFromToday);
+
+
+            loadSelectedEmployeesSchedule(thisStaff, thisRange);
         }
 
 

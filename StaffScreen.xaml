@@ -55,22 +55,30 @@
        
 
 
-        <DataGrid Name="fiveMinScheduleGrid" Grid.Column="0" Grid.ColumnSpan="2" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{Binding}">
+        <DataGrid Name="fiveMinScheduleGrid" Grid.Column="0"  Grid.ColumnSpan="2" RowHeight="5" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{Binding}">
 
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
+                    <Setter Property="Margin" Value="0,-2,0,-2"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Foreground" Value="Transparent"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
                                        Path=Content.Text}" Value="Available">
                             <Setter Property="Background" Value="Yellow"/>
+         
+                            
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
                                        Path=Content.Text}" Value="Scheduled">
                             <Setter Property="Background" Value="Green"/>
+                       
+
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
                                        Path=Content.Text}" Value="-">
                             <Setter Property="Background" Value="Red"/>
+    
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>

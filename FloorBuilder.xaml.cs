@@ -59,22 +59,23 @@ namespace COMP4952
             switch (tableId)
             {
                 case 1:
-                    newImg.Source = RoundTable1.Source;
+                    newImg.Source = RoundTable.Source;
                     break;
                 case 2:
-                    newImg.Source = SquareTable2.Source;
+                    newImg.Source = SquareTable.Source;
                     break;
                 case 3:
-                    newImg.Source = RectangleTable3.Source;
+                    newImg.Source = RectangleTable.Source;
                     break;
                 default:
-                    newImg.Source = RoundTable1.Source;
+                    newImg.Source = RoundTable.Source;
                     break;
             }
+            Console.WriteLine(newImg.Source);
             newImg.Width = 100;
             newImg.Height = 100;
             FurnitureType ft = db.FurnitureType.Single(u => u.Id == tableId);
-            newImg.Name = "Placed" + ft.Type + GetTypeIdFromName(ft.Type);
+            newImg.Name = "Placed" + ft.Type + "_" + t.Id;
             newImg.MouseDown += Table_MouseDown;
             Canvas_FB.Children.Add(newImg);
             Canvas.SetLeft(newImg, t.Xloc);
@@ -103,7 +104,7 @@ namespace COMP4952
         {
             Image curImg = (Image)sender;
             startLoc = new Point(0, 0);
-            if (curImg.Name.Contains("Placed"))
+            if (curImg.Name.Contains("Tmp") || curImg.Name.Contains("Placed"))
             {
                 Console.WriteLine(e.GetPosition(Canvas_FB));
                 //startLoc = e.GetPosition(Canvas_FB);
@@ -111,7 +112,6 @@ namespace COMP4952
             }
             else
             {
-                
                 Image newImg = DuplicateImage(((Image)sender));
                 img = newImg;
             }
@@ -122,7 +122,7 @@ namespace COMP4952
         {
             Image newImg = new Image();
             newImg.Source = new BitmapImage(new Uri(inImage.Source.ToString()));
-            newImg.Name = inImage.Name;
+            newImg.Name = "Tmp" + inImage.Name;
             newImg.Width = 100;
             newImg.Height = 100;
             newImg.MouseDown += Table_MouseDown;
@@ -135,39 +135,25 @@ namespace COMP4952
         private void Page_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if(img != null)
-            {
-                AddToDb(img);
                 img = null;
-            }
-            
         }
 
         private void AddToDb(Image input)
         {
-            /*
-            if (!input.Name.Contains("Placed"))
-            {
-                input.Name = "Placed" + input.Name;
-            }
-            */
             TableInfo ti = new TableInfo();
-            int sourceId = (int)Char.GetNumericValue(input.Name.ToCharArray()[input.Name.Length-1]);
+            int sourceId = GetTypeIdFromName(input.Name);
             ti.TypeId = sourceId;
             ti.Xloc = (int)Canvas.GetLeft(input);
             ti.Yloc = (int)Canvas.GetTop(input);
             db.TableInfo.Add(ti);
-            
         }
 
         private void DeleteLayout()
         {
+            Console.WriteLine("Deleting Layout");
             foreach(TableInfo t in db.TableInfo.ToList())
-            {
                 db.TableInfo.Remove(t);
-            }
             db.SaveChanges();
-            NavigationService ns = NavigationService.GetNavigationService(this);
-            ns.Navigate(new Uri("FloorBuilder.xaml",UriKind.Relative));
         }
         
         private void GoToMain()
@@ -178,12 +164,37 @@ namespace COMP4952
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
+            foreach(Image i in Canvas_FB.Children)
+            {
+                if (i.Name.Contains("Tmp"))
+                    AddToDb(i);
+                else if (i.Name.Contains("Placed"))
+                {
+                    int underscoreLoc = i.Name.LastIndexOf('_');
+                    TableInfo t = db.TableInfo.Find(int.Parse(i.Name.Substring(underscoreLoc+1)));
+                    t.Xloc = (int)Canvas.GetLeft(i);
+                    t.Yloc = (int)Canvas.GetTop(i);
+                    db.Entry(t).State = EntityState.Modified;
+                }
+
+            }
             db.SaveChanges();
+
+            for (int i = 0; i < Canvas_FB.Children.Count;)
+                Canvas_FB.Children.Remove(Canvas_FB.Children[0]);
+
+            LoadTableInfos();
+            //NavigationService ns = NavigationService.GetNavigationService(this);
+            //ns.Navigate(new Uri("FloorBuilder.xaml", UriKind.Relative));
         }
 
         private void DeleteTables_Click(object sender, RoutedEventArgs e)
         {
             DeleteLayout();
+            for(int i = 0; i< Canvas_FB.Children.Count;)
+                Canvas_FB.Children.Remove(Canvas_FB.Children[0]);
+            //NavigationService ns = NavigationService.GetNavigationService(this);
+            //ns.Navigate(new Uri("FloorBuilder.xaml", UriKind.Relative));
         }
 
         private void GoToMain_Click(object sender, RoutedEventArgs e)

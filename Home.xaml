@@ -18,5 +18,6 @@
                 <MenuItem Header="Go To Floor Builder" Click="GoToFloorBuilder_Click"/>
             </MenuItem>
         </Menu>
+        <Canvas x:Name="Canvas_FB" Grid.Row="1" Background="White"/>
     </Grid>
 </Page>

@@ -75,7 +75,8 @@ namespace COMP4952
             newImg.Width = 100;
             newImg.Height = 100;
             FurnitureType ft = db.FurnitureType.Single(u => u.Id == tableId);
-            newImg.Name = "Placed" + ft.Type + "_" + t.Id;
+            newImg.Name = "Placed" + ft.Type;
+            newImg.Tag = t.Id;
             newImg.MouseDown += Table_MouseDown;
             Canvas_FB.Children.Add(newImg);
             Canvas.SetLeft(newImg, t.Xloc);
@@ -170,13 +171,12 @@ namespace COMP4952
                     AddToDb(i);
                 else if (i.Name.Contains("Placed"))
                 {
-                    int underscoreLoc = i.Name.LastIndexOf('_');
-                    TableInfo t = db.TableInfo.Find(int.Parse(i.Name.Substring(underscoreLoc+1)));
+                    //int underscoreLoc = i.Name.LastIndexOf('_');
+                    TableInfo t = db.TableInfo.Find(int.Parse(i.Tag.ToString()));
                     t.Xloc = (int)Canvas.GetLeft(i);
                     t.Yloc = (int)Canvas.GetTop(i);
                     db.Entry(t).State = EntityState.Modified;
                 }
-
             }
             db.SaveChanges();
 
@@ -184,8 +184,6 @@ namespace COMP4952
                 Canvas_FB.Children.Remove(Canvas_FB.Children[0]);
 
             LoadTableInfos();
-            //NavigationService ns = NavigationService.GetNavigationService(this);
-            //ns.Navigate(new Uri("FloorBuilder.xaml", UriKind.Relative));
         }
 
         private void DeleteTables_Click(object sender, RoutedEventArgs e)
@@ -193,8 +191,6 @@ namespace COMP4952
             DeleteLayout();
             for(int i = 0; i< Canvas_FB.Children.Count;)
                 Canvas_FB.Children.Remove(Canvas_FB.Children[0]);
-            //NavigationService ns = NavigationService.GetNavigationService(this);
-            //ns.Navigate(new Uri("FloorBuilder.xaml", UriKind.Relative));
         }
 
         private void GoToMain_Click(object sender, RoutedEventArgs e)

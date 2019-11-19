@@ -21,5 +21,10 @@ namespace COMP4952
         {
             InitializeComponent();
         }
+
+        private void addCustomerBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

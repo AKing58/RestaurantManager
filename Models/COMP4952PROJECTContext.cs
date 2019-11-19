@@ -26,7 +26,7 @@ namespace COMP4952.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Data Source=EAMONNALPHIB094;Initial Catalog=COMP4952PROJECT;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Data Source=DESKTOP-9UGA0PL;Initial Catalog=COMP4952PROJECT;Integrated Security=True");
             }
         }
 
@@ -46,7 +46,7 @@ namespace COMP4952.Models
                     .WithMany(p => p.CurrentSchedule)
                     .HasForeignKey(d => d.StaffId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CurrentSc__Staff__4E88ABD4");
+                    .HasConstraintName("FK__CurrentSc__Staff__3C69FB99");
             });
 
             modelBuilder.Entity<Days>(entity =>
@@ -72,13 +72,13 @@ namespace COMP4952.Models
                     .WithMany(p => p.RegularAvailabilities)
                     .HasForeignKey(d => d.DayId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RegularAv__DayID__5441852A");
+                    .HasConstraintName("FK__RegularAv__DayID__4222D4EF");
 
                 entity.HasOne(d => d.Staff)
                     .WithMany(p => p.RegularAvailabilities)
                     .HasForeignKey(d => d.StaffId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RegularAv__Staff__534D60F1");
+                    .HasConstraintName("FK__RegularAv__Staff__412EB0B6");
             });
 
             modelBuilder.Entity<Staff>(entity =>
@@ -109,7 +109,7 @@ namespace COMP4952.Models
                     .WithMany(p => p.Staff)
                     .HasForeignKey(d => d.TitleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Staff__TitleID__4BAC3F29");
+                    .HasConstraintName("FK__Staff__TitleID__398D8EEE");
             });
 
             modelBuilder.Entity<Title>(entity =>

@@ -13,6 +13,7 @@ namespace COMP4952
     /// <summary>
     /// Interaction logic for OrderScreen.xaml
     /// Justin Kwok
+    /// Adam King
     /// </summary>
     public partial class OrderScreen : Window
     {
@@ -20,8 +21,15 @@ namespace COMP4952
         TableInfo ti;
         Customer cus;
 
+        /// <summary>
+        /// Default constructor (Unused)
+        /// </summary>
         public OrderScreen() { }
 
+        /// <summary>
+        /// Order Screen constructor
+        /// </summary>
+        /// <param name="m"></param>
         public OrderScreen(int m)
         {
             db = new COMP4952PROJECTContext();
@@ -33,6 +41,9 @@ namespace COMP4952
 
         }
 
+        /// <summary>
+        /// Loads customers that belong to the current table onto the customer buttons
+        /// </summary>
         private void LoadCustomers()
         {
             List<Customer> customerLst = db.Customer.Where(u => u.TableId == ti.Id).ToList();
@@ -120,23 +131,11 @@ namespace COMP4952
             ReselectItems();
         }
 
-        private void ClearItems()
-        {
-            Console.WriteLine("Grid Children: " + orderGrid.Children.Count);
-            foreach (object o in orderGrid.Children)
-            {
-                if (o is Button && ((Button)o).ToolTip != null && ((Button)o).ToolTip.ToString() == "FoodItem")
-                {
-                    Console.WriteLine("Cleared");
-                    Button b = (Button)o;
-                    b.Background = Brushes.Red;
-                }
-            }
-        }
-
+        /// <summary>
+        /// Sets item buttons for the currently selected customer
+        /// </summary>
         private void ReselectItems()
         {
-            ClearItems();
             foreach (object o in orderGrid.Children)
             {
                 if (o is Button && ((Button)o).ToolTip != null && ((Button)o).ToolTip.ToString() == "FoodItem")

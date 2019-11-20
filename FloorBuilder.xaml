@@ -17,21 +17,22 @@
             <RowDefinition Height="25"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0" Grid.ColumnSpan="2">
+            <MenuItem Header="Menu" Height="25">
+                <MenuItem Header="Save Layout" Click="Save_Click"/>
+                <MenuItem Header="Clear Layout" Click="DeleteTables_Click"/>
+                <MenuItem Header="Snap to Grid" IsCheckable="True" Click="SnapToGrid_Click"/>
+                <MenuItem IsEnabled="False"/>
+                <MenuItem Header="Back To Home" Click="GoToMain_Click"/>
+            </MenuItem>
+        </Menu>
+
         <StackPanel Grid.Column="0" Grid.Row="1" Background="#FFD5D5D5">
             <Image x:Name="RoundTable" Source="/Resources/circle_1.png" Width="100" Height="100" Margin="0,10,0,10" MouseDown="Table_MouseDown" />
             <Image x:Name="SquareTable" Source="/Resources/square_2.png" Width="100" Height="100" Margin="0,10,0,10" MouseDown="Table_MouseDown" />
             <Image x:Name="RectangleTable" Source="/Resources/rectangle_3.png" Width="100" Height="100" Margin="0,10,0,10" MouseDown="Table_MouseDown" />
         </StackPanel>
         <Canvas x:Name="Canvas_FB" Grid.Column="1" Grid.Row="1" Background="White"/>
-        <Menu Grid.Row="0" Grid.ColumnSpan="2">
-            <MenuItem Header="Menu" Height="25">
-                <MenuItem Header="Save Layout" Click="Save_Click"/>
-                <MenuItem Header="Clear Layout" Click="DeleteTables_Click"/>
-                <MenuItem IsEnabled="False"/>
-                <MenuItem Header="Back To Home" Click="GoToMain_Click"/>
-            </MenuItem>
-        </Menu>
-
-
     </Grid>
 </Page>

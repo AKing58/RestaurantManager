@@ -26,10 +26,12 @@ namespace COMP4952
         COMP4952PROJECTContext db;
         Point startLoc;
         Image img;
+        bool snapToGrid;
         public FloorBuilder()
         {
             db = new COMP4952PROJECTContext();
             InitializeComponent();
+            snapToGrid = false;
             LoadTableInfos();
         }
 
@@ -90,6 +92,13 @@ namespace COMP4952
                 Point mousePos = Mouse.GetPosition(Canvas_FB);
                 int left = (int)((mousePos.X - startLoc.X) - (img.Width / 2));
                 int top = (int)((mousePos.Y - startLoc.Y) - (img.Height / 2));
+                if (snapToGrid)
+                {
+                    left = (int)Math.Round((decimal)(left / 50));
+                    left = left * 50;
+                    top = (int)Math.Round((decimal)(top / 50));
+                    top = top * 50;
+                }
                 if (left >= 0)
                     Canvas.SetLeft(img, left);
                 else
@@ -198,5 +207,9 @@ namespace COMP4952
             GoToMain();
         }
 
+        private void SnapToGrid_Click(object sender, RoutedEventArgs e)
+        {
+            snapToGrid = ((MenuItem)sender).IsChecked;
+        }
     }
 }

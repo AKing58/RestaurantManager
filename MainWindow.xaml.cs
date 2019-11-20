@@ -20,10 +20,6 @@ namespace COMP4952
     /// </summary>
     public partial class MainWindow : Window
     {
-        /// <summary>
-        /// Main window constructor
-        /// Immediately sets the frame to display the FloorBuilder page
-        /// </summary>
         public MainWindow()
         {
             InitializeComponent();

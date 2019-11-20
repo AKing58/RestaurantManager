@@ -5,8 +5,107 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:COMP4952"
         mc:Ignorable="d"
-        Title="StaffScreen" Height="450" Width="800">
+        Title="StaffScreen" Height="768" Width="1024    ">
+
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="323*"/>
+            <RowDefinition Height="409*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.ColumnSpan="2" LastChildFill="False" Height="20" VerticalAlignment="Center">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Staff">
+                    <MenuItem Header="_New Employee" Click="AddEmployeeBtn_Click"/>
+                </MenuItem>
+                <MenuItem Header="Refresh" Click="refreshBtn_Click"/>
+            </Menu>
+        </DockPanel>
+
+      
+        <DataGrid Grid.Column="0" Grid.Row="1" CanUserAddRows="True" Name="gridEmployees" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionUnit="FullRow" SelectionChanged="gridEmployees_SelectionChanged" Grid.ColumnSpan="2" Margin="0,0,341,0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>
+                <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title.Title1}"/>
+                <DataGridTextColumn Header="Rate" Binding="{Binding Rate}"/>
+                <DataGridTextColumn Header="Phone" Binding="{Binding Phone}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Right" Width="341">
+            <Label Name="selectedNameLabel"  Content="Name Label" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" Width="139"/>
+
+            <DatePicker Name="datePickerObj" IsTodayHighlighted="True" Grid.Column="1" SelectedDateChanged="datePickerObj_DateChanged"  HorizontalAlignment="Center" Grid.Row="1" Width="200" />
+            <Button Name="AddAvailSchedBtn" Width="170" Click="AddBtn_Click">Add Availability or Schedule</Button>
+
+            <DataGrid x:Name="DaysAvailabilityGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" RenderTransformOrigin="0.508,0.56" Height="152">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Availability" Binding="{Binding availabilityString}" Width="1*"/>
+                    <DataGridTextColumn Header="Scheduled" Binding="{Binding scheduleString}" Width="1*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+       
+
+
+        <DataGrid Name="fiveMinScheduleGrid" Grid.Column="0"  Grid.ColumnSpan="2" RowHeight="5" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{Binding}">
+
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Margin" Value="0,-2,0,-2"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Foreground" Value="Transparent"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                       Path=Content.Text}" Value="Available">
+                            <Setter Property="Background" Value="Yellow"/>
+         
+                            
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                       Path=Content.Text}" Value="Scheduled">
+                            <Setter Property="Background" Value="Green"/>
+                       
+
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                       Path=Content.Text}" Value="-">
+                            <Setter Property="Background" Value="Red"/>
+    
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Today" Binding="{Binding day0}"/>
+                <DataGridTextColumn Header="Tomorrow" Binding="{Binding day1}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day2}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day3}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day4}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day5}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day6}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day7}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day8}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day9}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day10}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day11}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day12}"/>
+                <DataGridTextColumn Header="Next Day" Binding="{Binding day13}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+
+
     </Grid>
+
+
 </Window>

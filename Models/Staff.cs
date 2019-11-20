@@ -7,8 +7,7 @@ namespace COMP4952.Models
     {
         public Staff()
         {
-            CurrentSchedule = new HashSet<CurrentSchedule>();
-            RegularAvailabilities = new HashSet<RegularAvailabilities>();
+            CurrentAvailabilities = new HashSet<CurrentAvailabilities>();
         }
 
         public int Id { get; set; }
@@ -19,7 +18,6 @@ namespace COMP4952.Models
         public string Phone { get; set; }
 
         public virtual Title Title { get; set; }
-        public virtual ICollection<CurrentSchedule> CurrentSchedule { get; set; }
-        public virtual ICollection<RegularAvailabilities> RegularAvailabilities { get; set; }
+        public virtual ICollection<CurrentAvailabilities> CurrentAvailabilities { get; set; }
     }
 }

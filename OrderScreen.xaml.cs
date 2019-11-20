@@ -1,14 +1,12 @@
-﻿using System;
+﻿using COMP4952.Models;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Windows.Navigation;
 
 namespace COMP4952
 {
@@ -17,14 +15,143 @@ namespace COMP4952
     /// </summary>
     public partial class OrderScreen : Window
     {
-        public OrderScreen()
+        COMP4952PROJECTContext db;
+        TableInfo ti;
+        Customer cus;
+
+        public OrderScreen(int m)
         {
+            db = new COMP4952PROJECTContext();
             InitializeComponent();
+
+            ti = db.TableInfo.Find(m);
+
         }
 
+        /// <summary>
+        /// Adds a customer to the table on button click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void addCustomerBtn_Click(object sender, RoutedEventArgs e)
         {
+            for (int i=1; i<7; i++)
+            {
+                var customer = (Button)this.FindName("customer" + i + "_Btn");
+                if (customer.IsEnabled == false)
+                {
+                    customer.IsEnabled = true;
+
+                    var removeBtn = (Button)this.FindName("removeCust" + i + "_Btn");
+                    removeBtn.IsEnabled = true;
+
+                    Customer person = new Customer();
+                    person.Table = ti;
+                    person.TableId = ti.Id;
+                    db.Customer.Add(person);
+                    db.SaveChanges();
+
+                    customer.Tag = person.Id;
+
+                    break;
+                }
+            }
 
         }
+
+        /// <summary>
+        /// Exits the window to the previous screen without saving
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void backBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        /// <summary>
+        /// Changes which customer's orders are currently being displayed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void customerBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var customerBtn = (Button)sender;
+            customerBtn.Background = Brushes.Green;
+
+            for (int i = 1; i < 7; i++)
+            {
+                var customer = (Button)this.FindName("customer" + i + "_Btn");
+                if (customer.Name != customerBtn.Name && customer.IsEnabled)
+                {
+                    customer.ClearValue(Button.BackgroundProperty);
+                }
+            }
+
+            cus = db.Customer.Find(int.Parse(customerBtn.Tag.ToString()));
+        }
+
+        /// <summary>
+        /// Saves the order to the database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void saveOrderBtn_Click(object sender, RoutedEventArgs e)
+        {
+            db.SaveChanges();
+        }
+
+        /// <summary>
+        /// Removes the customer from the table
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void removeCustBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var removeBtn = (Button)sender;
+            var index = removeBtn.Tag.ToString();
+
+            removeBtn.IsEnabled = false;
+
+            var customer = (Button)this.FindName("customer" + index + "_Btn");
+            int tempCustId = int.Parse(customer.Tag.ToString());
+            customer.ClearValue(Button.BackgroundProperty);
+
+            List<Orders> temp = db.Orders.Where(u => u.CustId == tempCustId).ToList();
+            foreach (Orders o in temp) {
+                db.Orders.Remove(o);
+            }
+            Customer cusTemp = db.Customer.Single(u => u.Id == tempCustId);
+            db.Customer.Remove(cusTemp);
+
+            customer.IsEnabled = false;
+
+        }
+
+        /// <summary>
+        /// Adds or removes the item from the current order
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void item_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (Button)sender;
+
+            if (button.Background != Brushes.Green)
+            {
+                Orders order = new Orders();
+                order.ItemId = int.Parse(button.Tag.ToString());
+                order.CustId = cus.Id;
+                db.Orders.Add(order);
+
+                button.Background = Brushes.Green;
+            } else
+            {
+                Orders temp = db.Orders.Single(u => u.CustId == cus.Id && u.ItemId == int.Parse(button.Tag.ToString()));
+                db.Orders.Remove(temp);
+                button.Background = Brushes.Red;
+            }
+        }
+
     }
 }

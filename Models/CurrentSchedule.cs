@@ -6,11 +6,10 @@ namespace COMP4952.Models
     public partial class CurrentSchedule
     {
         public int Id { get; set; }
-        public int StaffId { get; set; }
-        public DateTime Date { get; set; }
-        public TimeSpan? BlockStartTime { get; set; }
-        public TimeSpan? BlockEndTime { get; set; }
+        public int AvailabilityId { get; set; }
+        public DateTime BlockStartTime { get; set; }
+        public DateTime BlockEndTime { get; set; }
 
-        public virtual Staff Staff { get; set; }
+        public virtual CurrentAvailabilities Availability { get; set; }
     }
 }

@@ -257,7 +257,18 @@ namespace COMP4952
         {
             Console.WriteLine("Deleting Layout");
             foreach(TableInfo t in db.TableInfo.ToList())
+            {
+                foreach(Customer c in db.Customer.Where(u => u.TableId == t.Id).ToList())
+                {
+                    foreach (Orders o in db.Orders.Where(u => u.CustId == c.Id).ToList())
+                    {
+                        db.Orders.Remove(o);
+                    }
+                    db.Customer.Remove(c);
+                }
                 db.TableInfo.Remove(t);
+            }
+                
             foreach (Wall w in db.Wall.ToList())
                 db.Wall.Remove(w);
             db.SaveChanges();

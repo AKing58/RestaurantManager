@@ -12,6 +12,7 @@ namespace COMP4952
 {
     /// <summary>
     /// Interaction logic for OrderScreen.xaml
+    /// Justin Kwok
     /// </summary>
     public partial class OrderScreen : Window
     {
@@ -19,13 +20,40 @@ namespace COMP4952
         TableInfo ti;
         Customer cus;
 
+        public OrderScreen() { }
+
         public OrderScreen(int m)
         {
             db = new COMP4952PROJECTContext();
             InitializeComponent();
 
             ti = db.TableInfo.Find(m);
+            tableLabel.Content = "Table ID: " + ti.Id;
+            LoadCustomers();
 
+        }
+
+        private void LoadCustomers()
+        {
+            List<Customer> customerLst = db.Customer.Where(u => u.TableId == ti.Id).ToList();
+            Console.WriteLine(customerLst.Count + " customers on table " + ti.Id);
+            Console.WriteLine(customerLst);
+            for (int i = 1; i < 7; i++)
+            {
+                Console.WriteLine(i);
+                var customer = (Button)this.FindName("customer" + i + "_Btn");
+                if (i > customerLst.Count)
+                    return;
+                if (customer.IsEnabled == false)
+                {
+                    customer.IsEnabled = true;
+
+                    var removeBtn = (Button)this.FindName("removeCust" + i + "_Btn");
+                    removeBtn.IsEnabled = true;
+
+                    customer.Tag = customerLst[i-1].Id;
+                }
+            }
         }
 
         /// <summary>
@@ -89,6 +117,41 @@ namespace COMP4952
             }
 
             cus = db.Customer.Find(int.Parse(customerBtn.Tag.ToString()));
+            ReselectItems();
+        }
+
+        private void ClearItems()
+        {
+            Console.WriteLine("Grid Children: " + orderGrid.Children.Count);
+            foreach (object o in orderGrid.Children)
+            {
+                if (o is Button && ((Button)o).ToolTip != null && ((Button)o).ToolTip.ToString() == "FoodItem")
+                {
+                    Console.WriteLine("Cleared");
+                    Button b = (Button)o;
+                    b.Background = Brushes.Red;
+                }
+            }
+        }
+
+        private void ReselectItems()
+        {
+            ClearItems();
+            foreach (object o in orderGrid.Children)
+            {
+                if (o is Button && ((Button)o).ToolTip != null && ((Button)o).ToolTip.ToString() == "FoodItem")
+                {
+                    Button b = (Button)o;
+                    if(db.Orders.SingleOrDefault(u => u.CustId == cus.Id && u.ItemId == int.Parse(b.Tag.ToString())) != null)
+                    {
+                        b.Background = Brushes.Green;
+                    }
+                    else
+                    {
+                        b.Background = Brushes.Red;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -121,9 +184,11 @@ namespace COMP4952
             foreach (Orders o in temp) {
                 db.Orders.Remove(o);
             }
-            Customer cusTemp = db.Customer.Single(u => u.Id == tempCustId);
-            db.Customer.Remove(cusTemp);
+            db.SaveChanges();
 
+            Customer cusTemp = db.Customer.SingleOrDefault(u => u.Id == tempCustId);
+            db.Customer.Remove(cusTemp);
+            db.SaveChanges();
             customer.IsEnabled = false;
 
         }
@@ -147,7 +212,7 @@ namespace COMP4952
                 button.Background = Brushes.Green;
             } else
             {
-                Orders temp = db.Orders.Single(u => u.CustId == cus.Id && u.ItemId == int.Parse(button.Tag.ToString()));
+                Orders temp = db.Orders.SingleOrDefault(u => u.CustId == cus.Id && u.ItemId == int.Parse(button.Tag.ToString()));
                 db.Orders.Remove(temp);
                 button.Background = Brushes.Red;
             }

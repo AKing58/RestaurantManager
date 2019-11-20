@@ -106,9 +106,10 @@ namespace COMP4952
             }
             newImg.Width = 100;
             newImg.Height = 100;
+            newImg.Tag = t.Id;
             FurnitureType ft = db.FurnitureType.Single(u => u.Id == tableId);
             newImg.Name = "Placed" + ft.Type + "_" + t.Id;
-            //newImg.MouseDown += Table_MouseDown;
+            newImg.MouseDown += Table_MouseDown;
             Canvas_FB.Children.Add(newImg);
             Canvas.SetLeft(newImg, t.Xloc);
             Canvas.SetTop(newImg, t.Yloc);
@@ -135,5 +136,10 @@ namespace COMP4952
             Canvas_FB.Children.Add(newLine);
         }
 
+        private void Table_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            OrderScreen os = new OrderScreen(int.Parse(((Image)sender).Tag.ToString()));
+            os.Show();
+        }
     }
 }

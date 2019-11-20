@@ -6,7 +6,71 @@
         xmlns:local="clr-namespace:COMP4952"
         mc:Ignorable="d"
         Title="OrderScreen" Height="450" Width="800">
-    <Grid>
-        
+    <Grid x:Name="orderGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15*"/>
+            <RowDefinition Height="202*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="303*"/>
+            <ColumnDefinition Width="125*"/>
+            <ColumnDefinition Width="125*"/>
+            <ColumnDefinition Width="125*"/>
+            <ColumnDefinition Width="125*"/>
+        </Grid.ColumnDefinitions>
+        <Border BorderThickness="1" BorderBrush="Black" Grid.ColumnSpan="5" HorizontalAlignment="Left" Height="25" Margin="-2,0,0,0" VerticalAlignment="Top" Width="802">
+            <Label x:Name="entreesLabel" Content="Entrees" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="466,0,0,0"/>
+        </Border>
+        <Border BorderThickness="1" BorderBrush="Black" Grid.Column="3" Grid.RowSpan="2">
+            <Label x:Name="dessertsLabel" Content="Desserts" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-1,0,0"/>
+        </Border>
+        <Border BorderThickness="1" BorderBrush="Black" Grid.Column="1" Grid.RowSpan="2"/>
+        <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Center" Height="414" Grid.Row="1" VerticalAlignment="Center" Width="305"/>
+        <Grid x:Name="customerGrid" HorizontalAlignment="Center" Height="404" Grid.Row="1" VerticalAlignment="Center" Width="305">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90*"/>
+                <RowDefinition Height="90*"/>
+                <RowDefinition Height="90*"/>
+                <RowDefinition Height="131*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="152*"/>
+                <ColumnDefinition Width="153*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="addCustomer_Btn" Content="Add Customer" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="89" Width="132" Click="addCustomerBtn_Click"/>
+            <Button x:Name="customer1_Btn" Content="Customer 1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Click="customerBtn_Click" IsEnabled="False"/>
+            <Button x:Name="customer2_Btn" Content="Customer 2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Grid.Column="1" Click="customerBtn_Click" IsEnabled="False"/>
+            <Button x:Name="customer3_Btn"  Content="Customer 3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Grid.Row="1" Click="customerBtn_Click" IsEnabled="False"/>
+            <Button x:Name="customer4_Btn" Content="Customer 4" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Grid.Column="1" Grid.Row="1" Click="customerBtn_Click" IsEnabled="False"/>
+            <Button x:Name="customer5_Btn" Content="Customer 5" HorizontalAlignment="Center" VerticalAlignment="Top" Height="50" Margin="0,16,0,0" Grid.Row="2" Click="customerBtn_Click" IsEnabled="False"/>
+            <Button x:Name="customer6_Btn" Content="Customer 6" HorizontalAlignment="Center" VerticalAlignment="Top" Height="50" Grid.Column="1" Margin="0,16,0,0" Grid.Row="2" Click="customerBtn_Click" IsEnabled="False"/>
+            <Button x:Name="saveOrder_Btn" Content="Save Order" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="89" Width="132" Click="saveOrderBtn_Click" Grid.Column="1"/>
+            <Button x:Name="removeCust1_Btn" Content="X" HorizontalAlignment="Right" Margin="134,5,0,0" VerticalAlignment="Top" Width="18" Height="17" FontWeight="Bold" Background="Red" IsEnabled="False" Click="removeCustBtn_Click" Tag="1"/>
+            <Button x:Name="removeCust2_Btn" Content="X" HorizontalAlignment="Right" Margin="0,5,9,0" VerticalAlignment="Top" Width="18" Height="17" FontWeight="Bold" Background="Red" Grid.Column="1" IsEnabled="False" Tag="2" Click="removeCustBtn_Click"/>
+            <Button x:Name="removeCust3_Btn" Content="X" HorizontalAlignment="Right" Margin="0,0,0,73" VerticalAlignment="Bottom" Width="18" Height="17" FontWeight="Bold" Background="Red" Grid.Row="1" IsEnabled="False" Tag="3" Click="removeCustBtn_Click"/>
+            <Button x:Name="removeCust4_Btn" Content="X" HorizontalAlignment="Right" Margin="0,0,9,73" VerticalAlignment="Bottom" Width="18" Height="17" FontWeight="Bold" Background="Red" Grid.Row="1" Grid.Column="1" IsEnabled="False" Tag="4" Click="removeCustBtn_Click"/>
+            <Button x:Name="removeCust5_Btn" Content="X" HorizontalAlignment="Right" Margin="0,0,0,74" VerticalAlignment="Bottom" Width="18" Height="17" FontWeight="Bold" Background="Red" Grid.Row="1" Grid.RowSpan="2" IsEnabled="False" Tag="5" Click="removeCustBtn_Click"/>
+            <Button x:Name="removeCust6_Btn" Content="X" HorizontalAlignment="Right" Margin="0,0,9,74" VerticalAlignment="Bottom" Width="18" Height="17" FontWeight="Bold" Background="Red" Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" IsEnabled="False" Tag="6" Click="removeCustBtn_Click"/>
+        </Grid>
+        <Label x:Name="tableLabel" Content="Table ID" HorizontalAlignment="Left" Margin="203,-3,0,0" VerticalAlignment="Top" Height="30" Width="89" FontWeight="Bold" FontSize="14"/>
+        <Label x:Name="appetizersLabel" Content="Appetizers" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Label x:Name="drinksLabel" Content="Drinks" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-1,0,0"/>
+        <Button x:Name="back_Btn" Content="Back" HorizontalAlignment="Left" Margin="0,2,0,0" VerticalAlignment="Top" Height="21" Width="70" Click="backBtn_Click"/>
+        <Button x:Name="salad_Btn" Content="Salad" Grid.Column="1" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Click="item_Click" Background="Red" Tag="0"/>
+        <Button x:Name="calamari_Btn" Content="Calamari" Grid.Column="1" HorizontalAlignment="Center" Margin="0,111,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="#FFF40000" Click="item_Click" Tag="1"/>
+        <Button x:Name="clamChowder_Btn" Content="Clam Chowder" Grid.Column="1" HorizontalAlignment="Center" Margin="0,215,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="2"/>
+        <Button x:Name="breadSticks_Btn" Content="Bread Sticks" Grid.Column="1" HorizontalAlignment="Center" Margin="0,313,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="3"/>
+        <Button x:Name="spaghetti_Btn" Content="Spaghetti" Grid.Column="2" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="4"/>
+        <Button x:Name="pizza_Btn" Content="Pizza" Grid.Column="2" HorizontalAlignment="Center" Margin="0,111,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="5"/>
+        <Button x:Name="steak_Btn" Content="Steak" Grid.Column="2" HorizontalAlignment="Center" Margin="0,215,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="#FFFC0000" Click="item_Click" Tag="6"/>
+        <Button x:Name="burger_Btn" Content="Burger" Grid.Column="2" HorizontalAlignment="Center" Margin="0,313,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="#FFF40000" Click="item_Click" Tag="7"/>
+        <Button x:Name="icecream_Btn" Content="Ice Cream" Grid.Column="3" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Click="item_Click" Tag="8" Background="Red"/>
+        <Button x:Name="fudge_Btn" Content="Fudge Brownie" Grid.Column="3" HorizontalAlignment="Center" Margin="0,111,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="9"/>
+        <Button x:Name="lava_Btn" Content="Lava Cake" Grid.Column="3" HorizontalAlignment="Center" Margin="0,215,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="10"/>
+        <Button x:Name="cheese_Btn" Content="Cheesecake" Grid.Column="3" HorizontalAlignment="Center" Margin="0,313,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="11"/>
+        <Button x:Name="pop_Btn" Content="Pop" Grid.Column="4" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="12"/>
+        <Button x:Name="wine_Btn" Content="Wine" Grid.Column="4" HorizontalAlignment="Center" Margin="0,111,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="13"/>
+        <Button x:Name="milkshake_Btn" Content="Milkshake" Grid.Column="4" HorizontalAlignment="Center" Margin="0,215,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="14"/>
+        <Button x:Name="beer_Btn" Content="Beer" Grid.Column="4" HorizontalAlignment="Center" Margin="0,313,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="15"/>
     </Grid>
 </Window>

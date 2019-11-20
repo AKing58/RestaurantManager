@@ -24,6 +24,7 @@ namespace COMP4952.Models
         public virtual DbSet<Staff> Staff { get; set; }
         public virtual DbSet<TableInfo> TableInfo { get; set; }
         public virtual DbSet<Title> Title { get; set; }
+        public virtual DbSet<Wall> Wall { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -183,6 +184,19 @@ namespace COMP4952.Models
                     .HasColumnName("Title")
                     .HasMaxLength(255)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Wall>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.X1loc).HasColumnName("X1Loc");
+
+                entity.Property(e => e.X2loc).HasColumnName("X2Loc");
+
+                entity.Property(e => e.Y1loc).HasColumnName("Y1Loc");
+
+                entity.Property(e => e.Y2loc).HasColumnName("Y2Loc");
             });
 
             OnModelCreatingPartial(modelBuilder);

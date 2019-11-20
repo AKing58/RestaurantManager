@@ -24,19 +24,32 @@ namespace COMP4952
     public partial class Home : Page
     {
         COMP4952PROJECTContext db;
+
+        /// <summary>
+        /// Home page constructor
+        /// </summary>
         public Home()
         {
             db = new COMP4952PROJECTContext();
             InitializeComponent();
+            LoadWalls();
             LoadTableInfos();
         }
 
+        /// <summary>
+        /// Navigates to the floor builder page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GoToFloorBuilder_Click(object sender, RoutedEventArgs e)
         {
             NavigationService ns = NavigationService.GetNavigationService(this);
             ns.Navigate(new Uri("FloorBuilder.xaml", UriKind.Relative));
         }
 
+        /// <summary>
+        /// Displays all tables from the database
+        /// </summary>
         private void LoadTableInfos()
         {
             foreach (TableInfo t in db.TableInfo.ToList())
@@ -44,18 +57,22 @@ namespace COMP4952
                 DisplayTable(t);
             }
         }
-        private int GetTypeIdFromName(string input)
-        {
-            if (input.Contains("Round"))
-                return 1;
-            else if (input.Contains("Square"))
-                return 2;
-            else if (input.Contains("Rectangle"))
-                return 3;
 
-            return 1;
+        /// <summary>
+        /// Displays all the walls from the database
+        /// </summary>
+        private void LoadWalls()
+        {
+            foreach (Wall w in db.Wall.ToList())
+            {
+                DisplayWall(w);
+            }
         }
 
+        /// <summary>
+        /// Displays a table on the canvas
+        /// </summary>
+        /// <param name="t"></param>
         private void DisplayTable(TableInfo t)
         {
             Image newImg = new Image();
@@ -83,6 +100,27 @@ namespace COMP4952
             Canvas_FB.Children.Add(newImg);
             Canvas.SetLeft(newImg, t.Xloc);
             Canvas.SetTop(newImg, t.Yloc);
+        }
+
+        /// <summary>
+        /// Displays a wall on the canvas
+        /// </summary>
+        /// <param name="w"></param>
+        private void DisplayWall(Wall w)
+        {
+            Line newLine = new Line();
+            newLine.Name = "PlacedWall";
+            newLine.Tag = w.Id;
+            newLine.Stroke = Brushes.Black;
+            newLine.StrokeThickness = 5;
+            newLine.X1 = w.X1loc;
+            newLine.X2 = w.X2loc;
+            newLine.Y1 = w.Y1loc;
+            newLine.Y2 = w.Y2loc;
+            //newLine.StrokeStartLineCap = PenLineCap.Round;
+            //newLine.StrokeEndLineCap = PenLineCap.Round;
+            Console.WriteLine(newLine.X1 + ", " + newLine.Y1 + ", " + newLine.X2 + ", " + newLine.Y2);
+            Canvas_FB.Children.Add(newLine);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace COMP4952
     /// Interaction logic for StaffScreen.xaml
     /// Eamonn Alphin
     /// </summary>
-    public partial class StaffScreen : Window
+    public partial class StaffScreen : Page
     {
 
         private Models.COMP4952PROJECTContext db;
@@ -114,7 +114,6 @@ namespace COMP4952
         public void refreshBtn_Click(object sender, RoutedEventArgs e)
         {
             employeeData = getStaffData();
-
             if (SelectedStaff != null)
             {
                 loadEmployeeData(SelectedStaff);

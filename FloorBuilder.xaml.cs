@@ -20,6 +20,7 @@ namespace COMP4952
 {
     /// <summary>
     /// Interaction logic for FloorBuilder.xaml
+    /// Adam King
     /// </summary>
     public partial class FloorBuilder : Page
     {
@@ -82,7 +83,7 @@ namespace COMP4952
             else if (input.Contains("Rectangle"))
                 return 3;
             */
-            return db.FurnitureType.Single(u => u.Type.Contains(input)).Id;
+            return db.FurnitureType.Single(u => input.Contains(u.Type)).Id;
         }
 
         /// <summary>

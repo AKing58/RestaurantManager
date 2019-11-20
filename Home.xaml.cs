@@ -20,6 +20,7 @@ namespace COMP4952
 {
     /// <summary>
     /// Interaction logic for Home.xaml
+    /// Adam King
     /// </summary>
     public partial class Home : Page
     {
@@ -45,6 +46,17 @@ namespace COMP4952
         {
             NavigationService ns = NavigationService.GetNavigationService(this);
             ns.Navigate(new Uri("FloorBuilder.xaml", UriKind.Relative));
+        }
+
+        /// <summary>
+        /// Navigates to the staff screen
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GoToStaffScreen_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService ns = NavigationService.GetNavigationService(this);
+            ns.Navigate(new Uri("StaffScreen.xaml", UriKind.Relative));
         }
 
         /// <summary>
@@ -122,5 +134,6 @@ namespace COMP4952
             Console.WriteLine(newLine.X1 + ", " + newLine.Y1 + ", " + newLine.X2 + ", " + newLine.Y2);
             Canvas_FB.Children.Add(newLine);
         }
+
     }
 }

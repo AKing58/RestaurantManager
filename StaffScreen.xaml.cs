@@ -23,7 +23,7 @@ namespace COMP4952
 
         private Models.COMP4952PROJECTContext db;
         public Staff SelectedStaff { get; set; } //the selected staff member
-        public HashSet<Staff> employeeData = new HashSet<Staff>(); //holds all the staff members
+        public ObservableCollection<Staff> employeeData = new ObservableCollection<Staff>(); //holds all the staff members
         public ObservableCollection<ScheduleItem> selectedEmployeesScheduleItem = new ObservableCollection<ScheduleItem>(); //holds the selected staff members schedule and availabilities
         public ObservableCollection<WeeklyFiveMinutes> fiveMinuteRows = new ObservableCollection<WeeklyFiveMinutes>();
 
@@ -113,11 +113,17 @@ namespace COMP4952
 
         public void refreshBtn_Click(object sender, RoutedEventArgs e)
         {
+            employeeData.Clear();
             employeeData = getStaffData();
+            gridEmployees.ItemsSource = employeeData;
+            gridEmployees.Items.Refresh();
+
             if (SelectedStaff != null)
             {
                 loadEmployeeData(SelectedStaff);
             }
+
+            
 
         }
 
@@ -140,18 +146,20 @@ namespace COMP4952
         /// Creates a datatable of Staff data, including titles. 
         /// </summary>
         /// <returns>Staff data as a dataTable</returns>
-        private HashSet<Staff> getStaffData()
+        private ObservableCollection<Staff> getStaffData()
         {
            
             HashSet<Staff> allStaff = db.Staff.Include(s=>s.Title).ToHashSet();
             System.Diagnostics.Debug.WriteLine("found " + allStaff.Count + " staff members");
+            ObservableCollection<Staff> observableStaff = new ObservableCollection<Staff>();
 
             foreach(Staff member in allStaff)
             {
                 System.Diagnostics.Debug.WriteLine("Staff:" + member.Title.Title1);
+                observableStaff.Add(member);
             }
 
-            return allStaff ;
+            return observableStaff;
         }
 
 

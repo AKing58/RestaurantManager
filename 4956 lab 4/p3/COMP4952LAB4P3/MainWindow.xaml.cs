@@ -14,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections;
+using System.Drawing;
+using System.Windows.Threading;
 
 namespace COMP4952LAB4P3
 {
@@ -27,6 +29,9 @@ namespace COMP4952LAB4P3
         private Thread Baker_Prod_Thread; //the producer thread, in this case, a baker baking cakes. 
         private Thread CookieMonster_Cons_Thread; //the consumer thread, in this case, cookie monster.
         Random oven = new Random(); //oven, for getting random bake times becaue different cookies take different times to bake. 
+        
+        
+        
 
         /// <summary>
         /// An item for the producer to produce
@@ -172,9 +177,25 @@ namespace COMP4952LAB4P3
         {
             System.Diagnostics.Debug.WriteLine("NOM NOM NOMING cookie: " + thisIndex);
             Thread.Sleep(thisCookie.consumptionTime);
+
+
+            //check if on main thread. 
+            if (mainGrid.Dispatcher.CheckAccess())
+            {
+                undisplayCookie();
+            }
+            else
+            {
+                //invoke main thread to update GUI;
+                mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new delegateAddCookie(undisplayCookie));
+            }
+
+
+
+
         }
 
-
+        private delegate void delegateAddCookie();
 
         /// <summary>
         /// Produces a new cookie. 
@@ -184,10 +205,42 @@ namespace COMP4952LAB4P3
         {
             Cookie newCookie = new Cookie();
             Thread.Sleep(oven.Next(1000, 2000));
+
+            //check if on main thread. 
+            if (mainGrid.Dispatcher.CheckAccess())
+            {
+                displayCookie();
+            }
+            else
+            {
+                //invoke main thread to update GUI;
+                mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new delegateAddCookie(displayCookie));
+            }
+            
+    
             return newCookie;
 
         }
 
+
+        private void displayCookie()
+        {
+            ColumnDefinition newCookiePlace = new ColumnDefinition();
+            mainGrid.ColumnDefinitions.Add(newCookiePlace);
+            Uri cookieUri = new Uri("Images/cookie.jpg", UriKind.Relative);
+            Image cookieImage = new Image();
+            cookieImage.Source = new BitmapImage(cookieUri);
+
+            mainGrid.Children.Add(cookieImage);
+            Grid.SetColumn(cookieImage, mainGrid.ColumnDefinitions.Count - 1);
+        }
+
+        private void undisplayCookie()
+        {
+           
+            mainGrid.ColumnDefinitions.RemoveAt(mainGrid.ColumnDefinitions.Count -1);
+           
+        }
 
         public MainWindow()
         {

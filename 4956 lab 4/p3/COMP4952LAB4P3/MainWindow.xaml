@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:COMP4952LAB4P3"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <Grid Name="mainGrid" Margin="0,0,0,0.5">
         <Grid.ColumnDefinitions>
-           
         </Grid.ColumnDefinitions>
-
+        <Grid.RowDefinitions>
+        </Grid.RowDefinitions>
     </Grid>
 </Window>

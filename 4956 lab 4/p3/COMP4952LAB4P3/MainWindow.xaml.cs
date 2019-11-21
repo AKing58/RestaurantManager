@@ -227,7 +227,7 @@ namespace COMP4952LAB4P3
         {
             ColumnDefinition newCookiePlace = new ColumnDefinition();
             mainGrid.ColumnDefinitions.Add(newCookiePlace);
-            Uri cookieUri = new Uri("Images/cookie.jpg", UriKind.Relative);
+            Uri cookieUri = new Uri("Images/cookie.jpeg", UriKind.Relative);
             Image cookieImage = new Image();
             cookieImage.Source = new BitmapImage(cookieUri);
 

@@ -20,6 +20,9 @@ using System.Windows.Threading;
 namespace COMP4952LAB4P3
 {
 
+    ///Eamonn: Implemented Basic logic, semaphore, and simple GUI. 
+
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -34,12 +37,12 @@ namespace COMP4952LAB4P3
         
 
         /// <summary>
-        /// An item for the producer to produce
+        /// An item for the producer to produce, in this case, a cookie. 
         /// </summary>
         struct Cookie
         {
 
-            //generates a random consumption time. 
+            //generates a random consumption time, so the app doesn't just lock into adding and deleting. 
             public int consumptionTime { 
                 get {
                     Random rnd = new Random();
@@ -49,9 +52,10 @@ namespace COMP4952LAB4P3
             } 
         }
 
-        private static Mutex mutex = new Mutex();
-        private List<Cookie> plateOfCookies = new List<Cookie>(); //the cookie buffer
+        private static Mutex mutex = new Mutex(); //a mutex to prevent access to the critical section (i.e the plate of cookies)
+        private List<Cookie> plateOfCookies = new List<Cookie>(); //the cookie 'buffer'
        
+
         int availableCookies = 0; //(FULL) slots are empty, full lists the most recent slot filled.
         int freeSpotsOnPlate = 10; //(EMPTY) maximum 10 cookies. 
 
@@ -62,15 +66,11 @@ namespace COMP4952LAB4P3
         /// <param name="S"></param>
         public void wait(ref int S)
         {
-            
-
             while (S <= 0) {
                 //do nothing
                
             }
-
             S--;
-            
         }
 
         /// <summary>
@@ -100,6 +100,7 @@ namespace COMP4952LAB4P3
                 Cookie newCookie = produceCookie();
                 //put the cookie on the plate.
                 plateOfCookies.Add(newCookie);
+
                 int cookiePlace = plateOfCookies.Count - 1;
                 System.Diagnostics.Debug.WriteLine("New cookie in spot: " + cookiePlace);
 
@@ -119,7 +120,7 @@ namespace COMP4952LAB4P3
 
 
         /// <summary>
-        /// Consumes cookies at the given index. 
+        /// Consumes cookies. 
         /// </summary>
         /// <param name="cookieIndex"></param>
         public void consumer_CookieMonster()
@@ -153,7 +154,9 @@ namespace COMP4952LAB4P3
         }
 
 
-
+        /// <summary>
+        /// Starts the producer and consumer threads. 
+        /// </summary>
         private void beginThreads()
         {
             //Start baking cookies
@@ -169,7 +172,7 @@ namespace COMP4952LAB4P3
 
 
         /// <summary>
-        /// Consumes the cookie
+        /// The act of eating a cookie. 
         /// </summary>
         /// <param name="thisCookie"></param>
         /// <param name="thisIndex"></param>
@@ -182,7 +185,7 @@ namespace COMP4952LAB4P3
             //check if on main thread. 
             if (mainGrid.Dispatcher.CheckAccess())
             {
-                undisplayCookie();
+                undisplayCookie(); //remove from visual plate. 
             }
             else
             {
@@ -209,7 +212,7 @@ namespace COMP4952LAB4P3
             //check if on main thread. 
             if (mainGrid.Dispatcher.CheckAccess())
             {
-                displayCookie();
+                displayCookie(); //add to visual plate. 
             }
             else
             {
@@ -223,6 +226,9 @@ namespace COMP4952LAB4P3
         }
 
 
+        /// <summary>
+        /// Displays a cookie on the gui. 
+        /// </summary>
         private void displayCookie()
         {
             ColumnDefinition newCookiePlace = new ColumnDefinition();
@@ -235,6 +241,9 @@ namespace COMP4952LAB4P3
             Grid.SetColumn(cookieImage, mainGrid.ColumnDefinitions.Count - 1);
         }
 
+        /// <summary>
+        /// Removes a cookie from the gui.
+        /// </summary>
         private void undisplayCookie()
         {
            
@@ -242,6 +251,9 @@ namespace COMP4952LAB4P3
            
         }
 
+        /// <summary>
+        /// Initializes everything. 
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();

@@ -26,22 +26,29 @@ namespace COMP4952LAB4P3
 
         private Thread Baker_Prod_Thread; //the producer thread, in this case, a baker baking cakes. 
         private Thread CookieMonster_Cons_Thread; //the consumer thread, in this case, cookie monster.
+        Random oven = new Random(); //oven, for getting random bake times becaue different cookies take different times to bake. 
 
         /// <summary>
         /// An item for the producer to produce
         /// </summary>
         struct Cookie
         {
-            public String cookieType {
-                get { return "Chocolate Chip"; }
-            }
+
+            //generates a random consumption time. 
+            public int consumptionTime { 
+                get {
+                    Random rnd = new Random();
+                    int time = rnd.Next(1000, 2000);
+                    return time;
+                } 
+            } 
         }
 
         private static Mutex mutex = new Mutex();
         private List<Cookie> plateOfCookies = new List<Cookie>(); //the cookie buffer
        
         int availableCookies = 0; //(FULL) slots are empty, full lists the most recent slot filled.
-        int unavailableCookies = 10; //(EMPTY) maximum 10 cookies. 
+        int freeSpotsOnPlate = 10; //(EMPTY) maximum 10 cookies. 
 
 
         /// <summary>
@@ -73,22 +80,24 @@ namespace COMP4952LAB4P3
         /// <summary>
         /// Produces cookies & puts them in the next available slot in the buffer. 
         /// </summary>
-        public void produceCookies()
+        public void producer_Baker()
         {
-            System.Diagnostics.Debug.WriteLine("Baking...");
+            System.Diagnostics.Debug.WriteLine("Preparing Oven and Ingredients and Baking...");
 
             do
             {
-                System.Diagnostics.Debug.WriteLine("Producer: Mutex: " + mutex + ", avail: " + availableCookies + ", unavail:" + unavailableCookies);
-                wait(ref unavailableCookies);
+                //System.Diagnostics.Debug.WriteLine("Producer: Mutex: " + mutex + ", avail: " + availableCookies + ", unavail:" + unavailableCookies);
+                wait(ref freeSpotsOnPlate);
                 mutex.WaitOne();
 
+
                 //Produce cookies
-                Thread.Sleep(1000);
-                Cookie newCookie = new Cookie();
+                Cookie newCookie = produceCookie();
                 //put the cookie on the plate.
                 plateOfCookies.Add(newCookie);
-                //System.Diagnostics.Debug.WriteLine("Produced cookie in spot: " + availableCookies);
+                int cookiePlace = plateOfCookies.Count - 1;
+                System.Diagnostics.Debug.WriteLine("New cookie in spot: " + cookiePlace);
+
 
 
                 mutex.ReleaseMutex();
@@ -108,25 +117,31 @@ namespace COMP4952LAB4P3
         /// Consumes cookies at the given index. 
         /// </summary>
         /// <param name="cookieIndex"></param>
-        public void consumeCookies()
+        public void consumer_CookieMonster()
         {
-            System.Diagnostics.Debug.WriteLine("Consuming...");
+            System.Diagnostics.Debug.WriteLine("Mentally preparing for cookies...");
             
             do
             {
-                System.Diagnostics.Debug.WriteLine("Consumer: Mutex: " + mutex + ", avail: " + availableCookies + ", unavail:" + unavailableCookies);
+                
                 wait(ref availableCookies);
                 mutex.WaitOne();
 
-                //remove cookie from plate.
-                plateOfCookies.RemoveAt(availableCookies);
+
+                //remove last cookie from plate.
+                int cookieIndex = plateOfCookies.Count -1;
+                Cookie thisCookie = plateOfCookies.ElementAt(cookieIndex);
+                plateOfCookies.RemoveAt(cookieIndex);
+
 
                 mutex.ReleaseMutex();
-                signal(ref unavailableCookies);
+                signal(ref freeSpotsOnPlate);
+
 
                 //consume cookie
-                //System.Diagnostics.Debug.WriteLine("NOM NOM NOMING cookie in spot: " + availableCookies);
-                Thread.Sleep(500);
+                consumeCookie(thisCookie, cookieIndex);
+               
+               
 
             } while (true);
 
@@ -137,19 +152,41 @@ namespace COMP4952LAB4P3
         private void beginThreads()
         {
             //Start baking cookies
-            Baker_Prod_Thread = new Thread(new ThreadStart(produceCookies));
+            Baker_Prod_Thread = new Thread(new ThreadStart(producer_Baker));
             Baker_Prod_Thread.Start();
 
 
             //Start consuming cookies. 
-            CookieMonster_Cons_Thread = new Thread(new ThreadStart(consumeCookies));
+            CookieMonster_Cons_Thread = new Thread(new ThreadStart(consumer_CookieMonster));
             CookieMonster_Cons_Thread.Start();
-            
-
-
+           
         }
 
 
+        /// <summary>
+        /// Consumes the cookie
+        /// </summary>
+        /// <param name="thisCookie"></param>
+        /// <param name="thisIndex"></param>
+        private void consumeCookie(Cookie thisCookie, int thisIndex)
+        {
+            System.Diagnostics.Debug.WriteLine("NOM NOM NOMING cookie: " + thisIndex);
+            Thread.Sleep(thisCookie.consumptionTime);
+        }
+
+
+
+        /// <summary>
+        /// Produces a new cookie. 
+        /// </summary>
+        /// <returns></returns>
+        private Cookie produceCookie()
+        {
+            Cookie newCookie = new Cookie();
+            Thread.Sleep(oven.Next(1000, 2000));
+            return newCookie;
+
+        }
 
 
         public MainWindow()

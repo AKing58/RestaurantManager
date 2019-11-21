@@ -20,6 +20,7 @@ namespace COMP4952
         COMP4952PROJECTContext db;
         TableInfo ti;
         Customer cus;
+        private int custIndex = 0;
 
         /// <summary>
         /// Default constructor (Unused)
@@ -65,6 +66,9 @@ namespace COMP4952
                     customer.Tag = customerLst[i-1].Id;
                 }
             }
+            Customer tempCust = db.Customer.SingleOrDefault(u => u.TableId == ti.Id);
+            if (tempCust != null)
+                cus = tempCust;
         }
 
         /// <summary>
@@ -91,8 +95,14 @@ namespace COMP4952
                     db.SaveChanges();
 
                     customer.Tag = person.Id;
-
+                    customer.Background = Brushes.Green;
+                    cus = person;
+                    custIndex = i;
                     break;
+                }
+                else
+                {
+                    customer.ClearValue(Button.BackgroundProperty);
                 }
             }
 
@@ -200,20 +210,24 @@ namespace COMP4952
         private void item_Click(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
-
-            if (button.Background != Brushes.Green)
+            if(cus != null)
             {
-                Orders order = new Orders();
-                order.ItemId = int.Parse(button.Tag.ToString());
-                order.CustId = cus.Id;
-                db.Orders.Add(order);
+                if (button.Background != Brushes.Green)
+                {
+                    Orders order = new Orders();
+                    order.ItemId = int.Parse(button.Tag.ToString());
+                    order.CustId = cus.Id;
+                    db.Orders.Add(order);
 
-                button.Background = Brushes.Green;
-            } else
-            {
-                Orders temp = db.Orders.SingleOrDefault(u => u.CustId == cus.Id && u.ItemId == int.Parse(button.Tag.ToString()));
-                db.Orders.Remove(temp);
-                button.Background = Brushes.Red;
+                    button.Background = Brushes.Green;
+                }
+                else
+                {
+                    Orders temp = db.Orders.SingleOrDefault(u => u.CustId == cus.Id && u.ItemId == int.Parse(button.Tag.ToString()));
+                    if (temp != null)
+                        db.Orders.Remove(temp);
+                    button.Background = Brushes.Red;
+                }
             }
         }
 

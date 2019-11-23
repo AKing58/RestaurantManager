@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+/// <summary>
+/// Commented by Eamonn, Justin, and Adam
+/// </summary>
 namespace Client
 {
     static class Program

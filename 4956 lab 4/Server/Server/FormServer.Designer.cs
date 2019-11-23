@@ -1,4 +1,8 @@
-﻿namespace Server
+﻿
+/// <summary>
+/// Commented by Eamonn, Justin, and Adam
+/// </summary>
+namespace Server
 {
     partial class FormServer
     {

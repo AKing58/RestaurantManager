@@ -1,4 +1,8 @@
-﻿namespace Client
+﻿
+/// <summary>
+/// Commented by Eamonn, Justin, and Adam
+/// </summary>
+namespace Client
 {
     partial class FormClient
     {

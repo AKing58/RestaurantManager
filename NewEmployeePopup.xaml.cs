@@ -18,14 +18,14 @@ namespace COMP4952
 
         private Models.COMP4952PROJECTContext db;
         public HashSet<Title> titles = new HashSet<Title>();
-
-        public NewEmployeePopup()
+        StaffScreen ss;
+        public NewEmployeePopup(StaffScreen staffScreen)
         {
             InitializeComponent();
             db = new Models.COMP4952PROJECTContext(); //initialize the DB context
             titles = getTitles();
             titleChoicesCB.ItemsSource = titles;
-            
+            ss = staffScreen;
         }
 
 
@@ -73,6 +73,7 @@ namespace COMP4952
 
             db.Staff.Add(thisStaff);
             db.SaveChanges();
+            ss.RefreshStaff();
             this.Close();
         }
 

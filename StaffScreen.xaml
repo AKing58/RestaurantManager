@@ -20,10 +20,12 @@
 
         <DockPanel Grid.ColumnSpan="2" LastChildFill="False" Height="20" VerticalAlignment="Center">
             <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Menu">
+                    <MenuItem Header="Go to Home" Click="GoToHome_Click"/>
+                </MenuItem>
                 <MenuItem Header="Staff">
                     <MenuItem Header="_New Employee" Click="AddEmployeeBtn_Click"/>
                 </MenuItem>
-                <MenuItem Header="Refresh" Click="refreshBtn_Click"/>
             </Menu>
         </DockPanel>
 

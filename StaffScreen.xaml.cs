@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Media;
 using System.Windows.Data;
+using System.Windows.Navigation;
 
 namespace COMP4952
 {
@@ -113,6 +114,11 @@ namespace COMP4952
 
         public void refreshBtn_Click(object sender, RoutedEventArgs e)
         {
+            RefreshStaff();
+        }
+
+        public void RefreshStaff()
+        {
             employeeData.Clear();
             employeeData = getStaffData();
             gridEmployees.ItemsSource = employeeData;
@@ -122,9 +128,6 @@ namespace COMP4952
             {
                 loadEmployeeData(SelectedStaff);
             }
-
-            
-
         }
 
         /// <summary>
@@ -450,7 +453,7 @@ namespace COMP4952
         /// <param name="e"></param>
         private void AddEmployeeBtn_Click(object sender, RoutedEventArgs e)
         {
-            var newEmployeePopup = new NewEmployeePopup();
+            var newEmployeePopup = new NewEmployeePopup(this);
             newEmployeePopup.Show();
 
         }
@@ -468,10 +471,12 @@ namespace COMP4952
                 NewAvailSchedPopup newASPopup = new NewAvailSchedPopup(SelectedStaff, (DateTime)datePickerObj.SelectedDate);
                 newASPopup.Show();
             }
-           
-
         }
 
-
+        private void GoToHome_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService ns = NavigationService.GetNavigationService(this);
+            ns.Navigate(new Uri("Home.xaml", UriKind.Relative));
+        }
     }
 }

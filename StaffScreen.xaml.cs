@@ -26,7 +26,7 @@ namespace COMP4952
         public Staff SelectedStaff { get; set; } //the selected staff member
         public ObservableCollection<Staff> employeeData = new ObservableCollection<Staff>(); //holds all the staff members
         public ObservableCollection<ScheduleItem> selectedEmployeesScheduleItem = new ObservableCollection<ScheduleItem>(); //holds the selected staff members schedule and availabilities
-        public ObservableCollection<string[]> scheduleDataGridRows = new ObservableCollection<string[]>();
+        public ObservableCollection<cellValue[]> scheduleDataGridRows = new ObservableCollection<cellValue[]>();
 
         /// <summary>
         /// Holds data for a row in the availability & scheduled tables
@@ -261,14 +261,14 @@ namespace COMP4952
 
 
 
-        struct cellValue
+        public struct cellValue
         {
             public string type { get; set; }
             public string display { get; set; }
         }
 
 
-        public string[] dataGridRowValues { get; set; }
+        public cellValue[] dataGridRowValues = new cellValue[] { };
 
         /// <summary>
         /// Loads the visual availability for this staff member for the given date range.
@@ -298,6 +298,7 @@ namespace COMP4952
 
 
             string display = "";
+            string type = "";
 
             TimeSpan oneDay = new TimeSpan(24, 0, 0);
             
@@ -307,7 +308,7 @@ namespace COMP4952
             int columns = 15; // 2 weeks. + 1 column to list time. 
 
             //create the time column
-            DataGridTextColumn timeColumn = new DataGridTextColumn() {Binding= new Binding("[0]") };
+            DataGridTextColumn timeColumn = new DataGridTextColumn() {Binding= new Binding("[0].display") };
             timeColumn.Header = "Time";
             fiveMinScheduleGrid.Columns.Add(timeColumn);
 
@@ -315,7 +316,7 @@ namespace COMP4952
             //add all the columns, bind them to their related column in the array.  
             for (int i = 1; i <= columns; i++)
             {
-                DataGridTextColumn thisColumn = new DataGridTextColumn() {Binding = new Binding("["+i.ToString()+"]") };
+                DataGridTextColumn thisColumn = new DataGridTextColumn() {Binding = new Binding("["+i.ToString()+"].display") };
                 thisColumn.Header = "Date";
                 fiveMinScheduleGrid.Columns.Add(thisColumn);
             }
@@ -329,16 +330,16 @@ namespace COMP4952
             {
                 
                 
-                dataGridRowValues = new string[columns+1];
+                dataGridRowValues = new cellValue[columns+1];
 
                 //Display the time in the time column every 60 minutes. 
                 if (fiveMinBlock % 60 == 0)
                 {
-                   dataGridRowValues[0]= new TimeSpan(fiveMinBlock / 60, fiveMinBlock % 60, 0).ToString();
+                   dataGridRowValues[0].display = new TimeSpan(fiveMinBlock / 60, fiveMinBlock % 60, 0).ToString();
                 }
                 else
                 {
-                    dataGridRowValues[0] = "";
+                    dataGridRowValues[0].display = "";
                 }
 
 
@@ -383,11 +384,12 @@ namespace COMP4952
 
                     if (withinSchedule)
                     {
+                        type = "scheduled";
                         display = schedStart.ToShortTimeString();
                         //check if the last addeded value was the same. 
                         var lastRow = scheduleDataGridRows.ElementAt(rowCounter - 1);
                         var lastRowSameColumn = lastRow[dayCounter];
-                        if(lastRowSameColumn == display || lastRowSameColumn == "")
+                        if(lastRowSameColumn.type == type)
                         {
                             display = "";
                         }
@@ -410,11 +412,12 @@ namespace COMP4952
 
                         if (withinAvailability)
                         {
+                            type = "available";
                             display = availStart.ToShortTimeString();
                             //check if the last addeded value was the same. 
                             var lastRow = scheduleDataGridRows.ElementAt(rowCounter - 1);
                             var lastRowSameColumn = lastRow[dayCounter];
-                            if (lastRowSameColumn == display || lastRowSameColumn == "")
+                            if (lastRowSameColumn.type == type)
                             {
                                 display = "";
                             }
@@ -430,9 +433,11 @@ namespace COMP4952
                     }
 
 
+                    cellValue thisCellValue = new cellValue();
+                    thisCellValue.type = type;
+                    thisCellValue.display = display;
 
-
-                    dataGridRowValues[dayCounter] = display;
+                    dataGridRowValues[dayCounter] = thisCellValue;
                         
                     dayCounter = dayCounter + 1;
 

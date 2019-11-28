@@ -61,7 +61,7 @@
        
 
         <!-- the schedule grid-->
-        <DataGrid Name="fiveMinScheduleGrid" Grid.Column="0"  Grid.ColumnSpan="2" RowHeight="15" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{Binding}">
+        <DataGrid Name="fiveMinScheduleGrid" Grid.Column="0"  ItemsSource="{Binding}" Grid.ColumnSpan="2" RowHeight="15" AutoGenerateColumns="False" Grid.Row="2">
 
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
@@ -70,6 +70,7 @@
                     <!--<Setter Property="Foreground" Value="Transparent"/>-->
                     <Setter Property="FontSize" Value="10"/>
                     <Style.Triggers>
+                        
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
                                        Path=Content.Text}" Value="Available">
                             <Setter Property="Background" Value="Yellow"/>
@@ -90,26 +91,13 @@
                             <Setter Property="Foreground" Value="Black"/>
     
                         </DataTrigger>
+                       
                     </Style.Triggers>
                 </Style>
             </DataGrid.Resources>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Time" Binding="{Binding time}"/>
-                <DataGridTextColumn Header="Today" Binding="{Binding day0}"/>
-                <DataGridTextColumn Header="Tomorrow" Binding="{Binding day1}"/>
-                <DataGridTextColumn Header="Next Day" Binding="{Binding day2}"/>
-                <DataGridTextColumn Header="Next Day" Binding="{Binding day3}"/>
-                <DataGridTextColumn Header="Next Day" Binding="{Binding day4}"/>
-                <DataGridTextColumn Header="Next Day" Binding="{Binding day5}"/>
-                <DataGridTextColumn Header="Next Day" Binding="{Binding day6}"/>
-                <DataGridTextColumn Header="Next Day" Binding="{Binding day7}"/>
-                <DataGridTextColumn Header="Next Day" Binding="{Binding day8}"/>
-                <DataGridTextColumn Header="Next Day" Binding="{Binding day9}"/>
-                <DataGridTextColumn Header="Next Day" Binding="{Binding day10}"/>
-                <DataGridTextColumn Header="Next Day" Binding="{Binding day11}"/>
-                <DataGridTextColumn Header="Next Day" Binding="{Binding day12}"/>
-                <DataGridTextColumn Header="Next Day" Binding="{Binding day13}"/>
+              
             </DataGrid.Columns>
         </DataGrid>
 

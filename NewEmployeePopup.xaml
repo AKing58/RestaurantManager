@@ -27,7 +27,7 @@
         <TextBox Grid.Column ="1" Grid.Row="1" x:Name="lastNameBox" Margin="10,0,10,0" VerticalAlignment="Center" Height="18"/>
 
         <Label Grid.Column="0" Grid.Row ="2" Content="Phone #" Margin="10,0,10,0" VerticalAlignment="Center" Height="26"/>
-        <TextBox Grid.Column ="1" Grid.Row="2" x:Name="phoneBox" Margin="10,0,10,0" VerticalAlignment="Center" Height="18"/>
+        <TextBox Grid.Column ="1" Grid.Row="2" x:Name="phoneBox" PreviewTextInput="phoneBox_PreviewTextInput" Margin="10,0,10,0" VerticalAlignment="Center" Height="18"/>
 
         <Label Grid.Column="0" Grid.Row ="3" Content="Title" Margin="10,0,10,0" VerticalAlignment="Center" Height="26"/>
         <ComboBox Name="titleChoicesCB" Grid.Column="1" Grid.Row="3" Margin="10,0,10,0" VerticalAlignment="Center">
@@ -41,7 +41,7 @@
         </ComboBox>
 
         <Label Grid.Column="0" Grid.Row ="4" Content="Rate" Margin="10,0,10,0" VerticalAlignment="Center" Height="26"/>
-        <TextBox Grid.Column ="1" Grid.Row="4" x:Name="rateField" Margin="10,0,10,0" VerticalAlignment="Center" Height="18"/>
+        <TextBox Grid.Column ="1" Grid.Row="4" x:Name="rateField" PreviewTextInput="rateField_PreviewTextInput" Margin="10,0,10,0" VerticalAlignment="Center" Height="18"/>
 
         <Button Name="CancelButton" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" Width="118" Click="CancelButton_Click">Cancel</Button>
         <Button Name="SaveButton" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Right" Width="118" Click="SaveButton_Click">Save</Button>

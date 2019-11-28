@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
-using MoreLinq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace COMP4952
 {
@@ -67,7 +68,8 @@ namespace COMP4952
             Staff thisStaff = new Staff();
             thisStaff.FirstName = firstNameBox.Text;
             thisStaff.LastName = lastNameBox.Text;
-            thisStaff.Phone = phoneBox.Text;
+            thisStaff.Phone = formatPhoneNumber(phoneBox.Text);
+
             thisStaff.Title = titleChoicesCB.SelectedItem as Title;
             thisStaff.Rate = decimal.Parse(rateField.Text);
 
@@ -75,6 +77,33 @@ namespace COMP4952
             db.SaveChanges();
             ss.RefreshStaff();
             this.Close();
+        }
+
+
+        /// <summary>
+        /// Converts a 10 character phone number into (306)-999-9999 format. 
+        /// </summary>
+        /// <param name="rawPhoneString"></param>
+        /// <returns></returns>
+        private String formatPhoneNumber(string rawPhoneString)
+        {
+            string returnString = rawPhoneString;
+
+            try
+            {
+                string strphoneNumber = new string(rawPhoneString.Where(c => char.IsDigit(c)).ToArray());
+                int intPhoneNumber = int.Parse(strphoneNumber);
+                returnString = String.Format("{0:(###) ###-####}", intPhoneNumber);
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine("Error converting phone number: " + err);
+            }
+            
+
+
+
+            return returnString;
         }
 
 
@@ -87,5 +116,42 @@ namespace COMP4952
             System.Diagnostics.Debug.WriteLine(message);
         }
 
+
+        /// <summary>
+        /// Prevents the user from entering letters into the rate field. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rateField_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            e.Handled = !isNonNumeric(e.Text); //prevent the user from typing non numeric characters. 
+        }
+
+
+        
+
+
+        private static readonly Regex _regex = new Regex("[^0-9.-]+");
+
+
+        /// <summary>
+        /// Returns true if the strings only contains numbers. 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        private static bool isNonNumeric(string text)
+        {
+            return !_regex.IsMatch(text);
+        }
+
+        /// <summary>
+        /// Prevents the user from entering non-numeric values in the phone field. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void phoneBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            e.Handled = !isNonNumeric(e.Text);
+        }
     }
 }

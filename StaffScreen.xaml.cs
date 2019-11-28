@@ -26,7 +26,7 @@ namespace COMP4952
         public Staff SelectedStaff { get; set; } //the selected staff member
         public ObservableCollection<Staff> employeeData = new ObservableCollection<Staff>(); //holds all the staff members
         public ObservableCollection<ScheduleItem> selectedEmployeesScheduleItem = new ObservableCollection<ScheduleItem>(); //holds the selected staff members schedule and availabilities
-        public ObservableCollection<scheduleDataGridRow> scheduleDataGridRows = new ObservableCollection<scheduleDataGridRow>();
+        public ObservableCollection<string[]> scheduleDataGridRows = new ObservableCollection<string[]>();
 
         /// <summary>
         /// Holds data for a row in the availability & scheduled tables
@@ -72,13 +72,6 @@ namespace COMP4952
 
 
 
-        public struct scheduleDataGridRow
-        {
-
-            public string[] columnsAndValues { get; set; }
-            
-
-        }
 
 
 
@@ -257,6 +250,22 @@ namespace COMP4952
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public string[] dataGridRowValues { get; set; }
+
         /// <summary>
         /// Loads the visual availability for this staff member for the given date range.
         /// </summary>
@@ -294,7 +303,7 @@ namespace COMP4952
             int columns = 15; // 2 weeks. + 1 column to list time. 
 
             //create the time column
-            DataGridTextColumn timeColumn = new DataGridTextColumn();
+            DataGridTextColumn timeColumn = new DataGridTextColumn() {Binding= new Binding("[0]") };
             timeColumn.Header = "Time";
             fiveMinScheduleGrid.Columns.Add(timeColumn);
 
@@ -314,17 +323,17 @@ namespace COMP4952
             for (int fiveMinBlock = 0; fiveMinBlock < 24*60; fiveMinBlock += timeInterval)
             {
                 
-                scheduleDataGridRow newRow = new scheduleDataGridRow();
-                newRow.columnsAndValues = new string[columns+1];
+                
+                dataGridRowValues = new string[columns+1];
 
                 //Display the time in the time column every 60 minutes. 
                 if (fiveMinBlock % 60 == 0)
                 {
-                    newRow.columnsAndValues[0]= new TimeSpan(fiveMinBlock / 60, fiveMinBlock % 60, 0).ToString();
+                   dataGridRowValues[0]= new TimeSpan(fiveMinBlock / 60, fiveMinBlock % 60, 0).ToString();
                 }
                 else
                 {
-                    newRow.columnsAndValues[0] = "";
+                    dataGridRowValues[0] = "";
                 }
 
 
@@ -409,7 +418,7 @@ namespace COMP4952
 
 
 
-                    newRow.columnsAndValues[dayCounter] = display;
+                    dataGridRowValues[dayCounter] = display;
                         
                     dayCounter = dayCounter + 1;
 
@@ -417,7 +426,7 @@ namespace COMP4952
 
                 
 
-                scheduleDataGridRows.Add(newRow);
+                scheduleDataGridRows.Add(dataGridRowValues);
                 rowCounter = rowCounter + 1;
 
             }

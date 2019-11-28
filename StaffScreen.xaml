@@ -8,7 +8,9 @@
         mc:Ignorable="d"
         Title="StaffScreen">
 
-        <!-- THE OVERALL VIEW-->
+
+
+    <!-- THE OVERALL VIEW-->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -70,25 +72,25 @@
                     <!--<Setter Property="Foreground" Value="Transparent"/>-->
                     <Setter Property="FontSize" Value="10"/>
                     <Style.Triggers>
-                        
+
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
                                        Path=Content.Text}" Value="Available">
                             <Setter Property="Background" Value="Yellow"/>
-                            <Setter Property="Foreground" Value="Black"/>
+                            <Setter Property="Foreground" Value="Transparent"/>
          
                             
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
                                        Path=Content.Text}" Value="Scheduled">
                             <Setter Property="Background" Value="Green"/>
-                            <Setter Property="Foreground" Value="Black"/>
+                            <Setter Property="Foreground" Value="Transparent"/>
                        
 
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
                                        Path=Content.Text}" Value="-">
                             <Setter Property="Background" Value="Red"/>
-                            <Setter Property="Foreground" Value="Black"/>
+                            <Setter Property="Foreground" Value="Transparent"/>
     
                         </DataTrigger>
                        

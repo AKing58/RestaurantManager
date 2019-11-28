@@ -12,9 +12,14 @@ using System.Diagnostics;
 using System.Windows.Media;
 using System.Windows.Data;
 using System.Windows.Navigation;
+using System.Globalization;
 
 namespace COMP4952
 {
+
+
+
+
     /// <summary>
     /// Interaction logic for StaffScreen.xaml
     /// Eamonn Alphin
@@ -207,8 +212,8 @@ namespace COMP4952
 
             writeDebug("found " + thisDaysAvailabilties.Count + " available blocks");
 
-           //convert to struct
-           foreach(CurrentAvailabilities thisAvailability in thisDaysAvailabilties)
+            //convert to struct
+            foreach (CurrentAvailabilities thisAvailability in thisDaysAvailabilties)
             {
                 //availability start and end times
                 DateTime ast = thisAvailability.BlockStartTime;
@@ -216,7 +221,7 @@ namespace COMP4952
 
                 ScheduleItem thisScheduleItem = new ScheduleItem(ast, aet, null, null);
 
-                if(thisAvailability.CurrentSchedule.Count == 0)
+                if (thisAvailability.CurrentSchedule.Count == 0)
                 {
                     //staff is not scheduled for this availability.
                     selectedEmployeesScheduleItem.Add(thisScheduleItem);
@@ -250,17 +255,9 @@ namespace COMP4952
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+        /// <summary>
+        /// STruct to use to fill each cell in the schedule grid. 
+        /// </summary>
         public struct cellValue
         {
             public string type { get; set; }
@@ -385,15 +382,7 @@ namespace COMP4952
                     if (withinSchedule)
                     {
                         type = "scheduled";
-                        display = schedStart.ToShortTimeString();
-                        //check if the last addeded value was the same. 
-                        var lastRow = scheduleDataGridRows.ElementAt(rowCounter - 1);
-                        var lastRowSameColumn = lastRow[dayCounter];
-                        if(lastRowSameColumn.type == type)
-                        {
-                            display = "";
-                        }
-
+                        display = "Scheduled";                      
 
                     } else
                     {
@@ -413,15 +402,7 @@ namespace COMP4952
                         if (withinAvailability)
                         {
                             type = "available";
-                            display = availStart.ToShortTimeString();
-                            //check if the last addeded value was the same. 
-                            var lastRow = scheduleDataGridRows.ElementAt(rowCounter - 1);
-                            var lastRowSameColumn = lastRow[dayCounter];
-                            if (lastRowSameColumn.type == type)
-                            {
-                                display = "";
-                            }
-
+                            display = "Available";
 
                         }
                         else

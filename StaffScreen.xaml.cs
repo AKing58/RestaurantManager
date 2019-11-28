@@ -75,7 +75,7 @@ namespace COMP4952
         public struct scheduleDataGridRow
         {
 
-            public Dictionary<int, string> columnsAndValues { get; set; }
+            public string[] columnsAndValues { get; set; }
             
 
         }
@@ -315,16 +315,16 @@ namespace COMP4952
             {
                 
                 scheduleDataGridRow newRow = new scheduleDataGridRow();
-                newRow.columnsAndValues = new Dictionary<int, string>();
+                newRow.columnsAndValues = new string[columns+1];
 
                 //Display the time in the time column every 60 minutes. 
                 if (fiveMinBlock % 60 == 0)
                 {
-                    newRow.columnsAndValues.Add(0, new TimeSpan(fiveMinBlock / 60, fiveMinBlock % 60, 0).ToString());
+                    newRow.columnsAndValues[0]= new TimeSpan(fiveMinBlock / 60, fiveMinBlock % 60, 0).ToString();
                 }
                 else
                 {
-                    newRow.columnsAndValues.Add(0, "time");
+                    newRow.columnsAndValues[0] = "";
                 }
 
 
@@ -406,17 +406,10 @@ namespace COMP4952
 
                     }
 
-                    
 
 
-                    newRow.columnsAndValues.Add(dayCounter, display);
 
-                    foreach(KeyValuePair<int,string> column in newRow.columnsAndValues)
-                    {
-                        System.Console.WriteLine("Col: " + column.Key + ":" + column.Value);
-                    }
-                    
-
+                    newRow.columnsAndValues[dayCounter] = display;
                         
                     dayCounter = dayCounter + 1;
 

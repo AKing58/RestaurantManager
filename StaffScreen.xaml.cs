@@ -261,7 +261,11 @@ namespace COMP4952
 
 
 
-
+        struct cellValue
+        {
+            public string type { get; set; }
+            public string display { get; set; }
+        }
 
 
         public string[] dataGridRowValues { get; set; }
@@ -308,10 +312,10 @@ namespace COMP4952
             fiveMinScheduleGrid.Columns.Add(timeColumn);
 
 
-            //add all the columns. 
+            //add all the columns, bind them to their related column in the array.  
             for (int i = 1; i <= columns; i++)
             {
-                DataGridTextColumn thisColumn = new DataGridTextColumn();
+                DataGridTextColumn thisColumn = new DataGridTextColumn() {Binding = new Binding("["+i.ToString()+"]") };
                 thisColumn.Header = "Date";
                 fiveMinScheduleGrid.Columns.Add(thisColumn);
             }
@@ -320,6 +324,7 @@ namespace COMP4952
 
 
             //for each row
+            
             for (int fiveMinBlock = 0; fiveMinBlock < 24*60; fiveMinBlock += timeInterval)
             {
                 
@@ -361,12 +366,6 @@ namespace COMP4952
                     DateTime availEnd = new DateTime();
 
 
-                   
-
-
-
-
-
                     //foreach block of schedule in the selected employees scheduled dates. 
                     foreach (CurrentSchedule thisScheduleDate in thisSchedule)
                     {
@@ -384,8 +383,14 @@ namespace COMP4952
 
                     if (withinSchedule)
                     {
-                        display = "Scheduled";
+                        display = schedStart.ToShortTimeString();
                         //check if the last addeded value was the same. 
+                        var lastRow = scheduleDataGridRows.ElementAt(rowCounter - 1);
+                        var lastRowSameColumn = lastRow[dayCounter];
+                        if(lastRowSameColumn == display || lastRowSameColumn == "")
+                        {
+                            display = "";
+                        }
 
 
                     } else
@@ -405,7 +410,16 @@ namespace COMP4952
 
                         if (withinAvailability)
                         {
-                            display = "Available";
+                            display = availStart.ToShortTimeString();
+                            //check if the last addeded value was the same. 
+                            var lastRow = scheduleDataGridRows.ElementAt(rowCounter - 1);
+                            var lastRowSameColumn = lastRow[dayCounter];
+                            if (lastRowSameColumn == display || lastRowSameColumn == "")
+                            {
+                                display = "";
+                            }
+
+
                         }
                         else
                         {

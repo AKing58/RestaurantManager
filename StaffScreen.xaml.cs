@@ -69,8 +69,16 @@ namespace COMP4952
 
         }
 
+
+
+
         public struct WeeklyFiveMinutes
         {
+            public String time { get; set; }
+
+            public Dictionary<int, string> dayOfSchedule;
+            
+
             public String day0 { get; set; }
             public String day1 { get; set; }
             public String day2 { get; set; }
@@ -302,21 +310,33 @@ namespace COMP4952
             WeeklyFiveMinutes theseFiveMinutes = new WeeklyFiveMinutes();
 
             int rowCounter = 0;
-            for (int fiveMinBlock = 0; fiveMinBlock < 24*60; fiveMinBlock += 5)
+            int timeInterval = 30; //the number of minutes each row is, so 30 means 30 minute intervals. 
+
+          
+
+            //for each row
+            for (int fiveMinBlock = 0; fiveMinBlock < 24*60; fiveMinBlock += timeInterval)
             {
                 DateTime startDay = new DateTime(thisRange.Start.Year, thisRange.Start.Month, thisRange.Start.Day, fiveMinBlock / 60, fiveMinBlock % 60, 0);
                 DateTime endDay = new DateTime(thisRange.End.Year, thisRange.End.Month, thisRange.End.Day, fiveMinBlock / 60, fiveMinBlock % 60, 0);
                 
                 int dayCounter = 0;
                
-                
+
+                //for each column. 
                 for (DateTime dateTime = startDay; dateTime <= endDay; dateTime = dateTime.Add(oneDay))
                 {
                     //Debug.WriteLine("This time: " + dateTime.ToString());
                     
                     bool withinSchedule = false;
+                    DateTime schedStart = new DateTime();
+                    DateTime schedEnd = new DateTime();
+                    DateTime availStart = new DateTime();
+                    DateTime availEnd = new DateTime();
+                    
 
-                    foreach(CurrentSchedule thisScheduleDate in thisSchedule)
+                    //foreach block of schedule in the selected employees scheduled dates. 
+                    foreach (CurrentSchedule thisScheduleDate in thisSchedule)
                     {
                         CalendarDateRange thisBlock = new CalendarDateRange(thisScheduleDate.BlockStartTime, thisScheduleDate.BlockEndTime);
                         
@@ -324,13 +344,20 @@ namespace COMP4952
                         {
                             //Debug.WriteLine("Within Shcedule");
                             withinSchedule = true;
-                           
+                            schedStart = thisBlock.Start;
+                            schedEnd = thisBlock.End;
+                            
                         }
                     }
 
                     if (withinSchedule)
                     {
                         display = "Scheduled";
+                        //check if the last addeded value was the same. 
+                        var lastEntryRow = fiveMinuteRows.ElementAt(fiveMinuteRows.Count - 1);   
+                        var lastEntryForThisDay = lastEntryRow.da
+                        
+
                     } else
                     {
                         bool withinAvailability = false;
@@ -341,23 +368,39 @@ namespace COMP4952
                             {
                                 //Debug.WriteLine("Within AVailability");
                                 withinAvailability = true;
+                                availStart = thisBlock.Start;
+                                availEnd = thisBlock.End;
                             }
                         }
 
                         if (withinAvailability)
                         {
                             display = "Available";
+                            
+                           
                         }
                         else
                         {
                             display = "-";
+
                         }
 
                     }
 
+                    //Display the time in the time column every 60 minutes. 
+                    if(fiveMinBlock%60 == 0)
+                    {
+                        theseFiveMinutes.time = new TimeSpan(fiveMinBlock / 60, fiveMinBlock % 60, 0).ToString();
+                    }
+                    else
+                    {
+                        theseFiveMinutes.time = "";
+                    }
+                   
 
                     
 
+                    //determine which column we are on. 
                     switch (dayCounter)
                     {
                         case 0:

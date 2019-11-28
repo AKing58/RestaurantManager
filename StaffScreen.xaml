@@ -4,9 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:COMP4952"
+        d:DesignHeight="768" d:DesignWidth="1024"
         mc:Ignorable="d"
-        Title="StaffScreen" Height="768" Width="1024    ">
+        Title="StaffScreen">
 
+        <!-- THE OVERALL VIEW-->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -18,6 +20,7 @@
             <RowDefinition Height="409*"/>
         </Grid.RowDefinitions>
 
+           <!-- The top menu bar -->
         <DockPanel Grid.ColumnSpan="2" LastChildFill="False" Height="20" VerticalAlignment="Center">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Menu">
@@ -29,7 +32,7 @@
             </Menu>
         </DockPanel>
 
-      
+      <!--The employee grid -->
         <DataGrid Grid.Column="0" Grid.Row="1" CanUserAddRows="True" Name="gridEmployees" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionUnit="FullRow" SelectionChanged="gridEmployees_SelectionChanged" Grid.ColumnSpan="2" Margin="0,0,341,0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>
@@ -57,30 +60,34 @@
 
        
 
-
-        <DataGrid Name="fiveMinScheduleGrid" Grid.Column="0"  Grid.ColumnSpan="2" RowHeight="5" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{Binding}">
+        <!-- the schedule grid-->
+        <DataGrid Name="fiveMinScheduleGrid" Grid.Column="0"  Grid.ColumnSpan="2" RowHeight="15" AutoGenerateColumns="False" Grid.Row="2" ItemsSource="{Binding}">
 
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
-                    <Setter Property="Margin" Value="0,-2,0,-2"/>
+                    <!--<Setter Property="Margin" Value="0,-2,0,-2"/>-->
                     <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="Foreground" Value="Transparent"/>
+                    <!--<Setter Property="Foreground" Value="Transparent"/>-->
+                    <Setter Property="FontSize" Value="10"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
                                        Path=Content.Text}" Value="Available">
                             <Setter Property="Background" Value="Yellow"/>
+                            <Setter Property="Foreground" Value="Black"/>
          
                             
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
                                        Path=Content.Text}" Value="Scheduled">
                             <Setter Property="Background" Value="Green"/>
+                            <Setter Property="Foreground" Value="Black"/>
                        
 
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
                                        Path=Content.Text}" Value="-">
                             <Setter Property="Background" Value="Red"/>
+                            <Setter Property="Foreground" Value="Black"/>
     
                         </DataTrigger>
                     </Style.Triggers>
@@ -88,6 +95,7 @@
             </DataGrid.Resources>
 
             <DataGrid.Columns>
+                <DataGridTextColumn Header="Time" Binding="{Binding time}"/>
                 <DataGridTextColumn Header="Today" Binding="{Binding day0}"/>
                 <DataGridTextColumn Header="Tomorrow" Binding="{Binding day1}"/>
                 <DataGridTextColumn Header="Next Day" Binding="{Binding day2}"/>

@@ -35,6 +35,7 @@ namespace COMP4952
             InitializeComponent();
             LoadWalls();
             LoadTableInfos();
+            
         }
 
         /// <summary>

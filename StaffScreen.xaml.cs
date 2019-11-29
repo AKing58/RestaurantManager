@@ -523,10 +523,15 @@ namespace COMP4952
             var item = (DataGrid)contextMenu.PlacementTarget;
 
             //get the cells (the row) that was selected.
-            Staff staffToDelete = (Staff)item.SelectedCells[0].Item;
+            Staff staffToEdit= (Staff)item.SelectedCells[0].Item;
+
+            //call a new employee popup with the staff member data. 
+            var newEmployeePopup = new NewEmployeePopup(this, staffToEdit);
+            newEmployeePopup.Show();
 
 
         }
+
 
         /// <summary>
         /// handles the user right clicking and choosing "delete" on the staff grid. 
@@ -535,6 +540,7 @@ namespace COMP4952
         /// <param name="e"></param>
         private void MenuItemDelete_Click(object sender, RoutedEventArgs e)
         {
+
 
             writeDebug("Deleting staff member");
             
@@ -550,11 +556,44 @@ namespace COMP4952
             //get the cells (the row) that was selected.
             Staff staffToDelete = (Staff)item.SelectedCells[0].Item;
 
-            //Remove the toDeleteFromBindedList object from your ObservableCollection
-            employeeData.Remove(staffToDelete);
+            confirmDeleteEmployee(staffToDelete);
 
-            //remove the object from entity framework
-            db.Staff.Remove(staffToDelete);
+        }
+
+
+        /// <summary>
+        /// Confirms the deletion of an employee. 
+        /// </summary>
+        /// <param name="staffToDelete"></param>
+        private void confirmDeleteEmployee(Staff staffToDelete)
+        {
+
+            string displayMessage = "Are you sure you want to delete: \n" + staffToDelete.Id + ":" + staffToDelete.FirstName + " " + staffToDelete.LastName + "?";
+
+
+            MessageBoxResult result = MessageBox.Show(displayMessage, "Alert", MessageBoxButton.YesNo);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+
+                    //Remove the toDeleteFromBindedList object from your ObservableCollection
+                    employeeData.Remove(staffToDelete);
+
+                    //remove the object from entity framework
+                    db.Staff.Remove(staffToDelete);
+                    db.SaveChanges();
+                    MessageBox.Show("Employee Deleted.");
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
+
+
+
+
+
+
+
 
         }
 

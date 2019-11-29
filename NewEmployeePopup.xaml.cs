@@ -19,14 +19,34 @@ namespace COMP4952
 
         private Models.COMP4952PROJECTContext db;
         public HashSet<Title> titles = new HashSet<Title>();
-        StaffScreen ss;
-        public NewEmployeePopup(StaffScreen staffScreen)
+        StaffScreen ss; //the staff screen which created this popup. 
+        Staff staffToEdit;
+
+        public NewEmployeePopup(StaffScreen staffScreen, Staff existingStaffToEdit = null)
         {
             InitializeComponent();
             db = new Models.COMP4952PROJECTContext(); //initialize the DB context
             titles = getTitles();
             titleChoicesCB.ItemsSource = titles;
             ss = staffScreen;
+
+            staffToEdit = existingStaffToEdit;
+
+            if (staffToEdit != null)
+            {
+                firstNameBox.Text = staffToEdit.FirstName;
+                lastNameBox.Text = staffToEdit.LastName;
+                phoneBox.Text = staffToEdit.Phone;
+
+                System.Diagnostics.Debug.WriteLine("Title: " + staffToEdit.Title.Title1);
+                Title matchingTitle = titles.Where((thisTitle) => thisTitle.Title1 == staffToEdit.Title.Title1).First();
+                int titleIndex = titleChoicesCB.Items.IndexOf(matchingTitle);
+                System.Diagnostics.Debug.WriteLine("title indedx: " + titleIndex);
+
+                titleChoicesCB.SelectedIndex = titleIndex;
+                rateField.Text = staffToEdit.Rate.ToString();
+            }
+
         }
 
 
@@ -63,25 +83,51 @@ namespace COMP4952
         /// <param name="e"></param>
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            string messageString = "";
 
-            //create a new staff member
-            Staff thisStaff = new Staff();
-            thisStaff.FirstName = firstNameBox.Text;
-            thisStaff.LastName = lastNameBox.Text;
-            thisStaff.Phone = formatPhoneNumber(phoneBox.Text);
+            if (staffToEdit != null)
+            {
+                //save existing staff memeber
+                //create a new staff member
+                
+                staffToEdit.FirstName = firstNameBox.Text;
+                staffToEdit.LastName = lastNameBox.Text;
+                staffToEdit.Phone = formatPhoneNumber(phoneBox.Text);
 
-            thisStaff.Title = titleChoicesCB.SelectedItem as Title;
-            thisStaff.Rate = decimal.Parse(rateField.Text);
+                staffToEdit.Title = titleChoicesCB.SelectedItem as Title;
+                staffToEdit.Rate = decimal.Parse(rateField.Text);
+                db.Staff.Update(staffToEdit);
+                messageString = "Staff Member Updated!";
 
-            db.Staff.Add(thisStaff);
+            }
+            else
+            {
+
+                //create a new staff member
+                Staff thisStaff = new Staff();
+                thisStaff.FirstName = firstNameBox.Text;
+                thisStaff.LastName = lastNameBox.Text;
+                thisStaff.Phone = formatPhoneNumber(phoneBox.Text);
+
+                thisStaff.Title = titleChoicesCB.SelectedItem as Title;
+                thisStaff.Rate = decimal.Parse(rateField.Text);
+
+                db.Staff.Add(thisStaff);
+                messageString = "Staff Member Added!";
+
+            }
             db.SaveChanges();
+
+            MessageBox.Show(messageString);
+
+
             ss.RefreshStaff();
             this.Close();
         }
 
 
         /// <summary>
-        /// Converts a 10 character phone number into (306)-999-9999 format. 
+        /// Removes characters from phone string.
         /// </summary>
         /// <param name="rawPhoneString"></param>
         /// <returns></returns>
@@ -91,9 +137,7 @@ namespace COMP4952
 
             try
             {
-                string strphoneNumber = new string(rawPhoneString.Where(c => char.IsDigit(c)).ToArray());
-                int intPhoneNumber = int.Parse(strphoneNumber);
-                returnString = String.Format("{0:(###) ###-####}", intPhoneNumber);
+                returnString = new string(rawPhoneString.Where(c => char.IsDigit(c)).ToArray());
             }
             catch (Exception err)
             {

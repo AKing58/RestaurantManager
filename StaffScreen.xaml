@@ -37,12 +37,20 @@
       <!--The employee grid -->
         <DataGrid Grid.Column="0" Grid.Row="1" CanUserAddRows="True" Name="gridEmployees" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionUnit="FullRow" SelectionChanged="gridEmployees_SelectionChanged" Grid.ColumnSpan="2" Margin="0,0,341,0">
             <DataGrid.Columns>
+                <DataGridTextColumn Header="IDName" Binding="{Binding Id}"/>
                 <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>
                 <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"/>
                 <DataGridTextColumn Header="Title" Binding="{Binding Title.Title1}"/>
                 <DataGridTextColumn Header="Rate" Binding="{Binding Rate}"/>
                 <DataGridTextColumn Header="Phone" Binding="{Binding Phone}"/>
             </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Edit" Click="MenuItemEdit_Click"/>
+                    <MenuItem Header="Delete" Click="MenuItemDelete_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+
         </DataGrid>
 
 

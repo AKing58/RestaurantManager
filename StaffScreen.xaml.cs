@@ -491,10 +491,113 @@ namespace COMP4952
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GoToHome_Click(object sender, RoutedEventArgs e)
         {
             NavigationService ns = NavigationService.GetNavigationService(this);
             ns.Navigate(new Uri("Home.xaml", UriKind.Relative));
         }
+
+
+        /// <summary>
+        /// handles the user right clicking and choosing "edit" on the staff grid.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItemEdit_Click(object sender, RoutedEventArgs e)
+        {
+            
+            writeDebug("Editing staff member");
+
+            //Get the MenuItem
+            var menuItem = (MenuItem)sender;
+
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+
+            //Find the item that was right clicked. 
+            var item = (DataGrid)contextMenu.PlacementTarget;
+
+            //get the cells (the row) that was selected.
+            Staff staffToEdit= (Staff)item.SelectedCells[0].Item;
+
+            //call a new employee popup with the staff member data. 
+            var newEmployeePopup = new NewEmployeePopup(this, staffToEdit);
+            newEmployeePopup.Show();
+
+
+        }
+
+
+        /// <summary>
+        /// handles the user right clicking and choosing "delete" on the staff grid. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItemDelete_Click(object sender, RoutedEventArgs e)
+        {
+
+
+            writeDebug("Deleting staff member");
+            
+            //Get the MenuItem
+            var menuItem = (MenuItem)sender;
+
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+
+            //Find the item that was right clicked. 
+            var item = (DataGrid)contextMenu.PlacementTarget;
+
+            //get the cells (the row) that was selected.
+            Staff staffToDelete = (Staff)item.SelectedCells[0].Item;
+
+            confirmDeleteEmployee(staffToDelete);
+
+        }
+
+
+        /// <summary>
+        /// Confirms the deletion of an employee. 
+        /// </summary>
+        /// <param name="staffToDelete"></param>
+        private void confirmDeleteEmployee(Staff staffToDelete)
+        {
+
+            string displayMessage = "Are you sure you want to delete: \n" + staffToDelete.Id + ":" + staffToDelete.FirstName + " " + staffToDelete.LastName + "?";
+
+
+            MessageBoxResult result = MessageBox.Show(displayMessage, "Alert", MessageBoxButton.YesNo);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+
+                    //Remove the toDeleteFromBindedList object from your ObservableCollection
+                    employeeData.Remove(staffToDelete);
+
+                    //remove the object from entity framework
+                    db.Staff.Remove(staffToDelete);
+                    db.SaveChanges();
+                    MessageBox.Show("Employee Deleted.");
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
+
+
+
+
+
+
+
+
+        }
+
+
+
     }
 }

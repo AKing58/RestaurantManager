@@ -376,30 +376,68 @@ namespace COMP4952
 
 
         /// <summary>
-        /// Checks if a given availability falls within an existing availability on the same day. 
+        /// Checks if a given availability falls within an existing availability
         /// </summary>
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
         /// <returns></returns>
-        private bool validUniqueAvailability(CurrentAvailabilities thisAvailability)
+        private bool validAvailability(CurrentAvailabilities thisAvailability)
         {
-           
-            //check for avaialbilities for this staff member that encompass the given availability
-            HashSet<CurrentAvailabilities> existingAvailabilities = db.CurrentAvailabilities
-                                                            .Where(CA=>CA.StaffId == thisAvailability.StaffId)
-                                                            .Where(CA => CA.BlockStartTime <= thisAvailability.BlockStartTime)
-                                                            .Where(CA => CA.BlockEndTime >= thisAvailability.BlockEndTime)
-                                                            .ToHashSet();
 
-            if(existingAvailabilities.Count > 0)
+
+
+            //check for existing availabilities that overlap with the start time of the new one
+            int startTimeOverlap = db.CurrentAvailabilities
+                                                             .Where(CA => CA.StaffId == thisAvailability.StaffId)
+                                                             .Where(CA => thisAvailability.BlockStartTime >= CA.BlockStartTime)
+                                                             .Where(CA => thisAvailability.BlockStartTime <= CA.BlockEndTime)
+                                                             .Count();
+
+            if (startTimeOverlap != 0)
             {
-                return false; //the availability is NOT unique. 
+                return false;
             }
-            else
-            {
-                return true; //the availability is unique.
+            else {
+
+                //check fo existing availabilities that overlap iwth the end time of the new one. 
+                int endTimeOverlap = db.CurrentAvailabilities
+                                                                .Where(CA => CA.StaffId == thisAvailability.StaffId)
+                                                                .Where(CA => thisAvailability.BlockEndTime >= CA.BlockStartTime)
+                                                                .Where(CA => thisAvailability.BlockEndTime <= CA.BlockEndTime)
+                                                                .Count();
+
+                if (endTimeOverlap != 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    //check for existing availabilities that occur within the start and end times of the new one. 
+                    int newEncompassesOld = db.CurrentAvailabilities
+                                                                        .Where(CA => CA.StaffId == thisAvailability.StaffId)
+                                                                        .Where(CA => thisAvailability.BlockStartTime <= CA.BlockStartTime)
+                                                                        .Where(CA => thisAvailability.BlockEndTime >= CA.BlockEndTime)
+                                                                        .Count();
+
+                    if(newEncompassesOld != 0)
+                    {
+                        return false;
+                    }else
+                    {
+                        return true;
+                    }
+
+                }
+      
             }
+
         }
+
+
+
+
+
+
 
         /// <summary>
         /// Ensure the schedule falls within it's availabilities time block
@@ -432,13 +470,37 @@ namespace COMP4952
         /// <param name="e"></param>
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
+
+            string message = "";
+
             if (usingExistingAvailability)
             {
                 if (newScheduleItem != null)
                 {
                     Debug.WriteLine("using existing availability: " + newScheduleItem.AvailabilityId);
+                    //get the mathcing availability
+
+                    
+                    
                     newScheduleItem.AvailabilityId = existingAvailability.Id;
-                    db.CurrentSchedule.Add(newScheduleItem);
+                    newScheduleItem.Availability = existingAvailability;
+                    
+
+
+                    //verify the schedule.
+                    if (validSchedule(newScheduleItem)){
+                        db.CurrentSchedule.Add(newScheduleItem);
+                        message = "Created a new schedule: \n" +
+                            "" + newScheduleItem.BlockStartTime.ToShortDateString() + " " + newScheduleItem.BlockStartTime.ToShortTimeString() + "\n" +
+                            "to\n" +
+                            "" + newScheduleItem.BlockEndTime.ToShortDateString() + " " + newScheduleItem.BlockEndTime.ToShortTimeString();
+                    }
+                    else
+                    {
+                        MessageBox.Show("This schedule is not within an availability.\n Please check your entry again.","Error");
+                    }
+
+                    
                 }
                 else
                 {
@@ -450,25 +512,54 @@ namespace COMP4952
             }
             else
             {
-                //save the new availability first
-                db.CurrentAvailabilities.Add(newAvailability);
-                Debug.WriteLine("Made a new availability: " + newAvailability.BlockStartTime.ToString() + " - " + newAvailability.BlockEndTime.ToString());
-                db.SaveChanges(); //save the new availability so we can get it's ID.
 
-                //check if we are saving a new schedule too. 
-                if (newScheduleItem != null)
+                // verify the new availability
+                if (validAvailability(newAvailability)) {
+
+                    db.CurrentAvailabilities.Add(newAvailability);
+                    Debug.WriteLine("Made a new availability: " + newAvailability.BlockStartTime.ToString() + " - " + newAvailability.BlockEndTime.ToString());
+                    db.SaveChanges(); //save the new availability so we can get it's ID.
+
+                    //check if we are saving a new schedule too. 
+                    if (newScheduleItem != null)
+                    {
+
+                        //validate the new schedule
+                        if (validSchedule(newScheduleItem)) {
+
+                            newScheduleItem.AvailabilityId = newAvailability.Id;
+                            db.CurrentSchedule.Add(newScheduleItem);
+                            
+                            message = "Created a new Availability and Schedule: \n" +
+                                "Available: \n" +
+                            "" + newAvailability.BlockStartTime.ToShortDateString() + " " + newAvailability.BlockStartTime.ToShortTimeString() + "\n" +
+                            "to\n" +
+                            "" + newAvailability.BlockEndTime.ToShortDateString() + " " + newAvailability.BlockEndTime.ToShortTimeString() +
+                            "and Scheduled: \n"  +
+                            "" + newScheduleItem.BlockStartTime.ToShortDateString() + " " + newScheduleItem.BlockStartTime.ToShortTimeString() + "\n" +
+                            "to\n" +
+                            "" + newScheduleItem.BlockEndTime.ToShortDateString() + " " + newScheduleItem.BlockEndTime.ToShortTimeString();
+                        }
+
+                    }else
+                    {
+                        message = "Created a new Availability: \n" +
+                            "" + newAvailability.BlockStartTime.ToShortDateString() + " " + newAvailability.BlockStartTime.ToShortTimeString() + "\n" +
+                            "to\n" +
+                            "" + newAvailability.BlockEndTime.ToShortDateString() + " " + newAvailability.BlockEndTime.ToShortTimeString();
+                    }
+
+                }
+                else
                 {
-
-                    newScheduleItem.AvailabilityId = newAvailability.Id;
-                    db.CurrentSchedule.Add(newScheduleItem);
-                    Debug.WriteLine("Made a new Schedule: " + newScheduleItem.BlockStartTime.ToString() + " - " + newScheduleItem.BlockEndTime.ToString());
+                    MessageBox.Show("New Availability overlaps with an existing availability. \nPlease adjust your dates or times, or delete the orignal availability.", "Error");
                 }
 
             }
 
             db.SaveChanges();
 
-            Debug.WriteLine("Saved new availability/schedule.");
+            MessageBox.Show(message, "Done!");
 
 
             this.Close();

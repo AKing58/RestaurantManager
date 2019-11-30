@@ -44,18 +44,26 @@ namespace COMP4952
             public string availabilityString { get; set; } //the display string for the available block
             public string scheduleString { get; set; } //the display string for the scheduled block
 
+            public CurrentAvailabilities thisAvailability; //the availability
+            public CurrentSchedule thisSchedule; //the schedule, if it exists. 
 
-            public ScheduleItem(DateTime ast, DateTime aet, DateTime? sst, DateTime? set)
+
+            public ScheduleItem(CurrentAvailabilities ta, CurrentSchedule ts = null)
             {
-                availableStartTime = ast;
-                availableEndTime = aet;
+
+                thisAvailability = ta;
+                thisSchedule = ts;
+
+                availableStartTime = thisAvailability.BlockStartTime;
+                availableEndTime = thisAvailability.BlockEndTime;
+
 
                 //if sst is null, set is null, and vice versa
                 
-                if(sst != null)
+                if(ts != null)
                 {
-                    scheduleStartTime = (DateTime)sst;
-                    scheduleEndTime = (DateTime)set;
+                    scheduleStartTime = thisSchedule.BlockStartTime;
+                    scheduleEndTime = (DateTime)thisSchedule.BlockEndTime;
                     scheduleString = scheduleStartTime.ToShortTimeString() + " - " + scheduleEndTime.ToShortTimeString();
                 } else
                 {
@@ -176,6 +184,7 @@ namespace COMP4952
 
         }
 
+
         private void loadEmployeeData(Staff thisStaff)
         {
             writeDebug("Chosen staff:" + thisStaff.LastName);
@@ -216,10 +225,8 @@ namespace COMP4952
             foreach (CurrentAvailabilities thisAvailability in thisDaysAvailabilties)
             {
                 //availability start and end times
-                DateTime ast = thisAvailability.BlockStartTime;
-                DateTime aet = thisAvailability.BlockEndTime;
 
-                ScheduleItem thisScheduleItem = new ScheduleItem(ast, aet, null, null);
+                ScheduleItem thisScheduleItem = new ScheduleItem(thisAvailability);
 
                 if (thisAvailability.CurrentSchedule.Count == 0)
                 {
@@ -233,12 +240,8 @@ namespace COMP4952
                     foreach (CurrentSchedule thisSchedule in thisAvailability.CurrentSchedule)
                     {
 
-                        //scheduled start and end times
-                        DateTime sst = thisSchedule.BlockStartTime;
-                        DateTime set = thisSchedule.BlockEndTime;
-
                         //create the schedule item
-                        thisScheduleItem = new ScheduleItem(ast, aet, sst, set);
+                        thisScheduleItem = new ScheduleItem(thisSchedule.Availability, thisSchedule);
 
                         //add it to the list of schedule items. 
                         selectedEmployeesScheduleItem.Add(thisScheduleItem);
@@ -588,16 +591,49 @@ namespace COMP4952
                     break;
             }
 
-
-
-
-
-
-
-
         }
 
 
+        /// <summary>
+        /// Handles the user deleting an availability
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteAvailability_Click(object sender, RoutedEventArgs e)
+        {
+            writeDebug("Deleting Availability");
+
+            //Get the MenuItem
+            var menuItem = (MenuItem)sender;
+
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+
+            //Find the item that was right clicked. 
+            var item = (DataGrid)contextMenu.PlacementTarget;
+
+            //get the cells (the row) that was selected.
+            ScheduleItem ScheduleItemToDelete = (ScheduleItem)item.SelectedCells[0].Item;
+            
+            CurrentAvailabilities availabilityToDelete = ScheduleItemToDelete.
+
+
+            confirmDeleteAvailability(ScheduleItemToDelete);
+        }
+
+
+        private void confrimDeleteAvailability(ScheduleItem )
+
+
+        /// <summary>
+        /// Handles the user deleting an scheudle
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteSchedule_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
 
     }
 }

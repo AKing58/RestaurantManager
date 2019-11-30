@@ -176,7 +176,6 @@ namespace COMP4952
             }
             else
             {
-                writeDebug("It's null");
                 AddAvailSchedBtn.IsEnabled = false;
             }
             
@@ -204,7 +203,7 @@ namespace COMP4952
 
 
         /// <summary>
-        /// Loads the given staff members availability and schedule for a given date.
+        /// Loads the given staff members list of availability and schedule for a given date.
         /// </summary>
         /// <param name="thisStaff">the staff object to view</param>
         /// <param name="thisDate">The date to view</param>
@@ -253,7 +252,6 @@ namespace COMP4952
             //bind the list to the datagrid
             DaysAvailabilityGrid.Items.Refresh();
 
-
         }
 
 
@@ -277,7 +275,9 @@ namespace COMP4952
         /// <param name="thisRange">the date range to view</param>
         private void loadSelectedEmployeesSchedule(Staff thisStaff, CalendarDateRange thisRange)
         {
+            
             scheduleDataGridRows.Clear();
+            fiveMinScheduleGrid.Items.Refresh();
             HashSet<CurrentAvailabilities> theseAvailabilities = db.CurrentAvailabilities
                                                                         .Where(CA => CA.StaffId == thisStaff.Id)
                                                                         .Where(CA => CA.BlockStartTime.Date >= thisRange.Start.Date)
@@ -461,7 +461,10 @@ namespace COMP4952
         }
 
         
-
+        /// <summary>
+        /// Used for debugging
+        /// </summary>
+        /// <param name="message"></param>
         private void writeDebug(string message)
         {
             System.Diagnostics.Debug.WriteLine(message);
@@ -614,15 +617,45 @@ namespace COMP4952
 
             //get the cells (the row) that was selected.
             ScheduleItem ScheduleItemToDelete = (ScheduleItem)item.SelectedCells[0].Item;
-            
-            CurrentAvailabilities availabilityToDelete = ScheduleItemToDelete.
+
+            CurrentAvailabilities availabilityToDelete = ScheduleItemToDelete.thisAvailability;
 
 
-            confirmDeleteAvailability(ScheduleItemToDelete);
+            confirmDeleteAvailability(availabilityToDelete);
         }
 
 
-        private void confrimDeleteAvailability(ScheduleItem )
+        /// <summary>
+        /// Confirms if the user wants to delete the given availabilities. 
+        /// </summary>
+        /// <param name="itemToDelete"></param>
+        private void confirmDeleteAvailability(CurrentAvailabilities itemToDelete)
+        {
+
+            string startString = itemToDelete.BlockStartTime.ToShortDateString() + " " + itemToDelete.BlockStartTime.ToShortTimeString();
+            string endString = itemToDelete.BlockEndTime.ToShortDateString() + " " + itemToDelete.BlockEndTime.ToShortTimeString();
+
+
+            string displayMessage = "Are you sure you want to delete: \n" + startString + " : " + endString  + "\n and related schedules?";
+
+
+            MessageBoxResult result = MessageBox.Show(displayMessage, "Alert", MessageBoxButton.YesNo);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+
+                    //remove the object from entity framework
+                    db.CurrentAvailabilities.Remove(itemToDelete);
+                    db.SaveChanges();
+                    MessageBox.Show("Availability and Schedules Deleted.");
+                    loadEmployeeData(SelectedStaff);
+
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
+
+        }
 
 
         /// <summary>
@@ -632,8 +665,61 @@ namespace COMP4952
         /// <param name="e"></param>
         private void DeleteSchedule_Click(object sender, RoutedEventArgs e)
         {
+            writeDebug("Deleting Schedule");
 
+            //Get the MenuItem
+            var menuItem = (MenuItem)sender;
+
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+
+            //Find the item that was right clicked. 
+            var item = (DataGrid)contextMenu.PlacementTarget;
+
+            //get the cells (the row) that was selected.
+            ScheduleItem ScheduleItemToDelete = (ScheduleItem)item.SelectedCells[0].Item;
+
+            CurrentSchedule scheduleToDelete = ScheduleItemToDelete.thisSchedule;
+
+
+            confirmDeleteSchedule(scheduleToDelete);
         }
+
+
+        /// <summary>
+        /// Confirms if the user wants to delete the given schedule. 
+        /// </summary>
+        /// <param name="itemToDelete"></param>
+        private void confirmDeleteSchedule(CurrentSchedule itemToDelete)
+        {
+            if(itemToDelete != null)
+            {
+                string startString = itemToDelete.BlockStartTime.ToShortDateString() + " " + itemToDelete.BlockStartTime.ToShortTimeString();
+                string endString = itemToDelete.BlockEndTime.ToShortDateString() + " " + itemToDelete.BlockEndTime.ToShortTimeString();
+
+
+                string displayMessage = "Are you sure you want to delete: \n" + startString + " : " + endString + "?";
+
+
+                MessageBoxResult result = MessageBox.Show(displayMessage, "Alert", MessageBoxButton.YesNo);
+                switch (result)
+                {
+                    case MessageBoxResult.Yes:
+
+                        //remove the object from entity framework
+                        db.CurrentSchedule.Remove(itemToDelete);
+                        db.SaveChanges();
+                        MessageBox.Show("Schedule Deleted.");
+                        loadEmployeeData(SelectedStaff);
+
+                        break;
+                    case MessageBoxResult.No:
+                        break;
+                }
+            }
+           
+        }
+
 
     }
 }

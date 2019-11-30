@@ -44,18 +44,26 @@ namespace COMP4952
             public string availabilityString { get; set; } //the display string for the available block
             public string scheduleString { get; set; } //the display string for the scheduled block
 
+            public CurrentAvailabilities thisAvailability; //the availability
+            public CurrentSchedule thisSchedule; //the schedule, if it exists. 
 
-            public ScheduleItem(DateTime ast, DateTime aet, DateTime? sst, DateTime? set)
+
+            public ScheduleItem(CurrentAvailabilities ta, CurrentSchedule ts = null)
             {
-                availableStartTime = ast;
-                availableEndTime = aet;
+
+                thisAvailability = ta;
+                thisSchedule = ts;
+
+                availableStartTime = thisAvailability.BlockStartTime;
+                availableEndTime = thisAvailability.BlockEndTime;
+
 
                 //if sst is null, set is null, and vice versa
                 
-                if(sst != null)
+                if(ts != null)
                 {
-                    scheduleStartTime = (DateTime)sst;
-                    scheduleEndTime = (DateTime)set;
+                    scheduleStartTime = thisSchedule.BlockStartTime;
+                    scheduleEndTime = (DateTime)thisSchedule.BlockEndTime;
                     scheduleString = scheduleStartTime.ToShortTimeString() + " - " + scheduleEndTime.ToShortTimeString();
                 } else
                 {
@@ -96,7 +104,8 @@ namespace COMP4952
             gridEmployees.SelectionMode = DataGridSelectionMode.Single;
 
             DaysAvailabilityGrid.ItemsSource = selectedEmployeesScheduleItem;
-            
+
+            buildVisualScheduleDataGrid();
             fiveMinScheduleGrid.IsReadOnly = true;
             fiveMinScheduleGrid.SelectionMode = DataGridSelectionMode.Single;
             fiveMinScheduleGrid.ItemsSource = scheduleDataGridRows;
@@ -168,13 +177,13 @@ namespace COMP4952
             }
             else
             {
-                writeDebug("It's null");
                 AddAvailSchedBtn.IsEnabled = false;
             }
             
 
 
         }
+
 
         private void loadEmployeeData(Staff thisStaff)
         {
@@ -194,8 +203,18 @@ namespace COMP4952
         }
 
 
+
+        public void reloadScheduleAndAvailabilityTables(Staff thisStaff, CalendarDateRange thisDateRange)
+        {
+            writeDebug("Reloading shedule and availability tables");
+            loadSelectedStaffsAvailabilityAndScheduleForDate(thisStaff, thisDateRange.Start);
+            loadSelectedEmployeesSchedule(thisStaff, thisDateRange);
+        }
+        
+
+
         /// <summary>
-        /// Loads the given staff members availability and schedule for a given date.
+        /// Loads the given staff members list of availability and schedule for a given date.
         /// </summary>
         /// <param name="thisStaff">the staff object to view</param>
         /// <param name="thisDate">The date to view</param>
@@ -216,10 +235,8 @@ namespace COMP4952
             foreach (CurrentAvailabilities thisAvailability in thisDaysAvailabilties)
             {
                 //availability start and end times
-                DateTime ast = thisAvailability.BlockStartTime;
-                DateTime aet = thisAvailability.BlockEndTime;
 
-                ScheduleItem thisScheduleItem = new ScheduleItem(ast, aet, null, null);
+                ScheduleItem thisScheduleItem = new ScheduleItem(thisAvailability);
 
                 if (thisAvailability.CurrentSchedule.Count == 0)
                 {
@@ -233,12 +250,8 @@ namespace COMP4952
                     foreach (CurrentSchedule thisSchedule in thisAvailability.CurrentSchedule)
                     {
 
-                        //scheduled start and end times
-                        DateTime sst = thisSchedule.BlockStartTime;
-                        DateTime set = thisSchedule.BlockEndTime;
-
                         //create the schedule item
-                        thisScheduleItem = new ScheduleItem(ast, aet, sst, set);
+                        thisScheduleItem = new ScheduleItem(thisSchedule.Availability, thisSchedule);
 
                         //add it to the list of schedule items. 
                         selectedEmployeesScheduleItem.Add(thisScheduleItem);
@@ -250,8 +263,34 @@ namespace COMP4952
             //bind the list to the datagrid
             DaysAvailabilityGrid.Items.Refresh();
 
-
         }
+
+
+        /// <summary>
+        /// Sets up the columns of the visual scheduler
+        /// </summary>
+        private void buildVisualScheduleDataGrid()
+        {
+           
+            TimeSpan oneDay = new TimeSpan(24, 0, 0);
+
+            int columns = 15; // 2 weeks. + 1 column to list time. 
+
+            //create the time column
+            DataGridTextColumn timeColumn = new DataGridTextColumn() { Binding = new Binding("[0].display") };
+            timeColumn.Header = "Time";
+            fiveMinScheduleGrid.Columns.Add(timeColumn);
+
+
+            //add all the columns, bind them to their related column in the array.  
+            for (int i = 1; i <= columns; i++)
+            {
+                DataGridTextColumn thisColumn = new DataGridTextColumn() { Binding = new Binding("[" + i.ToString() + "].display") };
+                thisColumn.Header = "Date";
+                fiveMinScheduleGrid.Columns.Add(thisColumn);
+            }
+        }
+
 
 
 
@@ -264,7 +303,6 @@ namespace COMP4952
             public string display { get; set; }
         }
 
-
         public cellValue[] dataGridRowValues = new cellValue[] { };
 
         /// <summary>
@@ -274,7 +312,9 @@ namespace COMP4952
         /// <param name="thisRange">the date range to view</param>
         private void loadSelectedEmployeesSchedule(Staff thisStaff, CalendarDateRange thisRange)
         {
+            
             scheduleDataGridRows.Clear();
+           
             HashSet<CurrentAvailabilities> theseAvailabilities = db.CurrentAvailabilities
                                                                         .Where(CA => CA.StaffId == thisStaff.Id)
                                                                         .Where(CA => CA.BlockStartTime.Date >= thisRange.Start.Date)
@@ -304,22 +344,7 @@ namespace COMP4952
             int timeInterval = 30; //the number of minutes each row is, so 30 means 30 minute intervals. 
             int columns = 15; // 2 weeks. + 1 column to list time. 
 
-            //create the time column
-            DataGridTextColumn timeColumn = new DataGridTextColumn() {Binding= new Binding("[0].display") };
-            timeColumn.Header = "Time";
-            fiveMinScheduleGrid.Columns.Add(timeColumn);
-
-
-            //add all the columns, bind them to their related column in the array.  
-            for (int i = 1; i <= columns; i++)
-            {
-                DataGridTextColumn thisColumn = new DataGridTextColumn() {Binding = new Binding("["+i.ToString()+"].display") };
-                thisColumn.Header = "Date";
-                fiveMinScheduleGrid.Columns.Add(thisColumn);
-            }
-
-
-
+            
 
             //for each row
             
@@ -458,7 +483,10 @@ namespace COMP4952
         }
 
         
-
+        /// <summary>
+        /// Used for debugging
+        /// </summary>
+        /// <param name="message"></param>
         private void writeDebug(string message)
         {
             System.Diagnostics.Debug.WriteLine(message);
@@ -486,7 +514,7 @@ namespace COMP4952
             //new availability or schedule popup
             if(SelectedStaff != null)
             {
-                NewAvailSchedPopup newASPopup = new NewAvailSchedPopup(SelectedStaff, (DateTime)datePickerObj.SelectedDate);
+                NewAvailSchedPopup newASPopup = new NewAvailSchedPopup(SelectedStaff, (DateTime)datePickerObj.SelectedDate, this);
                 newASPopup.Show();
             }
         }
@@ -588,15 +616,131 @@ namespace COMP4952
                     break;
             }
 
+        }
 
 
+        /// <summary>
+        /// Handles the user deleting an availability
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteAvailability_Click(object sender, RoutedEventArgs e)
+        {
+            writeDebug("Deleting Availability");
+
+            //Get the MenuItem
+            var menuItem = (MenuItem)sender;
+
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+
+            //Find the item that was right clicked. 
+            var item = (DataGrid)contextMenu.PlacementTarget;
+
+            //get the cells (the row) that was selected.
+            ScheduleItem ScheduleItemToDelete = (ScheduleItem)item.SelectedCells[0].Item;
+
+            CurrentAvailabilities availabilityToDelete = ScheduleItemToDelete.thisAvailability;
 
 
+            confirmDeleteAvailability(availabilityToDelete);
+        }
 
 
+        /// <summary>
+        /// Confirms if the user wants to delete the given availabilities. 
+        /// </summary>
+        /// <param name="itemToDelete"></param>
+        private void confirmDeleteAvailability(CurrentAvailabilities itemToDelete)
+        {
+
+            string startString = itemToDelete.BlockStartTime.ToShortDateString() + " " + itemToDelete.BlockStartTime.ToShortTimeString();
+            string endString = itemToDelete.BlockEndTime.ToShortDateString() + " " + itemToDelete.BlockEndTime.ToShortTimeString();
+
+
+            string displayMessage = "Are you sure you want to delete: \n" + startString + " : " + endString  + "\n and related schedules?";
+
+
+            MessageBoxResult result = MessageBox.Show(displayMessage, "Alert", MessageBoxButton.YesNo);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+
+                    //remove the object from entity framework
+                    db.CurrentAvailabilities.Remove(itemToDelete);
+                    db.SaveChanges();
+                    MessageBox.Show("Availability and Schedules Deleted.");
+                    loadEmployeeData(SelectedStaff);
+
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
 
         }
 
+
+        /// <summary>
+        /// Handles the user deleting an scheudle
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteSchedule_Click(object sender, RoutedEventArgs e)
+        {
+            writeDebug("Deleting Schedule");
+
+            //Get the MenuItem
+            var menuItem = (MenuItem)sender;
+
+            //Get the ContextMenu to which the menuItem belongs
+            var contextMenu = (ContextMenu)menuItem.Parent;
+
+            //Find the item that was right clicked. 
+            var item = (DataGrid)contextMenu.PlacementTarget;
+
+            //get the cells (the row) that was selected.
+            ScheduleItem ScheduleItemToDelete = (ScheduleItem)item.SelectedCells[0].Item;
+
+            CurrentSchedule scheduleToDelete = ScheduleItemToDelete.thisSchedule;
+
+
+            confirmDeleteSchedule(scheduleToDelete);
+        }
+
+
+        /// <summary>
+        /// Confirms if the user wants to delete the given schedule. 
+        /// </summary>
+        /// <param name="itemToDelete"></param>
+        private void confirmDeleteSchedule(CurrentSchedule itemToDelete)
+        {
+            if(itemToDelete != null)
+            {
+                string startString = itemToDelete.BlockStartTime.ToShortDateString() + " " + itemToDelete.BlockStartTime.ToShortTimeString();
+                string endString = itemToDelete.BlockEndTime.ToShortDateString() + " " + itemToDelete.BlockEndTime.ToShortTimeString();
+
+
+                string displayMessage = "Are you sure you want to delete: \n" + startString + " : " + endString + "?";
+
+
+                MessageBoxResult result = MessageBox.Show(displayMessage, "Alert", MessageBoxButton.YesNo);
+                switch (result)
+                {
+                    case MessageBoxResult.Yes:
+
+                        //remove the object from entity framework
+                        db.CurrentSchedule.Remove(itemToDelete);
+                        db.SaveChanges();
+                        MessageBox.Show("Schedule Deleted.");
+                        loadEmployeeData(SelectedStaff);
+
+                        break;
+                    case MessageBoxResult.No:
+                        break;
+                }
+            }
+           
+        }
 
 
     }

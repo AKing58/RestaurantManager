@@ -104,7 +104,8 @@ namespace COMP4952
             gridEmployees.SelectionMode = DataGridSelectionMode.Single;
 
             DaysAvailabilityGrid.ItemsSource = selectedEmployeesScheduleItem;
-            
+
+            buildVisualScheduleDataGrid();
             fiveMinScheduleGrid.IsReadOnly = true;
             fiveMinScheduleGrid.SelectionMode = DataGridSelectionMode.Single;
             fiveMinScheduleGrid.ItemsSource = scheduleDataGridRows;
@@ -202,6 +203,16 @@ namespace COMP4952
         }
 
 
+
+        public void reloadScheduleAndAvailabilityTables(Staff thisStaff, CalendarDateRange thisDateRange)
+        {
+            writeDebug("Reloading shedule and availability tables");
+            loadSelectedStaffsAvailabilityAndScheduleForDate(thisStaff, thisDateRange.Start);
+            loadSelectedEmployeesSchedule(thisStaff, thisDateRange);
+        }
+        
+
+
         /// <summary>
         /// Loads the given staff members list of availability and schedule for a given date.
         /// </summary>
@@ -255,6 +266,33 @@ namespace COMP4952
         }
 
 
+        /// <summary>
+        /// Sets up the columns of the visual scheduler
+        /// </summary>
+        private void buildVisualScheduleDataGrid()
+        {
+           
+            TimeSpan oneDay = new TimeSpan(24, 0, 0);
+
+            int columns = 15; // 2 weeks. + 1 column to list time. 
+
+            //create the time column
+            DataGridTextColumn timeColumn = new DataGridTextColumn() { Binding = new Binding("[0].display") };
+            timeColumn.Header = "Time";
+            fiveMinScheduleGrid.Columns.Add(timeColumn);
+
+
+            //add all the columns, bind them to their related column in the array.  
+            for (int i = 1; i <= columns; i++)
+            {
+                DataGridTextColumn thisColumn = new DataGridTextColumn() { Binding = new Binding("[" + i.ToString() + "].display") };
+                thisColumn.Header = "Date";
+                fiveMinScheduleGrid.Columns.Add(thisColumn);
+            }
+        }
+
+
+
 
         /// <summary>
         /// STruct to use to fill each cell in the schedule grid. 
@@ -264,7 +302,6 @@ namespace COMP4952
             public string type { get; set; }
             public string display { get; set; }
         }
-
 
         public cellValue[] dataGridRowValues = new cellValue[] { };
 
@@ -277,7 +314,7 @@ namespace COMP4952
         {
             
             scheduleDataGridRows.Clear();
-            fiveMinScheduleGrid.Items.Refresh();
+           
             HashSet<CurrentAvailabilities> theseAvailabilities = db.CurrentAvailabilities
                                                                         .Where(CA => CA.StaffId == thisStaff.Id)
                                                                         .Where(CA => CA.BlockStartTime.Date >= thisRange.Start.Date)
@@ -307,22 +344,7 @@ namespace COMP4952
             int timeInterval = 30; //the number of minutes each row is, so 30 means 30 minute intervals. 
             int columns = 15; // 2 weeks. + 1 column to list time. 
 
-            //create the time column
-            DataGridTextColumn timeColumn = new DataGridTextColumn() {Binding= new Binding("[0].display") };
-            timeColumn.Header = "Time";
-            fiveMinScheduleGrid.Columns.Add(timeColumn);
-
-
-            //add all the columns, bind them to their related column in the array.  
-            for (int i = 1; i <= columns; i++)
-            {
-                DataGridTextColumn thisColumn = new DataGridTextColumn() {Binding = new Binding("["+i.ToString()+"].display") };
-                thisColumn.Header = "Date";
-                fiveMinScheduleGrid.Columns.Add(thisColumn);
-            }
-
-
-
+            
 
             //for each row
             
@@ -492,7 +514,7 @@ namespace COMP4952
             //new availability or schedule popup
             if(SelectedStaff != null)
             {
-                NewAvailSchedPopup newASPopup = new NewAvailSchedPopup(SelectedStaff, (DateTime)datePickerObj.SelectedDate);
+                NewAvailSchedPopup newASPopup = new NewAvailSchedPopup(SelectedStaff, (DateTime)datePickerObj.SelectedDate, this);
                 newASPopup.Show();
             }
         }

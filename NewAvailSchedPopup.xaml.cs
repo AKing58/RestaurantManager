@@ -28,7 +28,7 @@ namespace COMP4952
         private CurrentAvailabilities newAvailability = new CurrentAvailabilities(); //the new availability to save, if a new one is being made. 
         private CurrentAvailabilities existingAvailability = new CurrentAvailabilities(); //the existing availability, if one is chosen. 
         bool usingExistingAvailability = true;
-
+        StaffScreen parentStaffScreen;
 
 
 
@@ -63,12 +63,14 @@ namespace COMP4952
         }
 
 
-        public NewAvailSchedPopup(Staff chosenStaff, DateTime thisDate)
+        public NewAvailSchedPopup(Staff chosenStaff, DateTime thisDate, StaffScreen ss)
         {
             InitializeComponent();
             db = new Models.COMP4952PROJECTContext();
 
             thisStaff = chosenStaff;
+            parentStaffScreen = ss;
+
 
             //prepare the new availability item, in case the user chooses to make a new one
             newAvailability.StaffId = thisStaff.Id;
@@ -552,7 +554,7 @@ namespace COMP4952
                 {
 
                     db.CurrentAvailabilities.Add(newAvailability);
-                    Debug.WriteLine("Made a new availability: " + newAvailability.BlockStartTime.ToString() + " - " + newAvailability.BlockEndTime.ToString());
+                   
                     db.SaveChanges(); //save the new availability so we can get it's ID.
 
                     //check if we are saving a new schedule too. 
@@ -604,7 +606,7 @@ namespace COMP4952
                             "to\n" +
                             "" + newAvailability.BlockEndTime.ToShortDateString() + " " + newAvailability.BlockEndTime.ToShortTimeString();
 
-                        error = true;
+                        error = false;
                     }
 
                 }
@@ -616,17 +618,26 @@ namespace COMP4952
 
             }
 
-            MessageBox.Show(message);
+            
 
-            if (!error)
+            MessageBoxResult result = MessageBox.Show(message,"Message", MessageBoxButton.OK);
+            switch (result)
             {
-                db.SaveChanges();
+                case MessageBoxResult.OK:
 
-                this.Close();
+                    if (!error)
+                    {
+                        db.SaveChanges();
+                        DateTime today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+                        TimeSpan twoWeeks = new TimeSpan(24 * 14, 0, 0);
+                        DateTime twoWeeksFromToday = today.Add(twoWeeks);
+                        CalendarDateRange thisRange = new CalendarDateRange(today, twoWeeksFromToday);
+                        parentStaffScreen.reloadScheduleAndAvailabilityTables(thisStaff, thisRange);
+                        this.Close();
+                    }
+                    break;
+
             }
-
-
-
         }
 
 

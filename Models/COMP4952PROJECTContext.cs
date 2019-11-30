@@ -50,8 +50,7 @@ namespace COMP4952.Models
                 entity.HasOne(d => d.Staff)
                     .WithMany(p => p.CurrentAvailabilities)
                     .HasForeignKey(d => d.StaffId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CurrentAv__Staff__38996AB5");
+                    .HasConstraintName("FK__CurrentAv__Staff__2DE6D218");
             });
 
             modelBuilder.Entity<CurrentSchedule>(entity =>
@@ -67,8 +66,7 @@ namespace COMP4952.Models
                 entity.HasOne(d => d.Availability)
                     .WithMany(p => p.CurrentSchedule)
                     .HasForeignKey(d => d.AvailabilityId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CurrentSc__Avail__3F466844");
+                    .HasConstraintName("FK__CurrentSc__Avail__30C33EC3");
             });
 
             modelBuilder.Entity<Customer>(entity =>
@@ -80,8 +78,7 @@ namespace COMP4952.Models
                 entity.HasOne(d => d.Table)
                     .WithMany(p => p.Customer)
                     .HasForeignKey(d => d.TableId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Customer__TableI__48CFD27E");
+                    .HasConstraintName("FK__Customer__TableI__3C34F16F");
             });
 
             modelBuilder.Entity<FurnitureType>(entity =>
@@ -117,14 +114,12 @@ namespace COMP4952.Models
                 entity.HasOne(d => d.Cust)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CustId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__CustID__4BAC3F29");
+                    .HasConstraintName("FK__Orders__CustID__3F115E1A");
 
                 entity.HasOne(d => d.Item)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.ItemId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Orders__ItemID__4CA06362");
+                    .HasConstraintName("FK__Orders__ItemID__40058253");
             });
 
             modelBuilder.Entity<Staff>(entity =>
@@ -155,7 +150,7 @@ namespace COMP4952.Models
                     .WithMany(p => p.Staff)
                     .HasForeignKey(d => d.TitleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Staff__TitleID__35BCFE0A");
+                    .HasConstraintName("FK__Staff__TitleID__2B0A656D");
             });
 
             modelBuilder.Entity<TableInfo>(entity =>
@@ -171,8 +166,7 @@ namespace COMP4952.Models
                 entity.HasOne(d => d.Type)
                     .WithMany(p => p.TableInfo)
                     .HasForeignKey(d => d.TypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__TableInfo__TypeI__440B1D61");
+                    .HasConstraintName("FK__TableInfo__TypeI__3587F3E0");
             });
 
             modelBuilder.Entity<Title>(entity =>

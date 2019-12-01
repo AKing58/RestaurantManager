@@ -22,7 +22,7 @@ namespace COMP4952
 
     /// <summary>
     /// Interaction logic for StaffScreen.xaml
-    /// Eamonn Alphin
+    /// Author: Eamonn Alphin
     /// </summary>
     public partial class StaffScreen : Page
     {
@@ -32,6 +32,7 @@ namespace COMP4952
         public ObservableCollection<Staff> employeeData = new ObservableCollection<Staff>(); //holds all the staff members
         public ObservableCollection<ScheduleItem> selectedEmployeesScheduleItem = new ObservableCollection<ScheduleItem>(); //holds the selected staff members schedule and availabilities
         public ObservableCollection<cellValue[]> scheduleDataGridRows = new ObservableCollection<cellValue[]>();
+
 
         /// <summary>
         /// Holds data for a row in the availability & scheduled tables
@@ -185,6 +186,10 @@ namespace COMP4952
         }
 
 
+        /// <summary>
+        /// Loads data for the chosen employee
+        /// </summary>
+        /// <param name="thisStaff"></param>
         private void loadEmployeeData(Staff thisStaff)
         {
             writeDebug("Chosen staff:" + thisStaff.LastName);
@@ -203,7 +208,11 @@ namespace COMP4952
         }
 
 
-
+        /// <summary>
+        /// Reloads the data in the tables for the give staff member and the given date range.
+        /// </summary>
+        /// <param name="thisStaff"></param>
+        /// <param name="thisDateRange"></param>
         public void reloadScheduleAndAvailabilityTables(Staff thisStaff, CalendarDateRange thisDateRange)
         {
             writeDebug("Reloading shedule and availability tables");

@@ -26,12 +26,13 @@ namespace COMP4952.Models
         public virtual DbSet<Title> Title { get; set; }
         public virtual DbSet<Wall> Wall { get; set; }
 
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Data Source=EAMONNALPHIB094;Initial Catalog=COMP4952PROJECT;Integrated Security=True");
+                //optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Data Source=EAMONNALPHIB094;Initial Catalog=COMP4952PROJECT;Integrated Security=True");
             }
         }
 

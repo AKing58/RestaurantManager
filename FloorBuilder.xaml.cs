@@ -37,7 +37,18 @@ namespace COMP4952
         /// </summary>
         public FloorBuilder()
         {
-            db = new COMP4952PROJECTContext();
+
+            string usingDatabase = "EAMONNALPHIB094";
+
+            var connection = @"Server=" + usingDatabase + ";Database=COMP4952PROJECT;Trusted_Connection=True;ConnectRetryCount=0";
+
+            DbContextOptionsBuilder<COMP4952PROJECTContext> builder = new DbContextOptionsBuilder<COMP4952PROJECTContext>();
+            builder.UseSqlServer(connection);
+
+            db = new COMP4952PROJECTContext(builder.Options);
+            db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+
             InitializeComponent();
             snapToGrid = false;
             isDrawing = false;

@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using COMP4952.Models;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace COMP4952
 {
@@ -66,6 +67,7 @@ namespace COMP4952
         public NewAvailSchedPopup(Staff chosenStaff, DateTime thisDate, StaffScreen ss)
         {
             InitializeComponent();
+            initializeDBConnection();
             db = new Models.COMP4952PROJECTContext();
 
             thisStaff = chosenStaff;
@@ -84,6 +86,20 @@ namespace COMP4952
             ChosenDateDP.SelectedDate = thisDate;
             ChosenDateDP.DisplayDate = thisDate;
 
+        }
+
+
+
+        private void initializeDBConnection()
+        {
+
+            var connection = SettingsFile.Default.ConnectionString;
+
+            DbContextOptionsBuilder<COMP4952PROJECTContext> builder = new DbContextOptionsBuilder<COMP4952PROJECTContext>();
+            builder.UseSqlServer(connection);
+
+            db = new COMP4952PROJECTContext(builder.Options);
+            db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
 

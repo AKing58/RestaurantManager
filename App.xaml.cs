@@ -13,6 +13,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using COMP4952.Models;
 
+
 namespace COMP4952
 {
     /// <summary>
@@ -23,18 +24,8 @@ namespace COMP4952
 
         public App()
         {
-            if(SettingsFile.Default.ConnectionString == null)
-            {
-                //display server credentials
-                ServerCredentials newCredentialRequest = new ServerCredentials();
-                newCredentialRequest.Show();
-            }
-            else
-            {
-                //display the main window.
-                MainWindow mainScreen = new MainWindow();
-                mainScreen.Show();
-            }
+
+           
         }
 
     }

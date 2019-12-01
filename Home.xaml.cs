@@ -31,11 +31,28 @@ namespace COMP4952
         /// </summary>
         public Home()
         {
-            db = new COMP4952PROJECTContext();
+
+
+
+            initializeDBConnection();
             InitializeComponent();
             LoadWalls();
             LoadTableInfos();
             
+        }
+
+
+
+        private void initializeDBConnection()
+        {
+
+            var connection = SettingsFile.Default.ConnectionString;
+
+            DbContextOptionsBuilder<COMP4952PROJECTContext> builder = new DbContextOptionsBuilder<COMP4952PROJECTContext>();
+            builder.UseSqlServer(connection);
+
+            db = new COMP4952PROJECTContext(builder.Options);
+            db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         /// <summary>

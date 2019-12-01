@@ -7,6 +7,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Navigation;
+using COMP4952.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace COMP4952
 {
@@ -33,13 +35,27 @@ namespace COMP4952
         /// <param name="m"></param>
         public OrderScreen(int m)
         {
-            db = new COMP4952PROJECTContext();
+            
             InitializeComponent();
+            initializeDBConnection();
 
             ti = db.TableInfo.Find(m);
             tableLabel.Content = "Table ID: " + ti.Id;
             LoadCustomers();
 
+        }
+
+
+        private void initializeDBConnection()
+        {
+
+            var connection = SettingsFile.Default.ConnectionString;
+
+            DbContextOptionsBuilder<COMP4952PROJECTContext> builder = new DbContextOptionsBuilder<COMP4952PROJECTContext>();
+            builder.UseSqlServer(connection);
+
+            db = new COMP4952PROJECTContext(builder.Options);
+            db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         /// <summary>

@@ -25,7 +25,7 @@ namespace COMP4952
         public NewEmployeePopup(StaffScreen staffScreen, Staff existingStaffToEdit = null)
         {
             InitializeComponent();
-            db = new Models.COMP4952PROJECTContext(); //initialize the DB context
+            initiazeDBConnection();
             titles = getTitles();
             titleChoicesCB.ItemsSource = titles;
             ss = staffScreen;
@@ -51,6 +51,17 @@ namespace COMP4952
 
 
 
+        private void initiazeDBConnection()
+        {
+
+            var connection = SettingsFile.Default.ConnectionString;
+
+            DbContextOptionsBuilder<COMP4952PROJECTContext> builder = new DbContextOptionsBuilder<COMP4952PROJECTContext>();
+            builder.UseSqlServer(connection);
+
+            db = new COMP4952PROJECTContext(builder.Options);
+            db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+        }
 
         /// <summary>
         /// Pulls the titles from the DB

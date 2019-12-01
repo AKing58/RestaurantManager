@@ -1,4 +1,6 @@
-﻿using System;
+﻿using COMP4952.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +25,51 @@ namespace COMP4952
         public MainWindow()
         {
             InitializeComponent();
-            frame.Source = new Uri("FloorBuilder.xaml", UriKind.Relative);
+
+            ServerCredentials newCredentialRequest = new ServerCredentials(this);
+
+            if (SettingsFile.Default.ConnectionString == null || SettingsFile.Default.ConnectionString == "")
+            {
+                //display server credentials
+                
+                newCredentialRequest.Show();
+            }
+            else
+            {
+
+
+                var connection = SettingsFile.Default.ConnectionString;
+                DbContextOptionsBuilder<COMP4952PROJECTContext> builder = new DbContextOptionsBuilder<COMP4952PROJECTContext>();
+                builder.UseSqlServer(connection);
+
+                COMP4952PROJECTContext db = new COMP4952PROJECTContext(builder.Options);
+
+                if (db.Database.CanConnect())
+                {
+
+                    if (!db.Wall.Any())
+                    {
+                        frame.Source = new Uri("FloorBuilder.xaml", UriKind.Relative);
+                    }
+                    else
+                    {
+                        frame.Source = new Uri("Home.xaml", UriKind.Relative);
+                    }
+                }
+                else
+                {
+                    newCredentialRequest.Show();
+                }
+
+
+
+            }
+
+
+
+
+
+            
         }
     }
 }

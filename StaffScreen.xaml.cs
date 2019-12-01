@@ -87,12 +87,23 @@ namespace COMP4952
 
 
 
+        private void initializeDBConnection()
+        {
+
+            var connection = SettingsFile.Default.ConnectionString;
+
+            DbContextOptionsBuilder<COMP4952PROJECTContext> builder = new DbContextOptionsBuilder<COMP4952PROJECTContext>();
+            builder.UseSqlServer(connection);
+
+            db = new COMP4952PROJECTContext(builder.Options);
+            db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+        }
 
 
         public StaffScreen()
         {
-            
-            db = new Models.COMP4952PROJECTContext(); //initialize the DB context
+
+            initializeDBConnection();
             InitializeComponent();
             AddAvailSchedBtn.IsEnabled = false;
             datePickerObj.SelectedDate = DateTime.Now;

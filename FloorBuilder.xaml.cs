@@ -38,17 +38,8 @@ namespace COMP4952
         public FloorBuilder()
         {
 
-            string usingDatabase = "EAMONNALPHIB094";
 
-            var connection = @"Server=" + usingDatabase + ";Database=COMP4952PROJECT;Trusted_Connection=True;ConnectRetryCount=0";
-
-            DbContextOptionsBuilder<COMP4952PROJECTContext> builder = new DbContextOptionsBuilder<COMP4952PROJECTContext>();
-            builder.UseSqlServer(connection);
-
-            db = new COMP4952PROJECTContext(builder.Options);
-            db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-
-
+            initializeDBConnection();
             InitializeComponent();
             snapToGrid = false;
             isDrawing = false;
@@ -56,6 +47,21 @@ namespace COMP4952
             LoadWalls();
             LoadTableInfos();
         }
+
+
+
+        private void initializeDBConnection()
+        {
+
+            var connection = SettingsFile.Default.ConnectionString;
+
+            DbContextOptionsBuilder<COMP4952PROJECTContext> builder = new DbContextOptionsBuilder<COMP4952PROJECTContext>();
+            builder.UseSqlServer(connection);
+
+            db = new COMP4952PROJECTContext(builder.Options);
+            db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+        }
+
 
         /// <summary>
         /// Displays all the tables from the database

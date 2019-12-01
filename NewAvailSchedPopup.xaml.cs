@@ -68,7 +68,7 @@ namespace COMP4952
         {
             InitializeComponent();
             initializeDBConnection();
-            db = new Models.COMP4952PROJECTContext();
+         
 
             thisStaff = chosenStaff;
             parentStaffScreen = ss;

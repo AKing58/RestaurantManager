@@ -59,7 +59,7 @@ namespace COMP4952
             builder.UseSqlServer(connection);
 
             db = new COMP4952PROJECTContext(builder.Options);
-            db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+          
         }
 
 

@@ -596,7 +596,7 @@ namespace COMP4952
                                 "" + newAvailability.BlockStartTime.ToShortDateString() + " " + newAvailability.BlockStartTime.ToShortTimeString() + "\n" +
                                 "to\n" +
                                 "" + newAvailability.BlockEndTime.ToShortDateString() + " " + newAvailability.BlockEndTime.ToShortTimeString() +
-                                "and Scheduled: \n" +
+                                "\nand\n Scheduled: \n" +
                                 "" + newScheduleItem.BlockStartTime.ToShortDateString() + " " + newScheduleItem.BlockStartTime.ToShortTimeString() + "\n" +
                                 "to\n" +
                                 "" + newScheduleItem.BlockEndTime.ToShortDateString() + " " + newScheduleItem.BlockEndTime.ToShortTimeString();

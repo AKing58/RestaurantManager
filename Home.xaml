@@ -13,12 +13,23 @@
             <RowDefinition Height="25"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Canvas x:Name="Canvas_FB" Grid.Row="1" Background="White">
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <TranslateTransform x:Name="tt"/>
+                    <ScaleTransform x:Name="st"/>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+        </Canvas>
         <Menu Grid.Row="0">
             <MenuItem Header="Menu" Height="25">
                 <MenuItem Header="Go To Staff Screen" Click="GoToStaffScreen_Click"/>
                 <MenuItem Header="Go To Floor Builder" Click="GoToFloorBuilder_Click"/>
             </MenuItem>
+            <MenuItem Header="Zoom" IsEnabled="False" BorderBrush="Black" BorderThickness="1,0,0,0" />
+            <MenuItem Header=" -" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" BorderBrush="#FFD0D0D0" BorderThickness="1,0,1,0" MinWidth="25" MaxWidth="25" Click="ZoomOut_Click" />
+            <MenuItem Header="+" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" BorderBrush="#FFD0D0D0" BorderThickness="1,0,1,0" MinWidth="25" MaxWidth="25" Click="ZoomIn_Click" />
+            <MenuItem BorderThickness="0,0,1,0" BorderBrush="Black"/>
         </Menu>
-        <Canvas x:Name="Canvas_FB" Grid.Row="1" Background="White"/>
     </Grid>
 </Page>

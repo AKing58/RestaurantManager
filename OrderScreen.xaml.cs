@@ -24,6 +24,8 @@ namespace COMP4952
         Customer cus;
         private int custIndex = 0;
 
+        Home homeScreen;
+
         /// <summary>
         /// Default constructor (Unused)
         /// </summary>
@@ -33,12 +35,12 @@ namespace COMP4952
         /// Order Screen constructor
         /// </summary>
         /// <param name="m"></param>
-        public OrderScreen(int m)
+        public OrderScreen(int m, Home h)
         {
             
             InitializeComponent();
             initializeDBConnection();
-
+            homeScreen = h;
             ti = db.TableInfo.Find(m);
             tableLabel.Content = "Table ID: " + ti.Id;
             LoadCustomers();
@@ -121,7 +123,7 @@ namespace COMP4952
                     customer.ClearValue(Button.BackgroundProperty);
                 }
             }
-
+            homeScreen.Refresh();
         }
 
         /// <summary>
@@ -215,7 +217,7 @@ namespace COMP4952
             db.Customer.Remove(cusTemp);
             db.SaveChanges();
             customer.IsEnabled = false;
-
+            homeScreen.Refresh();
         }
 
         /// <summary>

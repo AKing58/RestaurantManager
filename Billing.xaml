@@ -5,24 +5,42 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:COMP4952"
         mc:Ignorable="d"
-        Title="Billing" Height="450" Width="400">
+        Title="Billing" Height="450" Width="400" ResizeMode="NoResize">
     <Grid>
-        <Label x:Name="tableLabel" Content="Table ID: " HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="100" FontWeight="Bold" FontSize="15"/>
-        <Label x:Name="customerLabel1" Content="Customer 1" HorizontalAlignment="Left" Margin="24,68,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
-        <Label x:Name="costLabel1" Content="" HorizontalAlignment="Center" Margin="0,68,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
-        <Label x:Name="customerLabel2" Content="Customer 2" HorizontalAlignment="Left" Margin="24,101,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
-        <Label x:Name="costLabel2" Content="" HorizontalAlignment="Center" Margin="0,101,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
-        <Label x:Name="customerLabel3" Content="Customer 3" HorizontalAlignment="Left" Margin="24,134,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
-        <Label x:Name="costLabel3" Content="" HorizontalAlignment="Center" Margin="0,134,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
-        <Label x:Name="customerLabel4" Content="Customer 4" HorizontalAlignment="Left" Margin="24,167,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
-        <Label x:Name="costLabel4" Content="" HorizontalAlignment="Center" Margin="0,167,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
-        <Label x:Name="customerLabel5" Content="Customer 5" HorizontalAlignment="Left" Margin="24,200,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
-        <Label x:Name="costLabel5" Content="" HorizontalAlignment="Center" Margin="0,200,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
-        <Label x:Name="customerLabel6" Content="Customer 6" HorizontalAlignment="Left" Margin="24,233,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
-        <Label x:Name="costLabel6" Content="" HorizontalAlignment="Center" Margin="0,233,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
-        <Label x:Name="totalLabel" Content="Total: " HorizontalAlignment="Left" Margin="24,277,0,0" VerticalAlignment="Top" Width="110" FontWeight="Bold"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="127*"/>
+            <ColumnDefinition Width="274*"/>
+        </Grid.ColumnDefinitions>
+        <Label x:Name="tableLabel" Content="Table ID: " HorizontalAlignment="Left" Margin="10,2,0,0" VerticalAlignment="Top" Width="100" FontWeight="Bold" FontSize="15"/>
+        <Label x:Name="totalLabel" Content="Total: " HorizontalAlignment="Left" Margin="24,277,0,0" VerticalAlignment="Top" Width="110" FontWeight="Bold" Grid.ColumnSpan="2"/>
         <Button x:Name="back_Btn" Content="Back" HorizontalAlignment="Left" Margin="24,330,0,0" VerticalAlignment="Top" Height="44" Width="86" Click="backBtn_onClick"/>
-        <Button x:Name="billAll_Btn" Content="Settle All" HorizontalAlignment="Left" Margin="274,330,0,0" VerticalAlignment="Top" Height="44" Width="86"/>
+        <Button x:Name="billAll_Btn" Content="Settle All" HorizontalAlignment="Left" Margin="148,330,0,0" VerticalAlignment="Top" Height="44" Width="86" Grid.Column="1" Click="billAllBtn_onClick"/>
+        <Grid Margin="0,68,16,157">
+            <Label x:Name="customerLabel1" Content="Customer 1" HorizontalAlignment="Left" Margin="24,0,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
+            <Label x:Name="customerLabel2" Content="Customer 2" HorizontalAlignment="Left" Margin="24,33,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
+            <Label x:Name="customerLabel3" Content="Customer 3" HorizontalAlignment="Left" Margin="24,66,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
+            <Label x:Name="customerLabel4" Content="Customer 4" HorizontalAlignment="Left" Margin="24,99,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
+            <Label x:Name="customerLabel5" Content="Customer 5" HorizontalAlignment="Left" Margin="24,132,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
+            <Label x:Name="customerLabel6" Content="Customer 6" HorizontalAlignment="Left" Margin="24,165,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
+        </Grid>
+        <Grid Margin="12,70,144,157" Grid.Column="1">
+            <Label x:Name="costLabel1" Content="" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
+            <Label x:Name="costLabel2" Content="" HorizontalAlignment="Left" Margin="5,33,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
+            <Label x:Name="costLabel3" Content="" HorizontalAlignment="Left" Margin="5,66,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
+            <Label x:Name="costLabel4" Content="" HorizontalAlignment="Left" Margin="5,99,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
+            <Label x:Name="costLabel5" Content="" HorizontalAlignment="Left" Margin="5,132,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
+            <Label x:Name="costLabel6" Content="" HorizontalAlignment="Left" Margin="5,165,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
+        </Grid>
+        <Grid Margin="156,68,0,157" Grid.Column="1">
+            <Button x:Name="billingBtn1" Content="" HorizontalAlignment="Left" Margin="58,5,0,0" VerticalAlignment="Top" Width="36" Click="billingBtn_onClick"/>
+            <Button x:Name="billingBtn2" Content="" HorizontalAlignment="Left" Margin="58,38,0,0" VerticalAlignment="Top" Width="36" Click="billingBtn_onClick"/>
+            <Button x:Name="billingBtn3" Content="" HorizontalAlignment="Left" Margin="58,70,0,0" VerticalAlignment="Top" Width="36" Click="billingBtn_onClick"/>
+            <Button x:Name="billingBtn4" Content="" HorizontalAlignment="Left" Margin="58,102,0,0" VerticalAlignment="Top" Width="36" Click="billingBtn_onClick"/>
+            <Button x:Name="billingBtn5" Content="" HorizontalAlignment="Left" Margin="58,136,0,0" VerticalAlignment="Top" Width="36" Click="billingBtn_onClick"/>
+            <Button x:Name="billingBtn6" Content="" HorizontalAlignment="Left" Margin="58,170,0,0" VerticalAlignment="Top" Width="36" Click="billingBtn_onClick"/>
+        </Grid>
+        <Label x:Name="billedLabel" Content="Billed" Grid.Column="1" HorizontalAlignment="Left" Margin="206,37,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <Label x:Name="costLabel" Content="Cost" Grid.Column="1" HorizontalAlignment="Left" Margin="51,37,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
 
     </Grid>
 </Window>

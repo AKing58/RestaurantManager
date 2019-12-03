@@ -64,7 +64,7 @@ namespace COMP4952
                 foreach (Orders o in ordersLst)
                 {
                     singleTotal += db.Item.Single(u => u.Id == o.ItemId).Cost;
-                    totalCost += singleTotal;
+                    totalCost += db.Item.Single(u => u.Id == o.ItemId).Cost;
                 }
 
                 var customer = (Label)this.FindName("costLabel" + (i+1));
@@ -79,6 +79,47 @@ namespace COMP4952
         private void backBtn_onClick(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void billingBtn_onClick(object sender, RoutedEventArgs e)
+        {
+            var billingBtn = (Button)sender;
+            if (billingBtn.Background == Brushes.Green)
+            {
+                billingBtn.ClearValue(Button.BackgroundProperty);
+            } else
+            {
+                billingBtn.Background = Brushes.Green;
+            }
+        }
+
+        private void billAllBtn_onClick(object sender, RoutedEventArgs e)
+        {
+            var billAllBtn = (Button)sender;
+            if (billAllBtn.Background == Brushes.Green)
+            {
+                for (int i = 0; i < 6; i++)
+                {
+                    var billingBtn = (Button)this.FindName("billingBtn" + (i + 1));
+                    if (billingBtn.Background == Brushes.Green)
+                    {
+                        billingBtn.ClearValue(Button.BackgroundProperty);
+                    }
+                }
+                billAllBtn.ClearValue(Button.BackgroundProperty);
+            } else
+            {
+                for (int i = 0; i < 6; i++)
+                {
+                    var billingBtn = (Button)this.FindName("billingBtn" + (i + 1));
+                    if (billingBtn.Background != Brushes.Green)
+                    {
+                        billingBtn.Background = Brushes.Green;
+                    }
+                }
+                billAllBtn.Background = Brushes.Green;
+            }
+           
         }
     }
 }

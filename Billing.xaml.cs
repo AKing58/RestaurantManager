@@ -53,11 +53,32 @@ namespace COMP4952
         private void loadCustomersInfo()
         {
             List<Customer> customerLst = db.Customer.Where(u => u.TableId == ti.Id).ToList();
-            System.Diagnostics.Debug.WriteLine(customerLst.Count);
+            decimal totalCost = 0;
+
             for (int i = 0; i < customerLst.Count; i++)
             {
-                System.Diagnostics.Debug.WriteLine(customerLst[i]);
+                Customer cusTemp = customerLst[i];
+                List<Orders> ordersLst = db.Orders.Where(o => o.CustId == int.Parse(cusTemp.Id.ToString())).ToList();
+                decimal singleTotal = 0;
+
+                foreach (Orders o in ordersLst)
+                {
+                    singleTotal += db.Item.Single(u => u.Id == o.ItemId).Cost;
+                    totalCost += singleTotal;
+                }
+
+                var customer = (Label)this.FindName("costLabel" + (i+1));
+                customer.Content = "$" + singleTotal;
+
             }
+
+            var total = (Label)this.FindName("totalLabel");
+            total.Content = "Total Cost: $" + totalCost;
+        }
+
+        private void backBtn_onClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

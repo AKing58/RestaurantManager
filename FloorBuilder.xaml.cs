@@ -37,7 +37,8 @@ namespace COMP4952
         double OffsetX;
         double OffsetY;
 
-        List<string> TablesToDelete = new List<string>();
+        int SnapAmount;
+
 
         /// <summary>
         /// Constructor for the FloorBuilder page
@@ -50,6 +51,7 @@ namespace COMP4952
             SnapSelected = false;
             DrawingSelected = false;
             DeletingSelected = false;
+            SnapAmount = 50;
             LoadWalls();
             LoadTableInfos();
             Application.Current.MainWindow.KeyDown += new KeyEventHandler(FloorBuilderKeyPress);
@@ -178,6 +180,7 @@ namespace COMP4952
             newImg.Name = "Placed" + ft.Type;
             newImg.Tag = t.Id;
             newImg.MouseDown += Table_MouseDown;
+            newImg.MouseMove += Object_MouseOver;
             Canvas_FB.Children.Add(newImg);
             Canvas.SetLeft(newImg, t.Xloc);
             Canvas.SetTop(newImg, t.Yloc);
@@ -199,6 +202,7 @@ namespace COMP4952
             newLine.Y1 = w.Y1loc;
             newLine.Y2 = w.Y2loc;
             newLine.MouseDown += Wall_MouseDown;
+            newLine.MouseMove += Object_MouseOver;
             //newLine.StrokeStartLineCap = PenLineCap.Round;
             //newLine.StrokeEndLineCap = PenLineCap.Round;
             Console.WriteLine(newLine.X1 + ", " + newLine.Y1 + ", " + newLine.X2 + ", " + newLine.Y2);
@@ -220,10 +224,10 @@ namespace COMP4952
                 int top = (int)((mousePos.Y - startLoc.Y) - (img.Height / 2));
                 if (SnapSelected)
                 {
-                    left = (int)Math.Round((decimal)(left / 50));
-                    left = left * 50;
-                    top = (int)Math.Round((decimal)(top / 50));
-                    top = top * 50;
+                    left = (int)Math.Round((decimal)(left / SnapAmount));
+                    left = left * SnapAmount;
+                    top = (int)Math.Round((decimal)(top / SnapAmount));
+                    top = top * SnapAmount;
                 }
                 if (left >= 0)
                     Canvas.SetLeft(img, left);
@@ -246,9 +250,7 @@ namespace COMP4952
             Line curLine = (Line)sender;
             if (DeletingSelected)
             {
-                curLine.Name = "deleteThis" + curLine.Name;
-                curLine.Visibility = Visibility.Hidden;
-                //Canvas_FB.Children.Remove(curImg);
+                DeleteObject(sender);
             }
         }
 
@@ -267,9 +269,7 @@ namespace COMP4952
             Image curImg = (Image)sender;
             if (DeletingSelected && (curImg.Tag == null || !curImg.Tag.ToString().Contains("Tool")))
             {
-                curImg.Name = "deleteThis" + curImg.Name;
-                curImg.Visibility = Visibility.Hidden;
-                //Canvas_FB.Children.Remove(curImg);
+                DeleteObject(sender);
             }
             else
             {
@@ -304,6 +304,7 @@ namespace COMP4952
             newImg.Width = 100;
             newImg.Height = 100;
             newImg.MouseDown += Table_MouseDown;
+            newImg.MouseMove += Object_MouseOver;
             Canvas_FB.Children.Add(newImg);
             Canvas.SetLeft(newImg, 0);
             Canvas.SetTop(newImg, 0);
@@ -396,7 +397,6 @@ namespace COMP4952
                         db.TableInfo.Remove(t);
                     } else if (i.Name.Contains("Placed") && i.Visibility != Visibility.Hidden)
                     {
-                        //int underscoreLoc = i.Name.LastIndexOf('_');
                         TableInfo t = db.TableInfo.Find(int.Parse(i.Tag.ToString()));
                         t.Xloc = (int)Canvas.GetLeft(i);
                         t.Yloc = (int)Canvas.GetTop(i);
@@ -407,12 +407,23 @@ namespace COMP4952
                     Line l = (Line)o;
                     if (l.Name.Contains("tmp") && l.Visibility != Visibility.Hidden)
                     {
-                        Wall w = new Wall();
-                        w.X1loc = (int)l.X1;
-                        w.X2loc = (int)l.X2;
-                        w.Y1loc = (int)l.Y1;
-                        w.Y2loc = (int)l.Y2;
-                        db.Wall.Add(w);
+                        if (db.Wall.SingleOrDefault(u => (u.X1loc == l.X1 &&
+                                              u.X2loc == l.X2 &&
+                                              u.Y1loc == l.Y1 &&
+                                              u.Y2loc == l.Y2) ||
+                                              (u.X1loc == l.X2 &&
+                                              u.X2loc == l.X1 &&
+                                              u.Y1loc == l.Y2 &&
+                                              u.Y2loc == l.Y1)) == null)
+                        {
+                            Wall w = new Wall();
+                            w.X1loc = (int)l.X1;
+                            w.X2loc = (int)l.X2;
+                            w.Y1loc = (int)l.Y1;
+                            w.Y2loc = (int)l.Y2;
+                            db.Wall.Add(w);
+                        }
+                        
                     }else if (l.Name.Contains("deleteThis") && !l.Name.Contains("tmp"))
                     {
                         Wall wInfo = db.Wall.Find(l.Tag);
@@ -465,14 +476,14 @@ namespace COMP4952
                 startLoc = Mouse.GetPosition(Canvas_FB);
                 curLine = new Line();
                 curLine.MouseDown += Wall_MouseDown;
+                curLine.MouseMove += Object_MouseOver;
                 curLine.Name = "tmpWall";
                 curLine.Stroke = Brushes.Black;
                 curLine.StrokeThickness = 5;
                 //curLine.StrokeStartLineCap = PenLineCap.Round;
                 //curLine.StrokeEndLineCap = PenLineCap.Round;
-                Canvas_FB.Children.Add(curLine);
-                int tempX = ((int)Math.Round((startLoc.X / 50))) * 50;
-                int tempY = ((int)Math.Round((startLoc.Y / 50))) * 50;
+                int tempX = ((int)Math.Round((startLoc.X / SnapAmount))) * SnapAmount;
+                int tempY = ((int)Math.Round((startLoc.Y / SnapAmount))) * SnapAmount;
 
                 curLine.X1 = tempX;
                 curLine.Y1 = tempY;
@@ -481,14 +492,58 @@ namespace COMP4952
         }
 
         /// <summary>
-        /// Stops drawing 
+        /// Stops drawing
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            curLine = null;
-            isDrawing = false;
+            if(curLine != null)
+            {
+                if (curLine.X1 == curLine.X2 && curLine.Y1 == curLine.Y2)
+                {
+                    Canvas_FB.Children.Remove(curLine);
+                }else if (CheckIfWallExists(curLine))
+                {
+                    Canvas_FB.Children.Remove(curLine);
+                }
+                else if (db.Wall.SingleOrDefault(u => (u.X1loc == curLine.X1 &&
+                                                 u.X2loc == curLine.X2 &&
+                                                 u.Y1loc == curLine.Y1 &&
+                                                 u.Y2loc == curLine.Y2) ||
+                                                 (u.X1loc == curLine.X2 &&
+                                                 u.X2loc == curLine.X1 &&
+                                                 u.Y1loc == curLine.Y2 &&
+                                                 u.Y2loc == curLine.Y1)) != null)
+                {
+                    Canvas_FB.Children.Remove(curLine);
+                }
+                curLine = null;
+                isDrawing = false;
+            }
+        }
+
+        private bool CheckIfWallExists(Line inputLine)
+        {
+            for(int i=0; i<Canvas_FB.Children.Count; i++)
+            {
+                if (Canvas_FB.Children[i] is Line)
+                {
+                    Line tempLine = (Line)Canvas_FB.Children[i];
+                    if (inputLine != tempLine && ((inputLine.X1 == tempLine.X1 &&
+                         inputLine.X2 == tempLine.X2 &&
+                         inputLine.Y1 == tempLine.Y1 &&
+                         inputLine.Y2 == tempLine.Y2) ||
+                         (inputLine.X1 == tempLine.X2 &&
+                         inputLine.X2 == tempLine.X1 &&
+                         inputLine.Y1 == tempLine.Y2 &&
+                         inputLine.Y2 == tempLine.Y1)))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -502,9 +557,12 @@ namespace COMP4952
             {
                 Point p = Mouse.GetPosition(Canvas_FB);
 
-                int tempX = ((int)Math.Round((p.X / 50))) * 50;
-                int tempY = ((int)Math.Round((p.Y / 50))) * 50;
-
+                int tempX = ((int)Math.Round((p.X / SnapAmount))) * SnapAmount;
+                int tempY = ((int)Math.Round((p.Y / SnapAmount))) * SnapAmount;
+                if(!Canvas_FB.Children.Contains(curLine) && (curLine.X2 != 0 || curLine.X2 != tempX) && (curLine.Y2 != 0 || curLine.Y2 != tempY))
+                {
+                    Canvas_FB.Children.Add(curLine);
+                }
                 curLine.X2 = tempX;
                 curLine.Y2 = tempY;
             }
@@ -612,6 +670,69 @@ namespace COMP4952
 
             st.ScaleX /= scalingRate;
             st.ScaleY /= scalingRate;
+        }
+        /// <summary>
+        /// Sets the snap to grid to 25
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Snap25_Click(object sender, RoutedEventArgs e)
+        {
+            SnapAmount = 25;
+            btnSnap25.IsEnabled = false;
+            btnSnap50.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// Sets the snap to grid to 50
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Snap50_Click(object sender, RoutedEventArgs e)
+        {
+            SnapAmount = 50;
+            btnSnap25.IsEnabled = true;
+            btnSnap50.IsEnabled = false;
+        }
+
+        /// <summary>
+        /// Used to delete multiple objects easily by allowing the user to click and drag
+        /// across multiple objects at once to delete them
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Object_MouseOver(object sender, MouseEventArgs e)
+        {
+            if (DeletingSelected && e.LeftButton == MouseButtonState.Pressed)
+            {
+                DeleteObject(sender);
+            }
+        }
+
+        /// <summary>
+        /// Marks the object for deletion and hides it
+        /// </summary>
+        /// <param name="sender"></param>
+        private void DeleteObject(object sender)
+        {
+            if (sender is Image)
+            {
+                Image curImg = (Image)sender;
+                if (DeletingSelected && (curImg.Tag == null || !curImg.Tag.ToString().Contains("Tool")))
+                {
+                    curImg.Name = "deleteThis" + curImg.Name;
+                    curImg.Visibility = Visibility.Hidden;
+                }
+            }
+            else
+            {
+                Line curLine = (Line)sender;
+                if (DeletingSelected)
+                {
+                    curLine.Name = "deleteThis" + curLine.Name;
+                    curLine.Visibility = Visibility.Hidden;
+                }
+            }
         }
     }
 }

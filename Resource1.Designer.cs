@@ -73,9 +73,39 @@ namespace COMP4952 {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] deleteTool {
+            get {
+                object obj = ResourceManager.GetObject("deleteTool", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] drawTool {
+            get {
+                object obj = ResourceManager.GetObject("drawTool", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] rectangle_3 {
             get {
                 object obj = ResourceManager.GetObject("rectangle_3", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] snapToGridTool {
+            get {
+                object obj = ResourceManager.GetObject("snapToGridTool", resourceCulture);
                 return ((byte[])(obj));
             }
         }

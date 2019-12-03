@@ -26,13 +26,12 @@ namespace COMP4952.Models
         public virtual DbSet<Title> Title { get; set; }
         public virtual DbSet<Wall> Wall { get; set; }
 
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                //optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Data Source=EAMONNALPHIB094;Initial Catalog=COMP4952PROJECT;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Data Source=DESKTOP-9UGA0PL;Initial Catalog=COMP4952PROJECT;Integrated Security=True");
             }
         }
 
@@ -51,7 +50,8 @@ namespace COMP4952.Models
                 entity.HasOne(d => d.Staff)
                     .WithMany(p => p.CurrentAvailabilities)
                     .HasForeignKey(d => d.StaffId)
-                    .HasConstraintName("FK__CurrentAv__Staff__2DE6D218");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__CurrentAv__Staff__59FA5E80");
             });
 
             modelBuilder.Entity<CurrentSchedule>(entity =>
@@ -67,7 +67,8 @@ namespace COMP4952.Models
                 entity.HasOne(d => d.Availability)
                     .WithMany(p => p.CurrentSchedule)
                     .HasForeignKey(d => d.AvailabilityId)
-                    .HasConstraintName("FK__CurrentSc__Avail__30C33EC3");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__CurrentSc__Avail__5CD6CB2B");
             });
 
             modelBuilder.Entity<Customer>(entity =>
@@ -79,7 +80,8 @@ namespace COMP4952.Models
                 entity.HasOne(d => d.Table)
                     .WithMany(p => p.Customer)
                     .HasForeignKey(d => d.TableId)
-                    .HasConstraintName("FK__Customer__TableI__3C34F16F");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Customer__TableI__656C112C");
             });
 
             modelBuilder.Entity<FurnitureType>(entity =>
@@ -115,12 +117,14 @@ namespace COMP4952.Models
                 entity.HasOne(d => d.Cust)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CustId)
-                    .HasConstraintName("FK__Orders__CustID__3F115E1A");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Orders__CustID__68487DD7");
 
                 entity.HasOne(d => d.Item)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.ItemId)
-                    .HasConstraintName("FK__Orders__ItemID__40058253");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Orders__ItemID__693CA210");
             });
 
             modelBuilder.Entity<Staff>(entity =>
@@ -151,7 +155,7 @@ namespace COMP4952.Models
                     .WithMany(p => p.Staff)
                     .HasForeignKey(d => d.TitleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Staff__TitleID__2B0A656D");
+                    .HasConstraintName("FK__Staff__TitleID__571DF1D5");
             });
 
             modelBuilder.Entity<TableInfo>(entity =>
@@ -167,7 +171,8 @@ namespace COMP4952.Models
                 entity.HasOne(d => d.Type)
                     .WithMany(p => p.TableInfo)
                     .HasForeignKey(d => d.TypeId)
-                    .HasConstraintName("FK__TableInfo__TypeI__3587F3E0");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__TableInfo__TypeI__619B8048");
             });
 
             modelBuilder.Entity<Title>(entity =>

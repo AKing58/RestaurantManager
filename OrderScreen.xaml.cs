@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Navigation;
-using COMP4952.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace COMP4952
@@ -23,6 +22,7 @@ namespace COMP4952
         TableInfo ti;
         Customer cus;
         private int custIndex = 0;
+        private int table;
 
         /// <summary>
         /// Default constructor (Unused)
@@ -40,8 +40,9 @@ namespace COMP4952
             initializeDBConnection();
 
             ti = db.TableInfo.Find(m);
+            table = m;
             tableLabel.Content = "Table ID: " + ti.Id;
-            LoadCustomers();
+            loadCustomers();
 
         }
 
@@ -61,14 +62,14 @@ namespace COMP4952
         /// <summary>
         /// Loads customers that belong to the current table onto the customer buttons
         /// </summary>
-        private void LoadCustomers()
+        private void loadCustomers()
         {
             List<Customer> customerLst = db.Customer.Where(u => u.TableId == ti.Id).ToList();
-            Console.WriteLine(customerLst.Count + " customers on table " + ti.Id);
-            Console.WriteLine(customerLst);
+         /*   Console.WriteLine(customerLst.Count + " customers on table " + ti.Id);
+            Console.WriteLine(customerLst);*/
             for (int i = 1; i < 7; i++)
             {
-                Console.WriteLine(i);
+                //Console.WriteLine(i);
                 var customer = (Button)this.FindName("customer" + i + "_Btn");
                 if (i > customerLst.Count)
                     return;
@@ -154,13 +155,13 @@ namespace COMP4952
             }
 
             cus = db.Customer.Find(int.Parse(customerBtn.Tag.ToString()));
-            ReselectItems();
+            reselectItems();
         }
 
         /// <summary>
         /// Sets item buttons for the currently selected customer
         /// </summary>
-        private void ReselectItems()
+        private void reselectItems()
         {
             foreach (object o in orderGrid.Children)
             {
@@ -177,16 +178,6 @@ namespace COMP4952
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Saves the order to the database
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void saveOrderBtn_Click(object sender, RoutedEventArgs e)
-        {
-            db.SaveChanges();
         }
 
         /// <summary>
@@ -234,6 +225,7 @@ namespace COMP4952
                     order.ItemId = int.Parse(button.Tag.ToString());
                     order.CustId = cus.Id;
                     db.Orders.Add(order);
+                    db.SaveChanges();
 
                     button.Background = Brushes.Green;
                 }
@@ -241,11 +233,19 @@ namespace COMP4952
                 {
                     Orders temp = db.Orders.SingleOrDefault(u => u.CustId == cus.Id && u.ItemId == int.Parse(button.Tag.ToString()));
                     if (temp != null)
+                    {
                         db.Orders.Remove(temp);
+                        db.SaveChanges();
+                    }
                     button.Background = Brushes.Red;
                 }
             }
         }
 
+        private void billingBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Billing bill = new Billing(table);
+            bill.Show();
+        }
     }
 }

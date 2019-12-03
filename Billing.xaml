@@ -1,0 +1,28 @@
+﻿<Window x:Class="COMP4952.Billing"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:COMP4952"
+        mc:Ignorable="d"
+        Title="Billing" Height="400" Width="400">
+    <Grid>
+        <Label x:Name="tableLabel" Content="Table ID: " HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="100" FontWeight="Bold" FontSize="15"/>
+        <Label x:Name="customerLabel1" Content="Customer 1" HorizontalAlignment="Left" Margin="24,68,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
+        <Label x:Name="costLabel1" Content="Label" HorizontalAlignment="Center" Margin="0,68,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
+        <Label x:Name="customerLabel2" Content="Customer 2" HorizontalAlignment="Left" Margin="24,101,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
+        <Label x:Name="costLabel2" Content="Label" HorizontalAlignment="Center" Margin="0,101,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
+        <Label x:Name="customerLabel3" Content="Customer 3" HorizontalAlignment="Left" Margin="24,134,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
+        <Label x:Name="costLabel3" Content="Label" HorizontalAlignment="Center" Margin="0,134,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
+        <Label x:Name="customerLabel4" Content="Customer 4" HorizontalAlignment="Left" Margin="24,167,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
+        <Label x:Name="costLabel4" Content="Label" HorizontalAlignment="Center" Margin="0,167,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
+        <Label x:Name="customerLabel5" Content="Customer 5" HorizontalAlignment="Left" Margin="24,200,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
+        <Label x:Name="costLabel5" Content="Label" HorizontalAlignment="Center" Margin="0,200,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
+        <Label x:Name="customerLabel6" Content="Customer 6" HorizontalAlignment="Left" Margin="24,233,0,0" VerticalAlignment="Top" Width="110" Height="28"/>
+        <Label x:Name="costLabel6" Content="Label" HorizontalAlignment="Center" Margin="0,233,0,0" VerticalAlignment="Top" Width="112" Height="28"/>
+        <Label x:Name="totalLabel" Content="Total: " HorizontalAlignment="Left" Margin="24,277,0,0" VerticalAlignment="Top" Width="110" FontWeight="Bold"/>
+        <Button x:Name="back_Btn" Content="Back" HorizontalAlignment="Left" Margin="24,330,0,0" VerticalAlignment="Top" Height="44" Width="86"/>
+        <Button x:Name="billAll_Btn" Content="Settle All" HorizontalAlignment="Left" Margin="274,330,0,0" VerticalAlignment="Top" Height="44" Width="86"/>
+
+    </Grid>
+</Window>

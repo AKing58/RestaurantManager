@@ -246,8 +246,33 @@ namespace COMP4952
 
         private void billingBtn_Click(object sender, RoutedEventArgs e)
         {
-            Billing bill = new Billing(table);
+            Billing bill = new Billing(table, calculateCosts());
             bill.Show();
+        }
+
+        private List<decimal> calculateCosts()
+        {
+            List<decimal> priceList = new List<decimal>();
+            List<Customer> customerLst = db.Customer.Where(u => u.TableId == ti.Id).ToList();
+            for (int i = 1; i < 7; i++)
+            {
+                var customer = (Button)this.FindName("customer" + i + "_Btn");
+                if (customer.IsEnabled)
+                {
+                    List<Orders> ordersLst = db.Orders.Where(o => o.CustId == int.Parse(customer.Tag.ToString())).ToList();
+                    decimal singleTotal = 0;
+
+                    foreach (Orders o in ordersLst)
+                    {
+                        singleTotal += db.Item.Single(u => u.Id == o.ItemId).Cost;
+                    }
+                    priceList.Add(singleTotal);
+                } else
+                {
+                    priceList.Add(0);
+                }
+            }
+            return (priceList);
         }
     }
 }

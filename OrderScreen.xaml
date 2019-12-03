@@ -38,10 +38,10 @@
                 <ColumnDefinition Width="153*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="addCustomer_Btn" Content="Add Customer" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="89" Width="132" Click="addCustomerBtn_Click"/>
-            <Button x:Name="customer1_Btn" Content="Customer 1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Click="customerBtn_Click" IsEnabled="False"/>
-            <Button x:Name="customer2_Btn" Content="Customer 2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Grid.Column="1" Click="customerBtn_Click" IsEnabled="False"/>
-            <Button x:Name="customer3_Btn"  Content="Customer 3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Grid.Row="1" Click="customerBtn_Click" IsEnabled="False"/>
-            <Button x:Name="customer4_Btn" Content="Customer 4" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Grid.Column="1" Grid.Row="1" Click="customerBtn_Click" IsEnabled="False"/>
+            <Button x:Name="customer1_Btn" Content="Customer 1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Click="customerBtn_Click" IsEnabled="False" />
+            <Button x:Name="customer2_Btn" Content="Customer 2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Grid.Column="1" Click="customerBtn_Click" IsEnabled="False" />
+            <Button x:Name="customer3_Btn"  Content="Customer 3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Grid.Row="1" Click="customerBtn_Click" IsEnabled="False" />
+            <Button x:Name="customer4_Btn" Content="Customer 4" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Grid.Column="1" Grid.Row="1" Click="customerBtn_Click" IsEnabled="False" />
             <Button x:Name="customer5_Btn" Content="Customer 5" HorizontalAlignment="Center" VerticalAlignment="Top" Height="50" Margin="0,16,0,0" Grid.Row="2" Click="customerBtn_Click" IsEnabled="False"/>
             <Button x:Name="customer6_Btn" Content="Customer 6" HorizontalAlignment="Center" VerticalAlignment="Top" Height="50" Grid.Column="1" Margin="0,16,0,0" Grid.Row="2" Click="customerBtn_Click" IsEnabled="False"/>
             <Button x:Name="billing_Btn" Content="Billing" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="89" Width="132" Click="billingBtn_Click" Grid.Column="1"/>

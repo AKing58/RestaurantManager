@@ -23,6 +23,7 @@ namespace COMP4952
     {
         COMP4952PROJECTContext db;
         TableInfo ti;
+        List<decimal> listCosts;
 
         /// <summary>
         /// Default constructor, unused
@@ -33,11 +34,12 @@ namespace COMP4952
         /// Billing constructor
         /// </summary>
         /// <param name="m"></param>
-        public Billing(int m)
+        public Billing(int m, List<decimal> costs)
         {
             InitializeComponent();
             initializeDBConnection();
 
+            listCosts = costs;
             ti = db.TableInfo.Find(m);
             tableLabel.Content = "Table ID: " + ti.Id;
             loadCustomersInfo();
@@ -63,26 +65,15 @@ namespace COMP4952
         /// </summary>
         private void loadCustomersInfo()
         {
-            List<Customer> customerLst = db.Customer.Where(u => u.TableId == ti.Id).ToList();
             decimal totalCost = 0;
-
-            for (int i = 0; i < customerLst.Count; i++)
+            for (int i = 0; i < listCosts.Count; i++)
             {
-                Customer cusTemp = customerLst[i];
-                List<Orders> ordersLst = db.Orders.Where(o => o.CustId == int.Parse(cusTemp.Id.ToString())).ToList();
-                decimal singleTotal = 0;
-
-                foreach (Orders o in ordersLst)
-                {
-                    singleTotal += db.Item.Single(u => u.Id == o.ItemId).Cost;
-                    totalCost += db.Item.Single(u => u.Id == o.ItemId).Cost;
-                }
-
-                var customer = (Label)this.FindName("costLabel" + (i+1));
-                customer.Content = "$" + singleTotal;
-
+                var customer = (Label)this.FindName("costLabel" + (i + 1));
+                customer.Content = "$" + listCosts[i];
+                totalCost += listCosts[i];
+                
             }
-
+            
             var total = (Label)this.FindName("totalLabel");
             total.Content = "Total Cost: $" + totalCost;
         }

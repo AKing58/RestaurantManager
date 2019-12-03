@@ -591,7 +591,7 @@ namespace COMP4952
             DrawTool.Opacity = 1;
             DeletingSelected = !DeletingSelected;
             Image tool = (Image)sender;
-            tool.Opacity = DeletingSelected ? .9 : 1;
+            tool.Opacity = DeletingSelected ? .5 : 1;
         }
 
         /// <summary>
@@ -603,7 +603,7 @@ namespace COMP4952
         {
             SnapSelected = !SnapSelected;
             Image tool = (Image)sender;
-            tool.Opacity = SnapSelected ? .9 : 1;
+            tool.Opacity = SnapSelected ? .5 : 1;
         }
 
         /// <summary>
@@ -617,7 +617,7 @@ namespace COMP4952
             DeleteTool.Opacity = 1;
             DrawingSelected = !DrawingSelected;
             Image tool = (Image)sender;
-            tool.Opacity = DrawingSelected ? .9 : 1;
+            tool.Opacity = DrawingSelected ? .5 : 1;
         }
 
         /// <summary>

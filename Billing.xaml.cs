@@ -17,6 +17,7 @@ namespace COMP4952
 {
     /// <summary>
     /// Interaction logic for Billing.xaml
+    /// Justin Kwok
     /// </summary>
     public partial class Billing : Window
     {
@@ -28,6 +29,10 @@ namespace COMP4952
         /// </summary>
         public Billing() {}
 
+        /// <summary>
+        /// Billing constructor
+        /// </summary>
+        /// <param name="m"></param>
         public Billing(int m)
         {
             InitializeComponent();
@@ -38,6 +43,9 @@ namespace COMP4952
             loadCustomersInfo();
         }
 
+        /// <summary>
+        /// Connects page to database
+        /// </summary>
         private void initializeDBConnection()
         {
 
@@ -50,6 +58,9 @@ namespace COMP4952
 
         }
 
+        /// <summary>
+        /// Loads the customer information from OrderScreen and sets prices of current orders
+        /// </summary>
         private void loadCustomersInfo()
         {
             List<Customer> customerLst = db.Customer.Where(u => u.TableId == ti.Id).ToList();
@@ -76,11 +87,21 @@ namespace COMP4952
             total.Content = "Total Cost: $" + totalCost;
         }
 
+        /// <summary>
+        /// Closes the window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void backBtn_onClick(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
+        /// <summary>
+        /// Changes billed buttons colour if clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void billingBtn_onClick(object sender, RoutedEventArgs e)
         {
             var billingBtn = (Button)sender;
@@ -93,6 +114,11 @@ namespace COMP4952
             }
         }
 
+        /// <summary>
+        /// Changes all billed buttons colour if they are different from billAll button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void billAllBtn_onClick(object sender, RoutedEventArgs e)
         {
             var billAllBtn = (Button)sender;

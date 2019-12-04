@@ -123,6 +123,15 @@ namespace COMP4952
                     customer.ClearValue(Button.BackgroundProperty);
                 }
             }
+
+            foreach (object o in orderGrid.Children)
+            {
+                if (o is Button && ((Button)o).ToolTip != null && ((Button)o).ToolTip.ToString() == "FoodItem")
+                {
+                    var foodItem = (Button)o;
+                    foodItem.Background = Brushes.Red;
+                }
+            }
             homeScreen.Refresh();
         }
 
@@ -268,6 +277,10 @@ namespace COMP4952
             bill.Show();
         }
 
+        /// <summary>
+        /// Calculates costs of food items that each customer orders
+        /// </summary>
+        /// <returns>A list of decimals for the total costs of food items selected</returns>
         private List<decimal> calculateCosts()
         {
             List<decimal> priceList = new List<decimal>();
@@ -293,6 +306,9 @@ namespace COMP4952
             return (priceList);
         }
 
+        /// <summary>
+        /// Enables the food item buttons to be used
+        /// </summary>
         private void enableButtons()
         {
             foreach (object o in orderGrid.Children)
@@ -305,6 +321,9 @@ namespace COMP4952
             }
         }
 
+        /// <summary>
+        /// Disables the food item buttons from being used and resets the colour back to red
+        /// </summary>
         private void disableButtons()
         {
             foreach (object o in orderGrid.Children)

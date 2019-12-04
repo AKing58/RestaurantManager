@@ -81,7 +81,10 @@ namespace COMP4952
 
                 tt.X = OffsetX;
                 tt.Y = OffsetY;
-            }else if(e.Key == Key.OemMinus || e.Key == Key.OemPlus)
+                ttG.X = OffsetX;
+                ttG.Y = OffsetY;
+            }
+            else if(e.Key == Key.OemMinus || e.Key == Key.OemPlus)
             {
                 if(e.Key == Key.OemPlus)
                 {
@@ -148,7 +151,7 @@ namespace COMP4952
                 gridLine.X2 = x;
                 gridLine.Y1 = min;
                 gridLine.Y2 = max;
-                Canvas_FB.Children.Add(gridLine);
+                Canvas_Grid.Children.Add(gridLine);
             }
 
             for (int y = min; y < max; y+=SnapAmount)
@@ -162,17 +165,17 @@ namespace COMP4952
                 gridLine.X2 = max;
                 gridLine.Y1 = y;
                 gridLine.Y2 = y;
-                Canvas_FB.Children.Add(gridLine);
+                Canvas_Grid.Children.Add(gridLine);
             }
         }
 
         private void DisableGrid()
         {
-            for(int i=0; i<Canvas_FB.Children.Count; i++)
+            for(int i=0; i<Canvas_Grid.Children.Count; i++)
             {
-                if (Canvas_FB.Children[i] is Line && ((Line)Canvas_FB.Children[i]).Tag == "gridline")
+                if (Canvas_Grid.Children[i] is Line && ((Line)Canvas_Grid.Children[i]).Tag == "gridline")
                 {
-                    Canvas_FB.Children.RemoveAt(i);
+                    Canvas_Grid.Children.RemoveAt(i);
                     i--;
                 }
             }
@@ -265,15 +268,23 @@ namespace COMP4952
             if(img != null)
             {
                 Point mousePos = Mouse.GetPosition(Canvas_FB);
+                Console.WriteLine(mousePos);
+                Console.WriteLine(img.Width);
+                Console.WriteLine(img.Height);
                 int left = (int)((mousePos.X - startLoc.X) - (img.Width / 2));
                 int top = (int)((mousePos.Y - startLoc.Y) - (img.Height / 2));
                 if (SnapSelected)
                 {
-                    left = (int)Math.Round((decimal)(left / SnapAmount));
+                    left = (int)Math.Round(((double)left / (double)SnapAmount));
+
+                    Console.WriteLine(((double)left / (double)SnapAmount));
                     left = left * SnapAmount;
-                    top = (int)Math.Round((decimal)(top / SnapAmount));
+                    top = (int)Math.Round(((double)top / (double)SnapAmount));
+
+                    Console.WriteLine((double)top / (double)SnapAmount);
                     top = top * SnapAmount;
                 }
+                Console.WriteLine(left + ", " + top);
                 if (left >= 0)
                     Canvas.SetLeft(img, left);
                 else
@@ -509,6 +520,7 @@ namespace COMP4952
         /// <param name="e"></param>
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            Console.WriteLine("Starting to click");
             if (DrawingSelected && e.ChangedButton == MouseButton.Left)
             {
                 Console.WriteLine("Starting to draw");
@@ -521,8 +533,8 @@ namespace COMP4952
                 curLine.StrokeThickness = 5;
                 //curLine.StrokeStartLineCap = PenLineCap.Round;
                 //curLine.StrokeEndLineCap = PenLineCap.Round;
-                int tempX = ((int)Math.Round((startLoc.X / SnapAmount))) * SnapAmount;
-                int tempY = ((int)Math.Round((startLoc.Y / SnapAmount))) * SnapAmount;
+                int tempX = (int)(Math.Round(startLoc.X / (double)SnapAmount)) * SnapAmount;
+                int tempY = (int)(Math.Round(startLoc.Y / (double)SnapAmount)) * SnapAmount;
 
                 curLine.X1 = tempX;
                 curLine.Y1 = tempY;
@@ -698,6 +710,8 @@ namespace COMP4952
 
             st.ScaleX *= scalingRate;
             st.ScaleY *= scalingRate;
+            stG.ScaleX *= scalingRate;
+            stG.ScaleY *= scalingRate;
         }
 
         /// <summary>
@@ -709,6 +723,8 @@ namespace COMP4952
 
             st.ScaleX /= scalingRate;
             st.ScaleY /= scalingRate;
+            stG.ScaleX /= scalingRate;
+            stG.ScaleY /= scalingRate;
         }
         /// <summary>
         /// Sets the snap to grid to 25

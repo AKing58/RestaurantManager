@@ -18,7 +18,16 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Canvas x:Name="Canvas_FB" Grid.Column="1" Grid.Row="1"  Grid.RowSpan="2" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" MouseRightButtonDown="Canvas_RightClick">
+        <Canvas x:Name="Canvas_Grid" Grid.Column="1" Grid.Row="1"  Grid.RowSpan="2" IsHitTestVisible="False" IsEnabled="False">
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <TranslateTransform x:Name="ttG"/>
+                    <ScaleTransform x:Name="stG"/>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+        </Canvas> 
+        
+        <Canvas x:Name="Canvas_FB" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Background="Transparent" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" MouseRightButtonDown="Canvas_RightClick">
             <Canvas.RenderTransform>
                 <TransformGroup>
                     <TranslateTransform x:Name="tt"/>

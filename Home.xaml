@@ -21,7 +21,7 @@
                 </TransformGroup>
             </Canvas.RenderTransform>
         </Canvas>
-        <Menu Grid.Row="0">
+        <Menu Grid.Row="0" Focusable="False">
             <MenuItem Header="Menu" Height="25">
                 <MenuItem Header="Go To Staff Screen" Click="GoToStaffScreen_Click"/>
                 <MenuItem Header="Go To Floor Builder" Click="GoToFloorBuilder_Click"/>

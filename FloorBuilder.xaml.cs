@@ -34,6 +34,8 @@ namespace COMP4952
         bool DeletingSelected;
         bool isDrawing;
 
+        bool GridEnabled;
+
         double OffsetX;
         double OffsetY;
 
@@ -48,9 +50,6 @@ namespace COMP4952
         {
             initializeDBConnection();
             InitializeComponent();
-            SnapSelected = false;
-            DrawingSelected = false;
-            DeletingSelected = false;
             SnapAmount = 50;
             LoadWalls();
             LoadTableInfos();
@@ -130,6 +129,52 @@ namespace COMP4952
             foreach (Wall w in db.Wall.ToList())
             {
                 DisplayWall(w);
+            }
+        }
+
+        private void EnableGrid()
+        {
+            int max = 10000;
+            int min = -5000;
+
+            for (int x = min; x < max; x+=SnapAmount)
+            {
+                Line gridLine = new Line();
+                gridLine.Tag = "gridline";
+                gridLine.StrokeThickness = 1;
+                gridLine.Stroke = Brushes.Gray;
+                gridLine.IsHitTestVisible = false;
+                gridLine.X1 = x;
+                gridLine.X2 = x;
+                gridLine.Y1 = min;
+                gridLine.Y2 = max;
+                Canvas_FB.Children.Add(gridLine);
+            }
+
+            for (int y = min; y < max; y+=SnapAmount)
+            {
+                Line gridLine = new Line();
+                gridLine.Tag = "gridline";
+                gridLine.StrokeThickness = 1;
+                gridLine.Stroke = Brushes.Gray;
+                gridLine.IsHitTestVisible = false;
+                gridLine.X1 = min;
+                gridLine.X2 = max;
+                gridLine.Y1 = y;
+                gridLine.Y2 = y;
+                Canvas_FB.Children.Add(gridLine);
+            }
+        }
+
+        private void DisableGrid()
+        {
+            for(int i=0; i<Canvas_FB.Children.Count; i++)
+            {
+                if (Canvas_FB.Children[i] is Line && ((Line)Canvas_FB.Children[i]).Tag == "gridline")
+                {
+                    Canvas_FB.Children.RemoveAt(i);
+                    i--;
+                }
             }
         }
 
@@ -405,16 +450,9 @@ namespace COMP4952
                 }else if(o is Line)
                 {
                     Line l = (Line)o;
-                    if (l.Name.Contains("tmp") && l.Visibility != Visibility.Hidden)
+                    if(l.Tag != "gridline")
                     {
-                        if (db.Wall.SingleOrDefault(u => (u.X1loc == l.X1 &&
-                                              u.X2loc == l.X2 &&
-                                              u.Y1loc == l.Y1 &&
-                                              u.Y2loc == l.Y2) ||
-                                              (u.X1loc == l.X2 &&
-                                              u.X2loc == l.X1 &&
-                                              u.Y1loc == l.Y2 &&
-                                              u.Y2loc == l.Y1)) == null)
+                        if (l.Name.Contains("tmp") && l.Visibility != Visibility.Hidden)
                         {
                             Wall w = new Wall();
                             w.X1loc = (int)l.X1;
@@ -422,12 +460,13 @@ namespace COMP4952
                             w.Y1loc = (int)l.Y1;
                             w.Y2loc = (int)l.Y2;
                             db.Wall.Add(w);
+
                         }
-                        
-                    }else if (l.Name.Contains("deleteThis") && !l.Name.Contains("tmp"))
-                    {
-                        Wall wInfo = db.Wall.Find(l.Tag);
-                        db.Wall.Remove(wInfo);
+                        else if (l.Name.Contains("deleteThis") && !l.Name.Contains("tmp"))
+                        {
+                            Wall wInfo = db.Wall.Find(l.Tag);
+                            db.Wall.Remove(wInfo);
+                        }
                     }
                 }
             }
@@ -681,6 +720,11 @@ namespace COMP4952
             SnapAmount = 25;
             btnSnap25.IsEnabled = false;
             btnSnap50.IsEnabled = true;
+            if (GridEnabled)
+            {
+                DisableGrid();
+                EnableGrid();
+            }
         }
 
         /// <summary>
@@ -693,6 +737,11 @@ namespace COMP4952
             SnapAmount = 50;
             btnSnap25.IsEnabled = true;
             btnSnap50.IsEnabled = false;
+            if (GridEnabled)
+            {
+                DisableGrid();
+                EnableGrid();
+            }
         }
 
         /// <summary>
@@ -732,6 +781,20 @@ namespace COMP4952
                     curLine.Name = "deleteThis" + curLine.Name;
                     curLine.Visibility = Visibility.Hidden;
                 }
+            }
+        }
+
+        private void EnableGrid_Click(object sender, RoutedEventArgs e)
+        {
+            GridEnabled = Grid_MenuItem.IsChecked;
+            if (GridEnabled)
+            {
+                DisableGrid();
+                EnableGrid();
+            }
+            else
+            {
+                DisableGrid();
             }
         }
     }

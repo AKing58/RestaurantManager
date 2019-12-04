@@ -18,7 +18,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Canvas x:Name="Canvas_FB" Grid.Column="1" Grid.Row="1"  Grid.RowSpan="2" Background="White" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" MouseRightButtonDown="Canvas_RightClick">
+        <Canvas x:Name="Canvas_FB" Grid.Column="1" Grid.Row="1"  Grid.RowSpan="2" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp" MouseRightButtonDown="Canvas_RightClick">
             <Canvas.RenderTransform>
                 <TransformGroup>
                     <TranslateTransform x:Name="tt"/>
@@ -27,17 +27,19 @@
             </Canvas.RenderTransform>
         </Canvas>
 
-        <Menu Grid.Row="0" Grid.ColumnSpan="2" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+        <Menu Grid.Row="0" Grid.ColumnSpan="2" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False">
             <MenuItem Header="Menu" Height="25">
                 <MenuItem Header="Save Layout" Click="Save_Click"/>
                 <MenuItem Header="Clear Layout" Click="DeleteLayout_Click"/>
-                <MenuItem IsEnabled="False"/>
+                <MenuItem IsEnabled="False" Focusable="False"/>
                 <MenuItem Header="Back To Home" Click="GoToMain_Click"/>
             </MenuItem>
             <MenuItem Header="Zoom" IsEnabled="False" BorderBrush="Black" BorderThickness="1,0,0,0" />
             <MenuItem Header=" -" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" BorderBrush="#FFD0D0D0" BorderThickness="1,0,1,0" MinWidth="25" MaxWidth="25" Click="ZoomOut_Click" />
             <MenuItem Header="+" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" BorderBrush="#FFD0D0D0" BorderThickness="1,0,1,0" MinWidth="25" MaxWidth="25" Click="ZoomIn_Click" />
-            <MenuItem BorderThickness="0,0,1,0" BorderBrush="Black"/>
+            <MenuItem BorderThickness="0,0,1,0" BorderBrush="Black" Focusable="False"/>
+            <MenuItem x:Name="Grid_MenuItem" Header="Enable Grid" IsCheckable="True" Click="EnableGrid_Click">
+            </MenuItem>
         </Menu>
 
         <WrapPanel Grid.Column="0" Grid.Row="1" Background="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
@@ -77,13 +79,11 @@
             </Grid>
             <WrapPanel Height="2" Width="5"/>
         </WrapPanel>
-        <ScrollViewer Grid.Column="0" Grid.Row="2">
-            <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" ScrollViewer.VerticalScrollBarVisibility="Visible" CanVerticallyScroll="True">
-                <Image x:Name="RoundTable" Source="/Resources/circle_1.png" Width="100" Height="100" Margin="0,10,0,10" MouseDown="Table_MouseDown" Tag="Tool" />
-                <Image x:Name="SquareTable" Source="/Resources/square_2.png" Width="100" Height="100" Margin="0,10,0,10" MouseDown="Table_MouseDown" Tag="Tool" />
-                <Image x:Name="RectangleTable" Source="/Resources/rectangle_3.png" Width="100" Height="100" Margin="0,10,0,10" MouseDown="Table_MouseDown" Tag="Tool" />
-            </StackPanel>
-        </ScrollViewer>
+        <StackPanel Grid.Column="0" Grid.Row="2" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" ScrollViewer.VerticalScrollBarVisibility="Auto" CanVerticallyScroll="True">
+            <Image x:Name="RoundTable" Source="/Resources/circle_1.png" Width="100" Height="100" Margin="0,10,0,10" MouseDown="Table_MouseDown" Tag="Tool" />
+            <Image x:Name="SquareTable" Source="/Resources/square_2.png" Width="100" Height="100" Margin="0,10,0,10" MouseDown="Table_MouseDown" Tag="Tool" />
+            <Image x:Name="RectangleTable" Source="/Resources/rectangle_3.png" Width="100" Height="100" Margin="0,10,0,10" MouseDown="Table_MouseDown" Tag="Tool" />
+        </StackPanel>
 
 
     </Grid>

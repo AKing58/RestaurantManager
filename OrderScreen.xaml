@@ -57,21 +57,53 @@
         <Label x:Name="drinksLabel" Content="Drinks" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-1,0,0"/>
         <Button x:Name="back_Btn" Content="Back" HorizontalAlignment="Left" Margin="0,2,0,0" VerticalAlignment="Top" Height="21" Width="70" Click="backBtn_Click"/>
 
-        <Button x:Name="salad_Btn" Content="Salad" Grid.Column="1" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Click="item_Click" Background="Red" Tag="1" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="calamari_Btn" Content="Calamari" Grid.Column="1" HorizontalAlignment="Center" Margin="0,111,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="#FFF40000" Click="item_Click" Tag="2" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="clamChowder_Btn" Content="Clam Chowder" Grid.Column="1" HorizontalAlignment="Center" Margin="0,215,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="3" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="breadSticks_Btn" Content="Bread Sticks" Grid.Column="1" HorizontalAlignment="Center" Margin="0,313,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="4" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="spaghetti_Btn" Content="Spaghetti" Grid.Column="2" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="5" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="pizza_Btn" Content="Pizza" Grid.Column="2" HorizontalAlignment="Center" Margin="0,111,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="6" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="steak_Btn" Content="Steak" Grid.Column="2" HorizontalAlignment="Center" Margin="0,215,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="#FFFC0000" Click="item_Click" Tag="7" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="burger_Btn" Content="Burger" Grid.Column="2" HorizontalAlignment="Center" Margin="0,313,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="#FFF40000" Click="item_Click" Tag="8" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="icecream_Btn" Content="Ice Cream" Grid.Column="3" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="9"  ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="fudge_Btn" Content="Fudge Brownie" Grid.Column="3" HorizontalAlignment="Center" Margin="0,111,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="10" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="lava_Btn" Content="Lava Cake" Grid.Column="3" HorizontalAlignment="Center" Margin="0,215,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="11" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="cheese_Btn" Content="Cheesecake" Grid.Column="3" HorizontalAlignment="Center" Margin="0,313,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="12" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="pop_Btn" Content="Pop" Grid.Column="4" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="13" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="wine_Btn" Content="Wine" Grid.Column="4" HorizontalAlignment="Center" Margin="0,111,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="14" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="milkshake_Btn" Content="Milkshake" Grid.Column="4" HorizontalAlignment="Center" Margin="0,215,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="15" ToolTip="FoodItem" IsEnabled="False"/>
-        <Button x:Name="beer_Btn" Content="Beer" Grid.Column="4" HorizontalAlignment="Center" Margin="0,313,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="16" ToolTip="FoodItem" IsEnabled="False"/>
+        <Button x:Name="salad_Btn" Grid.Column="1" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Click="item_Click" Background="Red" Tag="1" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap"> Salad - $6.50</TextBlock>
+        </Button>
+        <Button x:Name="calamari_Btn" Grid.Column="1" HorizontalAlignment="Center" Margin="0,111,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="#FFF40000" Click="item_Click" Tag="2" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap"> Calamari - $8.00</TextBlock>
+        </Button>
+        <Button x:Name="clamChowder_Btn" Grid.Column="1" HorizontalAlignment="Center" Margin="0,215,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="3" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Clam Chowder - $5.00</TextBlock>
+        </Button>
+        <Button x:Name="breadSticks_Btn" Grid.Column="1" HorizontalAlignment="Center" Margin="0,313,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="4" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Bread Sticks - $6.00</TextBlock>
+        </Button>
+        <Button x:Name="spaghetti_Btn" Grid.Column="2" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="5" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Spaghetti - $12.00</TextBlock>
+        </Button>
+        <Button x:Name="pizza_Btn" Grid.Column="2" HorizontalAlignment="Center" Margin="0,111,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="6" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Pizza - $11.00</TextBlock>
+        </Button>
+        <Button x:Name="steak_Btn" Grid.Column="2" HorizontalAlignment="Center" Margin="0,215,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="#FFFC0000" Click="item_Click" Tag="7" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Steak - $20.00</TextBlock>
+        </Button>
+        <Button x:Name="burger_Btn" Grid.Column="2" HorizontalAlignment="Center" Margin="0,313,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="#FFF40000" Click="item_Click" Tag="8" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Burger - $10.00</TextBlock>
+        </Button>
+        <Button x:Name="icecream_Btn" Grid.Column="3" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="9"  ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Ice Cream - $3.50</TextBlock>
+        </Button>
+        <Button x:Name="fudge_Btn" Grid.Column="3" HorizontalAlignment="Center" Margin="0,111,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="10" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Fudge Brownie - $4.00</TextBlock>
+        </Button>
+        <Button x:Name="lava_Btn" Grid.Column="3" HorizontalAlignment="Center" Margin="0,215,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="11" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Lava Cake - $5.50</TextBlock>
+        </Button>
+        <Button x:Name="cheese_Btn" Grid.Column="3" HorizontalAlignment="Center" Margin="0,313,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="12" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Cheesecake - $5.50</TextBlock>
+        </Button>
+        <Button x:Name="pop_Btn" Grid.Column="4" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="13" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Pop - $1.00</TextBlock>
+        </Button>
+        <Button x:Name="wine_Btn" Grid.Column="4" HorizontalAlignment="Center" Margin="0,111,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="14" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Wine - $28.00</TextBlock>
+        </Button>
+        <Button x:Name="milkshake_Btn" Grid.Column="4" HorizontalAlignment="Center" Margin="0,215,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="15" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Milkshake - $6.50</TextBlock>
+        </Button>
+        <Button x:Name="beer_Btn" Grid.Column="4" HorizontalAlignment="Center" Margin="0,313,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="93" Background="Red" Click="item_Click" Tag="16" ToolTip="FoodItem" IsEnabled="False">
+            <TextBlock TextWrapping="Wrap">Beer - $8.00</TextBlock>
+        </Button>
     </Grid>
 </Window>

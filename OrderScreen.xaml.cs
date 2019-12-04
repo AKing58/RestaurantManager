@@ -21,7 +21,6 @@ namespace COMP4952
         COMP4952PROJECTContext db;
         TableInfo ti;
         Customer cus;
-        private int custIndex = 0;
         private int table;
 
         Home homeScreen;
@@ -85,9 +84,9 @@ namespace COMP4952
                     customer.Tag = customerLst[i-1].Id;
                 }
             }
-            Customer tempCust = db.Customer.SingleOrDefault(u => u.TableId == ti.Id);
+            List<Customer> tempCust = db.Customer.Where(u => u.TableId == ti.Id).ToList();
             if (tempCust != null)
-                cus = tempCust;
+                cus = tempCust[0];
         }
 
         /// <summary>
@@ -116,7 +115,7 @@ namespace COMP4952
                     customer.Tag = person.Id;
                     customer.Background = Brushes.Green;
                     cus = person;
-                    custIndex = i;
+                    enableButtons();
                     break;
                 }
                 else
@@ -146,6 +145,8 @@ namespace COMP4952
         {
             var customerBtn = (Button)sender;
             customerBtn.Background = Brushes.Green;
+
+            enableButtons();
 
             for (int i = 1; i < 7; i++)
             {
@@ -189,6 +190,7 @@ namespace COMP4952
         /// <param name="e"></param>
         private void removeCustBtn_Click(object sender, RoutedEventArgs e)
         {
+            int checker = 0;
             var removeBtn = (Button)sender;
             var index = removeBtn.Tag.ToString();
 
@@ -209,6 +211,22 @@ namespace COMP4952
             db.SaveChanges();
             customer.IsEnabled = false;
             homeScreen.Refresh();
+
+            for (int i = 1; i < 7; i++)
+            {
+                var customerBtns = (Button)this.FindName("customer" + i + "_Btn");
+                if (customerBtns.IsEnabled)
+                {
+                    checker++;
+                }
+            }
+
+            disableButtons();
+
+            if (checker == 0)
+            {
+                cus = null;
+            }
         }
 
         /// <summary>
@@ -273,6 +291,31 @@ namespace COMP4952
                 }
             }
             return (priceList);
+        }
+
+        private void enableButtons()
+        {
+            foreach (object o in orderGrid.Children)
+            {
+                if (o is Button && ((Button)o).ToolTip != null && ((Button)o).ToolTip.ToString() == "FoodItem")
+                {
+                    var foodItem = (Button)o;
+                    foodItem.IsEnabled = true;
+                }
+            }
+        }
+
+        private void disableButtons()
+        {
+            foreach (object o in orderGrid.Children)
+            {
+                if (o is Button && ((Button)o).ToolTip != null && ((Button)o).ToolTip.ToString() == "FoodItem")
+                {
+                    var foodItem = (Button)o;
+                    foodItem.IsEnabled = false;
+                    foodItem.Background = Brushes.Red;
+                }
+            }
         }
     }
 }
